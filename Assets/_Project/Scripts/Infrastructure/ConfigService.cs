@@ -1,26 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class ConfigService
 {
-    private const string GameModesPath = "Configs/GameModesConfig";
+    private readonly Dictionary<string, Object> _cache = new Dictionary<string, Object>();
 
-    private GameModesConfig gameModes;
-
-    public GameModesConfig GameModes
+    public T Load<T>(string resourcesPath) where T : Object
     {
-        get
+        if (string.IsNullOrEmpty(resourcesPath))
         {
-            if (gameModes == null)
-            {
-                gameModes = Resources.Load<GameModesConfig>(GameModesPath);
-
-                if (gameModes == null)
-                {
-                    throw new MissingReferenceException($"GameModesConfig not found at Resources/{GameModesPath}");
-                }
-            }
-
-            return gameModes;
+            throw new System.ArgumentException("Path is empty.", nameof(resourcesPath));
         }
+
+        if (_cache.TryGetValue(resourcesPath, out Object cached))
+        {
+            return (T)cached;
+        }
+
+        T loaded = Resources.Load<T>(resourcesPath);
+
+        if (loaded == null)
+        {
+            throw new MissingReferenceException($"Config not found at Resources/{resourcesPath}");
+        }
+
+        _cache.Add(resourcesPath, loaded);
+        return loaded;
     }
 }

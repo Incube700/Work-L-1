@@ -6,19 +6,19 @@ public sealed class TypingChecker
     public event Action Won;
     public event Action Lost;
 
-    private readonly string target;
-    private int index;
+    private readonly string _target;
+    private int _index;
 
     public TypingChecker(string target)
     {
-        this.target = target;
-        index = 0;
+        this._target = target;
+        _index = 0;
     }
 
     public void HandleChar(char c)
     {
         char typed = char.ToUpperInvariant(c);
-        char expected = target[index];
+        char expected = _target[_index];
 
         if (typed != expected)
         {
@@ -26,9 +26,9 @@ public sealed class TypingChecker
             return;
         }
 
-        index++;
+        _index++;
 
-        if (index >= target.Length)
+        if (_index >= _target.Length)
         {
             Won?.Invoke();
         }

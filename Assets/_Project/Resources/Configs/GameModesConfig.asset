@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2792112513fb41f287f81bb09d6c6b9f, type: 3}
+  m_Script: {fileID: 11500000, guid: 318278e99994648ada54f3b7518d362f, type: 3}
   m_Name: GameModesConfig
   m_EditorClassIdentifier: 
   modes:
-  - <Mode>k__BackingField: 1
-    <AvailableChars>k__BackingField: adfbgmtukjhgfx
   - <Mode>k__BackingField: 0
-    <AvailableChars>k__BackingField: 1234567890
+    <AvailableChars>k__BackingField: 0987654321
+  - <Mode>k__BackingField: 1
+    <AvailableChars>k__BackingField: afbvrqwe4trh

@@ -2,22 +2,23 @@ using UnityEngine.SceneManagement;
 
 public sealed class SceneLoader
 {
-    private readonly SceneArgsService args;
+    private readonly SceneArgsService _args;
 
     public SceneLoader(SceneArgsService args)
     {
-        this.args = args;
+        this._args = args;
     }
 
-    public void LoadMenu()
+    public void Load(string sceneName)
     {
-        SceneManager.LoadScene(SceneNames.MainMenu);
+        _args.Clear();
+        SceneManager.LoadScene(sceneName);
     }
 
-    public void LoadGameplay(GameMode mode)
+    public void Load(string sceneName, IInputArgs inputArgs)
     {
-        args.SetSelectedMode(mode);
-        SceneManager.LoadScene(SceneNames.Gameplay);
+        _args.Set(inputArgs);
+        SceneManager.LoadScene(sceneName);
     }
 
     public void ReloadCurrent()

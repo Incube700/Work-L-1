@@ -2,41 +2,39 @@ using UnityEngine;
 
 public sealed class MainMenuEntryPoint : MonoBehaviour
 {
-    private KeyboardInputReader input;
-    private SceneLoader sceneLoader;
+    private MenuFlow _flow;
 
     private void Awake()
     {
-        input = new KeyboardInputReader();
-        sceneLoader = ProjectContext.Instance.Container.Resolve<SceneLoader>();
+        ProjectContext context = FindFirstObjectByType<ProjectContext>();
 
-        Debug.Log("MAIN MENU: 1 - Numbers, 2 - Letters");
+        if (context == null)
+        {
+            throw new System.InvalidOperationException("ProjectContext not found. Start from BootstrapScene.");
+        }
+
+        IContainer sceneContainer = context.CreateSceneContainer();
+
+        sceneContainer.BindTransient<MenuFlow>(c => new MenuFlow(
+            c.Resolve<KeyboardInputReader>(),
+            c.Resolve<SceneLoader>()));
+
+        _flow = sceneContainer.Resolve<MenuFlow>();
     }
 
     private void OnEnable()
     {
-        input.CharTyped += OnCharTyped;
+        _flow.Start();
     }
-
+    
     private void OnDisable()
     {
-        input.CharTyped -= OnCharTyped;
+        if (_flow == null)
+        {
+            return;
+        }
+
+        _flow.Stop();
     }
 
-    private void Update()
-    {
-        input.Tick();
-    }
-
-    private void OnCharTyped(char c)
-    {
-        if (c == '1')
-        {
-            sceneLoader.LoadGameplay(GameMode.Numbers);
-        }
-        else if (c == '2')
-        {
-            sceneLoader.LoadGameplay(GameMode.Letters);
-        }
-    }
 }

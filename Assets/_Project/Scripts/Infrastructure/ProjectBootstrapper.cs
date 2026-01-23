@@ -2,17 +2,24 @@ using UnityEngine;
 
 public sealed class ProjectBootstrapper : MonoBehaviour
 {
+    private ProjectContext _context;
+
     private void Awake()
     {
-        if (ProjectContext.Instance == null)
+        _context = FindFirstObjectByType<ProjectContext>();
+
+        if (_context == null)
         {
-            GameObject context = new GameObject("@ProjectContext");
-            context.AddComponent<ProjectContext>();
+            GameObject go = new GameObject("@ProjectContext");
+            _context = go.AddComponent<ProjectContext>();
         }
+
+        _context.Initialize();
     }
 
     private void Start()
     {
-        ProjectContext.Instance.Container.Resolve<SceneLoader>().LoadMenu();
+        SceneLoader loader = _context.Container.Resolve<SceneLoader>();
+        loader.Load(SceneNames.MainMenu);
     }
 }

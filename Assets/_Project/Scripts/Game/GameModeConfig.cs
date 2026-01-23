@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Configs/Game Modes Config", fileName = "GameModesConfig")]
 public sealed class GameModesConfig : ScriptableObject
 {
-    [SerializeField] private List<ModeConfig> modes;
+    [FormerlySerializedAs("modes")] [SerializeField] private List<ModeConfig> _modes;
 
     public string GetAvailableChars(GameMode mode)
     {
-        for (int i = 0; i < modes.Count; i++)
+        for (int i = 0; i < _modes.Count; i++)
         {
-            if (modes[i].Mode == mode)
+            if (_modes[i].Mode == mode)
             {
-                string chars = modes[i].AvailableChars;
+                string chars = _modes[i].AvailableChars;
 
                 if (string.IsNullOrEmpty(chars))
                 {

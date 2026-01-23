@@ -1,9 +1,20 @@
 public sealed class SceneArgsService
 {
-    public GameMode SelectedMode { get; private set; }
+    private IInputArgs _args;
 
-    public void SetSelectedMode(GameMode mode)
+    public void Set(IInputArgs args)
     {
-        SelectedMode = mode;
+        this._args = args;
+    }
+
+    public bool TryGet<TArgs>(out TArgs result) where TArgs : class, IInputArgs
+    {
+        result = _args as TArgs;
+        return result != null;
+    }
+
+    public void Clear()
+    {
+        _args = null;
     }
 }
