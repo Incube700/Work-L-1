@@ -30,13 +30,10 @@ public sealed class ProjectContext : MonoBehaviour
 
         _container = new Container();
 
-        _container.BindLazy<SceneArgsService>(_ => new SceneArgsService());
-        _container.BindLazy<ConfigService>(_ => new ConfigService());
-        _container.BindLazy<KeyboardInputReader>(_ => new KeyboardInputReader());
-        _container.BindLazy<SceneLoader>(c => new SceneLoader(c.Resolve<SceneArgsService>()));
+        ProjectRegistrations.Register(_container);
 
         _input = _container.Resolve<KeyboardInputReader>();
-
+        
         _isInitialized = true;
     }
 

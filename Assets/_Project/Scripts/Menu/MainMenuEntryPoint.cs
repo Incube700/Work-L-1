@@ -15,9 +15,7 @@ public sealed class MainMenuEntryPoint : MonoBehaviour
 
         IContainer sceneContainer = context.CreateSceneContainer();
 
-        sceneContainer.BindTransient<MenuFlow>(c => new MenuFlow(
-            c.Resolve<KeyboardInputReader>(),
-            c.Resolve<SceneLoader>()));
+        MainMenuRegistrations.Register(sceneContainer);
 
         _flow = sceneContainer.Resolve<MenuFlow>();
     }
@@ -26,7 +24,7 @@ public sealed class MainMenuEntryPoint : MonoBehaviour
     {
         _flow.Start();
     }
-    
+
     private void OnDisable()
     {
         if (_flow == null)
@@ -36,5 +34,4 @@ public sealed class MainMenuEntryPoint : MonoBehaviour
 
         _flow.Stop();
     }
-
 }

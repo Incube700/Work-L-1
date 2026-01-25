@@ -15,14 +15,7 @@ public sealed class GameplayEntryPoint : MonoBehaviour
 
         IContainer sceneContainer = context.CreateSceneContainer();
 
-        sceneContainer.BindTransient<SequenceGenerator>(_ => new SequenceGenerator());
-
-        sceneContainer.BindTransient<GameplayLoop>(c => new GameplayLoop(
-            c.Resolve<KeyboardInputReader>(),
-            c.Resolve<SceneLoader>(),
-            c.Resolve<SceneArgsService>(),
-            c.Resolve<ConfigService>(),
-            c.Resolve<SequenceGenerator>()));
+        GameplayRegistrations.Register(sceneContainer);
 
         _loop = sceneContainer.Resolve<GameplayLoop>();
     }
@@ -34,6 +27,11 @@ public sealed class GameplayEntryPoint : MonoBehaviour
 
     private void OnDisable()
     {
+        if (_loop == null)
+        {
+            return;
+        }
+
         _loop.Stop();
     }
 }
