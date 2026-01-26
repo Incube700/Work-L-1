@@ -7,7 +7,6 @@ public static class GameplayRegistrations
         container.BindTransient<GameplayLoop>(c => new GameplayLoop(
             c.Resolve<KeyboardInputReader>(),
             c.Resolve<SceneLoader>(),
-            c.Resolve<SceneArgsService>(),
             c.Resolve<ConfigService>(),
             c.Resolve<SequenceGenerator>()));
     }

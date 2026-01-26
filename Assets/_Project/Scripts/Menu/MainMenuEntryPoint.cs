@@ -1,31 +1,32 @@
+using System;
 using UnityEngine;
 
 public sealed class MainMenuEntryPoint : MonoBehaviour
 {
     private MenuFlow _flow;
+    private bool _isInitialized;
 
-    private void Awake()
+    public void Initialize(IContainer sceneContainer)
     {
-        ProjectContext context = FindFirstObjectByType<ProjectContext>();
-
-        if (context == null)
+        if (sceneContainer == null)
         {
-            throw new System.InvalidOperationException("ProjectContext not found. Start from BootstrapScene.");
+            throw new ArgumentNullException(nameof(sceneContainer));
         }
 
-        IContainer sceneContainer = context.CreateSceneContainer();
+        if (_isInitialized)
+        {
+            throw new InvalidOperationException("MainMenuEntryPoint is already initialized.");
+        }
 
         MainMenuRegistrations.Register(sceneContainer);
 
         _flow = sceneContainer.Resolve<MenuFlow>();
-    }
-
-    private void OnEnable()
-    {
         _flow.Start();
+
+        _isInitialized = true;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (_flow == null)
         {
@@ -33,5 +34,6 @@ public sealed class MainMenuEntryPoint : MonoBehaviour
         }
 
         _flow.Stop();
+        _flow = null;
     }
 }

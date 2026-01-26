@@ -1,31 +1,37 @@
+using System;
 using UnityEngine;
 
 public sealed class GameplayEntryPoint : MonoBehaviour
 {
     private GameplayLoop _loop;
+    private bool _isInitialized;
 
-    private void Awake()
+    public void Initialize(IContainer sceneContainer, GameplayArgs args)
     {
-        ProjectContext context = FindFirstObjectByType<ProjectContext>();
-
-        if (context == null)
+        if (sceneContainer == null)
         {
-            throw new System.InvalidOperationException("ProjectContext not found. Start from BootstrapScene.");
+            throw new ArgumentNullException(nameof(sceneContainer));
         }
 
-        IContainer sceneContainer = context.CreateSceneContainer();
+        if (args == null)
+        {
+            throw new ArgumentNullException(nameof(args));
+        }
+
+        if (_isInitialized)
+        {
+            throw new InvalidOperationException("GameplayEntryPoint is already initialized.");
+        }
 
         GameplayRegistrations.Register(sceneContainer);
 
         _loop = sceneContainer.Resolve<GameplayLoop>();
+        _loop.Start(args.Mode);
+
+        _isInitialized = true;
     }
 
-    private void OnEnable()
-    {
-        _loop.Start();
-    }
-
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (_loop == null)
         {
@@ -33,5 +39,6 @@ public sealed class GameplayEntryPoint : MonoBehaviour
         }
 
         _loop.Stop();
+        _loop = null;
     }
 }

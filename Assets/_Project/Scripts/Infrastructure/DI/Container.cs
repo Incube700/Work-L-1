@@ -10,6 +10,9 @@ public sealed class Container : IContainer
         new Dictionary<Type, Func<IReadOnlyContainer, object>>();
 
     private readonly Container _parent;
+    
+    private readonly Stack<Type> _resolutionPath = new Stack<Type>();
+    private int _resolutionDepth;
 
     public Container() { }
 
@@ -69,20 +72,56 @@ public sealed class Container : IContainer
 
     public T Resolve<T>()
     {
-        object obj = Resolve(typeof(T), new Stack<Type>());
-        return (T)obj;
+        BeginResolve();
+        try
+        {
+            object obj = Resolve(typeof(T), _resolutionPath);
+            return (T)obj;
+        }
+        finally
+        {
+            EndResolve();
+        }
     }
 
     public bool TryResolve<T>(out T instance)
     {
-        if (TryResolve(typeof(T), new Stack<Type>(), out object obj))
+        BeginResolve();
+        try
         {
-            instance = (T)obj;
-            return true;
+            if (TryResolve(typeof(T), _resolutionPath, out object obj))
+            {
+                instance = (T)obj;
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+        finally
+        {
+            EndResolve();
+        }
+    }
+
+    private void EndResolve()
+    {
+        _resolutionDepth--;
+
+        if (_resolutionDepth == 0)
+        {
+            _resolutionPath.Clear();
+        }
+    }
+
+    private void BeginResolve()
+    {
+        if (_resolutionDepth == 0)
+        {
+            _resolutionPath.Clear();
         }
 
-        instance = default;
-        return false;
+        _resolutionDepth++;
     }
 
     private object Resolve(Type type, Stack<Type> path)

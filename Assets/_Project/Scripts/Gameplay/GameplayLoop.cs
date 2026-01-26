@@ -2,12 +2,10 @@ using UnityEngine;
 
 public sealed class GameplayLoop
 {
-    private const int SequenceLength = 6;
-    private const string GameModesConfigPath = "Configs/GameModesConfig";
+    private const int SequenceLength = 5;
 
     private readonly KeyboardInputReader _input;
     private readonly SceneLoader _sceneLoader;
-    private readonly SceneArgsService _args;
     private readonly ConfigService _configService;
     private readonly SequenceGenerator _generator;
 
@@ -20,27 +18,20 @@ public sealed class GameplayLoop
     public GameplayLoop(
         KeyboardInputReader input,
         SceneLoader sceneLoader,
-        SceneArgsService args,
         ConfigService configService,
         SequenceGenerator generator)
     {
-        this._input = input;
-        this._sceneLoader = sceneLoader;
-        this._args = args;
-        this._configService = configService;
-        this._generator = generator;
+        _input = input;
+        _sceneLoader = sceneLoader;
+        _configService = configService;
+        _generator = generator;
     }
 
-    public void Start()
+    public void Start(GameMode mode)
     {
-        if (_args.TryGet<GameplayArgs>(out GameplayArgs gameplayArgs) == false)
-        {
-            throw new System.InvalidOperationException("GameplayArgs not found. Go to gameplay through menu.");
-        }
+        _mode = mode;
 
-        _mode = gameplayArgs.Mode;
-
-        GameModesConfig modesConfig = _configService.Load<GameModesConfig>(GameModesConfigPath);
+        GameModesConfig modesConfig = _configService.Load<GameModesConfig>();
         string available = modesConfig.GetAvailableChars(_mode);
 
         string target = _generator.Generate(available, SequenceLength);

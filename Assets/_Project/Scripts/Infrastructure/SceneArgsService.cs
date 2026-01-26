@@ -4,7 +4,12 @@ public sealed class SceneArgsService
 
     public void Set(IInputArgs args)
     {
-        this._args = args;
+        if (args == null)
+        {
+            throw new System.ArgumentNullException(nameof(args));
+        }
+
+        _args = args;
     }
 
     public bool TryGet<TArgs>(out TArgs result) where TArgs : class, IInputArgs
