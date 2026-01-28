@@ -8,6 +8,7 @@ public static class GameplayRegistrations
             c.Resolve<KeyboardInputReader>(),
             c.Resolve<SceneLoader>(),
             c.Resolve<ConfigService>(),
-            c.Resolve<SequenceGenerator>()));
+            c.Resolve<SequenceGenerator>(),
+            c.Resolve<PlayerProgressService>()));
     }
 }

@@ -5,12 +5,32 @@ public sealed class KeyboardInputReader
 {
     public event Action<char> CharTyped;
     public event Action SpacePressed;
+    
+    public  event Action StatsPressed;
+    public  event Action ResetPressed;
+    
+    public event Action WipePressed;
 
     public void Tick()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SpacePressed?.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            StatsPressed?.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            ResetPressed?.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            WipePressed?.Invoke();
         }
 
         string input = Input.inputString;

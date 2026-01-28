@@ -8,6 +8,7 @@ public sealed class GameplayLoop
     private readonly SceneLoader _sceneLoader;
     private readonly ConfigService _configService;
     private readonly SequenceGenerator _generator;
+    private readonly PlayerProgressService _progress;
 
     private TypingChecker _checker;
 
@@ -19,18 +20,19 @@ public sealed class GameplayLoop
         KeyboardInputReader input,
         SceneLoader sceneLoader,
         ConfigService configService,
-        SequenceGenerator generator)
+        SequenceGenerator generator,
+        PlayerProgressService progress)
     {
         _input = input;
         _sceneLoader = sceneLoader;
         _configService = configService;
         _generator = generator;
+        _progress = progress;
     }
 
     public void Start(GameMode mode)
     {
         _mode = mode;
-
         GameModesConfig modesConfig = _configService.Load<GameModesConfig>();
         string available = modesConfig.GetAvailableChars(_mode);
 
@@ -75,16 +77,32 @@ public sealed class GameplayLoop
 
     private void OnWon()
     {
+        if (_isFinished)
+        {
+            return;
+        }
+        
         _isFinished = true;
         _isWin = true;
-        Debug.Log("WIN! Press SPACE to return to menu.");
+        
+        _progress.RegisterWin();
+        
+        Debug.Log($"WIN! Gold={_progress.Gold}. Press SPACE to return to menu.");
     }
 
     private void OnLost()
     {
+        if (_isFinished)
+        {
+            return;
+        }
+        
         _isFinished = true;
         _isWin = false;
-        Debug.Log("LOSE! Press SPACE to restart.");
+        
+        _progress.RegisterLoss();
+        
+        Debug.Log($"LOSE!Gold={_progress.Gold} Press SPACE to restart.");
     }
 
     private void OnSpacePressed()

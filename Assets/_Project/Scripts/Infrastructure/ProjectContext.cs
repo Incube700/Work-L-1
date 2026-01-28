@@ -57,6 +57,8 @@ public sealed class ProjectContext : MonoBehaviour
         _input = _container.Resolve<KeyboardInputReader>();
         _sceneArgs = _container.Resolve<SceneArgsService>();
         _sceneLoader = _container.Resolve<SceneLoader>();
+        
+        _container.Resolve<PlayerProgressService>();
 
         _isInitialized = true;
     }

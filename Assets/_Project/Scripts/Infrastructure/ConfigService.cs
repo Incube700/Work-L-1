@@ -9,9 +9,8 @@ public sealed class ConfigService
 
     public ConfigService()
     {
-        // Пути храним внутри сервиса, чтобы снаружи был вызов Load<T>() без параметров.
-        // Так потом можно поменять способ загрузки (Resources/Addressables/и т.п.) без переписывания всего и вся.
         _resourcesPaths.Add(typeof(GameModesConfig), "Configs/GameModesConfig");
+        _resourcesPaths.Add(typeof(EconomyConfig), "Configs/EconomyConfig");
     }
 
     public T Load<T>() where T : UnityEngine.Object

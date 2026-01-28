@@ -4,6 +4,7 @@ public static class MainMenuRegistrations
     {
         container.BindTransient<MenuFlow>(c => new MenuFlow(
             c.Resolve<KeyboardInputReader>(),
-            c.Resolve<SceneLoader>()));
+            c.Resolve<SceneLoader>(),
+            c.Resolve<PlayerProgressService>()));
     }
 }
