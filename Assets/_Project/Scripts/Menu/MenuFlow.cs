@@ -18,7 +18,7 @@ public sealed class MenuFlow
 
     public void Start()
     {
-        Debug.Log("MAIN MENU: 1 - Numbers, 2 - Letters, F1 - Stats, F2 - Reset Progress Ф3 - Снести сохранение");
+        Debug.Log("MAIN MENU: 1 - Numbers, 2 - Letters,");
         Debug.Log("MAIN MENU: F1 - Stats, F2 - Reset Progress, Ф3 - Снести сохранение.");
         _input.CharTyped += OnCharTyped;
         _input.StatsPressed += OnStatsPressed;
