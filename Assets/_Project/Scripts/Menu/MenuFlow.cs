@@ -7,19 +7,33 @@ public sealed class MenuFlow
 
     private readonly KeyboardInputReader _input;
     private readonly SceneLoader _sceneLoader;
-    private readonly PlayerProgressService _progress;
 
-    public MenuFlow(KeyboardInputReader input, SceneLoader sceneLoader, PlayerProgressService progress)
+    private readonly GameStatsService _stats;
+    private readonly WalletService _wallet;
+    private readonly ProgressResetService _reset;
+    private readonly SaveService _save;
+
+    public MenuFlow(
+        KeyboardInputReader input,
+        SceneLoader sceneLoader,
+        GameStatsService stats,
+        WalletService wallet,
+        ProgressResetService reset,
+        SaveService save)
     {
         _input = input;
         _sceneLoader = sceneLoader;
-        _progress = progress;
+        _stats = stats;
+        _wallet = wallet;
+        _reset = reset;
+        _save = save;
     }
 
     public void Start()
     {
-        Debug.Log("MAIN MENU: 1 - Numbers, 2 - Letters,");
-        Debug.Log("MAIN MENU: F1 - Stats, F2 - Reset Progress, Ф3 - Снести сохранение.");
+        Debug.Log("MAIN MENU: 1 - Numbers, 2 - Letters");
+        Debug.Log("F1 - Stats, F2 - Reset stats (paid), F3 - Wipe save to defaults");
+
         _input.CharTyped += OnCharTyped;
         _input.StatsPressed += OnStatsPressed;
         _input.ResetPressed += OnResetPressed;
@@ -31,6 +45,7 @@ public sealed class MenuFlow
         _input.CharTyped -= OnCharTyped;
         _input.StatsPressed -= OnStatsPressed;
         _input.ResetPressed -= OnResetPressed;
+        _input.WipePressed -= OnWipePressed;
     }
 
     private void OnCharTyped(char c)
@@ -47,16 +62,26 @@ public sealed class MenuFlow
 
     private void OnStatsPressed()
     {
-        _progress.Print();
+        Debug.Log($"STATS: Wins={_stats.WinsValue}, Losses={_stats.LossesValue}, Gold={_wallet.GoldValue}");
     }
 
     private void OnResetPressed()
     {
-        _progress.TryResetProgress();
+        if (_reset.TryResetStats(out string failReason))
+        {
+            Debug.Log($"Stats reset OK. Gold={_wallet.GoldValue}");
+        }
+        else
+        {
+            Debug.Log(failReason);
+        }
     }
 
     private void OnWipePressed()
     {
-        _progress.WipeToDefaults();
+        _save.DeleteAll();
+        _save.LoadAll(); // заново выставит дефолты (0/0 и StartGold) и сохранит
+
+        Debug.Log($"SAVE WIPED. Wins={_stats.WinsValue}, Losses={_stats.LossesValue}, Gold={_wallet.GoldValue}");
     }
 }

@@ -1,28 +1,30 @@
+using System;
 using UnityEngine.SceneManagement;
 
 public sealed class SceneLoader
 {
-    private readonly SceneArgsService _args;
+    private readonly SceneArgsService _argsService;
 
-    public SceneLoader(SceneArgsService args)
+    public event Action SceneLoaded;
+
+    public SceneLoader(SceneArgsService argsService)
     {
-        this._args = args;
+        _argsService = argsService;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public void Load(string sceneName)
+    public void Load(string sceneName, IInputArgs args = null)
     {
-        _args.Clear();
+        if (args != null)
+        {
+            _argsService.Set(args);
+        }
+
         SceneManager.LoadScene(sceneName);
     }
 
-    public void Load(string sceneName, IInputArgs inputArgs)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _args.Set(inputArgs);
-        SceneManager.LoadScene(sceneName);
-    }
-
-    public void ReloadCurrent()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneLoaded?.Invoke();
     }
 }

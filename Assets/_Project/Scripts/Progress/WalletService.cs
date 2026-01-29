@@ -1,66 +1,40 @@
-using System;
-
 public sealed class WalletService
 {
-    public int Gold { get; private set; }
+    public IReadOnlyReactiveVariable<int> Gold => _gold;
+    public int GoldValue => _gold.Value;
 
-    private event Action GoldChanged;
+    private readonly ReactiveVariable<int> _gold = new ReactiveVariable<int>(0);
 
     public void SetGold(int gold)
     {
-        if (gold < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(gold));
-        }
-        
-        Gold = gold;
-        GoldChanged?.Invoke();
+        if (gold < 0) throw new System.ArgumentOutOfRangeException(nameof(gold));
+        _gold.Value = gold;
     }
 
-    public void Add(int value)
+    public void AddGold(int value)
     {
-        if (value < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(value));
-        }
-        
-        Gold += value;
-        GoldChanged?.Invoke();
+        if (value <= 0) throw new System.ArgumentOutOfRangeException(nameof(value));
+        _gold.Value += value;
     }
 
-    public void SubtractClamped(int value)
+    public void SubtractGoldClamped(int value)
     {
-        if (value < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(value));
-        }
-        
-        Gold -= value;
+        if (value <= 0) throw new System.ArgumentOutOfRangeException(nameof(value));
 
-        if (Gold < 0)
-        {
-            Gold = 0;
-        }
-        
-        GoldChanged?.Invoke();
+        int result = _gold.Value - value;
+        _gold.Value = result < 0 ? 0 : result;
     }
 
-    public bool TrySpend(int value)
+    public bool TrySpendGold(int value)
     {
-        if (value <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(value));
-        }
+        if (value <= 0) throw new System.ArgumentOutOfRangeException(nameof(value));
 
-        if (Gold < value)
+        if (_gold.Value < value)
         {
             return false;
         }
-        
-        Gold -= value;
-        GoldChanged?.Invoke();
+
+        _gold.Value -= value;
         return true;
     }
 }
-    
-

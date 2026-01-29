@@ -1,70 +1,25 @@
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public sealed class ProjectContext : MonoBehaviour
 {
-    public IReadOnlyContainer Container => _container;
-
-    private static ProjectContext _instance;
-
     private Container _container;
+
     private KeyboardInputReader _input;
-    private SceneArgsService _sceneArgs;
     private SceneLoader _sceneLoader;
+    private SceneArgsService _argsService;
+    private SaveService _saveService;
 
     private bool _isInitialized;
 
     private void Awake()
     {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this;
         DontDestroyOnLoad(gameObject);
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
         Initialize();
-        StartGame();
-    }
-
-    public void Initialize()
-    {
-        if (_isInitialized)
-        {
-            return;
-        }
-
-        _container = new Container();
-
-        ProjectRegistrations.Register(_container);
-
-        _input = _container.Resolve<KeyboardInputReader>();
-        _sceneArgs = _container.Resolve<SceneArgsService>();
-        _sceneLoader = _container.Resolve<SceneLoader>();
-        
-        _container.Resolve<PlayerProgressService>();
-
-        _isInitialized = true;
-    }
-
-    private void StartGame()
-    {
         _sceneLoader.Load(SceneNames.MainMenu);
     }
 
@@ -78,63 +33,51 @@ public sealed class ProjectContext : MonoBehaviour
         _input.Tick();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void Initialize()
     {
-        if (_isInitialized == false)
+        if (_isInitialized)
         {
             return;
         }
 
-        if (scene.name == SceneNames.Bootstrap)
-        {
-            return;
-        }
+        _container = new Container();
 
+        ProjectRegistrations.Register(_container);
+
+        _input = _container.Resolve<KeyboardInputReader>();
+        _sceneLoader = _container.Resolve<SceneLoader>();
+        _argsService = _container.Resolve<SceneArgsService>();
+        _saveService = _container.Resolve<SaveService>();
+
+        // чтобы дефолты были видны сразу в меню
+        _saveService.LoadAll();
+
+        _sceneLoader.SceneLoaded += OnSceneLoaded;
+
+        _isInitialized = true;
+    }
+
+    private void OnDestroy()
+    {
+        if (_sceneLoader != null)
+        {
+            _sceneLoader.SceneLoaded -= OnSceneLoaded;
+        }
+    }
+
+    private void OnSceneLoaded()
+    {
         IContainer sceneContainer = _container.CreateChild();
 
-        if (scene.name == SceneNames.MainMenu)
-        {
-            InitializeMainMenu(sceneContainer);
-            _sceneArgs.Clear();
-            return;
-        }
-
-        if (scene.name == SceneNames.Gameplay)
-        {
-            InitializeGameplay(sceneContainer);
-            _sceneArgs.Clear();
-            return;
-        }
-
-        _sceneArgs.Clear();
-    }
-
-    private void InitializeMainMenu(IContainer sceneContainer)
-    {
-        MainMenuEntryPoint entryPoint = FindFirstObjectByType<MainMenuEntryPoint>();
+        SceneEntryPointBase entryPoint = UnityEngine.Object.FindFirstObjectByType<SceneEntryPointBase>();
 
         if (entryPoint == null)
         {
-            throw new InvalidOperationException("MainMenuEntryPoint not found on MainMenuScene.");
+            throw new InvalidOperationException("SceneEntryPointBase not found on loaded scene.");
         }
 
-        entryPoint.Initialize(sceneContainer);
-    }
+        entryPoint.Initialize(sceneContainer, _argsService);
 
-    private void InitializeGameplay(IContainer sceneContainer)
-    {
-        GameplayEntryPoint entryPoint = FindFirstObjectByType<GameplayEntryPoint>();
-
-        if (entryPoint == null)
-        {
-            throw new InvalidOperationException("GameplayEntryPoint not found on GameplayScene.");
-        }
-
-        if (_sceneArgs.TryGet(out GameplayArgs args) == false)
-        {
-            throw new InvalidOperationException("GameplayArgs not found. Go to gameplay through menu.");
-        }
-
-        entryPoint.Initialize(sceneContainer, args);
+        _argsService.Clear();
     }
 }

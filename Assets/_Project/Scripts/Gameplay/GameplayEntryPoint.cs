@@ -1,44 +1,31 @@
 using System;
-using UnityEngine;
 
-public sealed class GameplayEntryPoint : MonoBehaviour
+public sealed class GameplayEntryPoint : SceneEntryPointBase
 {
     private GameplayLoop _loop;
-    private bool _isInitialized;
 
-    public void Initialize(IContainer sceneContainer, GameplayArgs args)
+    protected override void Register(IContainer container)
     {
-        if (sceneContainer == null)
+        GameplayRegistrations.Register(container);
+    }
+
+    protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
+    {
+        if (argsService.TryGet(out GameplayArgs args) == false)
         {
-            throw new ArgumentNullException(nameof(sceneContainer));
+            throw new InvalidOperationException("GameplayArgs not found. Go to gameplay through menu.");
         }
 
-        if (args == null)
-        {
-            throw new ArgumentNullException(nameof(args));
-        }
-
-        if (_isInitialized)
-        {
-            throw new InvalidOperationException("GameplayEntryPoint is already initialized.");
-        }
-
-        GameplayRegistrations.Register(sceneContainer);
-
-        _loop = sceneContainer.Resolve<GameplayLoop>();
+        _loop = container.Resolve<GameplayLoop>();
         _loop.Start(args.Mode);
-
-        _isInitialized = true;
     }
 
     private void OnDestroy()
     {
-        if (_loop == null)
+        if (_loop != null)
         {
-            return;
+            _loop.Stop();
+            _loop = null;
         }
-
-        _loop.Stop();
-        _loop = null;
     }
 }

@@ -1,61 +1,33 @@
-using UnityEngine;
-
 public sealed class SaveService
 {
-    private const string SaveKey = "TypingGame_Save";
+    private readonly ISaveProvider[] _providers;
 
-    public bool TryLoad(out SaveData data)
+    public SaveService(ISaveProvider[] providers)
     {
-        if (PlayerPrefs.HasKey(SaveKey) == false)
-        {
-            data = null;
-            return false;
-        }
-
-        string json = PlayerPrefs.GetString(SaveKey);
-
-        if (string.IsNullOrEmpty(json))
-        {
-            data = null;
-            return false;
-        }
-
-        try
-        {
-            data = JsonUtility.FromJson<SaveData>(json);
-        }
-        catch
-        {
-            // Битое — удаляем чтобы не крашить игру.
-            Delete();
-            data = null;
-            return false;
-        }
-
-        if (data == null)
-        {
-            Delete();
-            return false;
-        }
-
-        return true;
+        _providers = providers;
     }
 
-    public void Save(SaveData data)
+    public void LoadAll()
     {
-        if (data == null)
+        for (int i = 0; i < _providers.Length; i++)
         {
-            throw new System.ArgumentNullException(nameof(data));
+            _providers[i].Load();
         }
-
-        string json = JsonUtility.ToJson(data);
-        PlayerPrefs.SetString(SaveKey, json);
-        PlayerPrefs.Save();
     }
 
-    public void Delete()
+    public void SaveAll()
     {
-        PlayerPrefs.DeleteKey(SaveKey);
-        PlayerPrefs.Save();
+        for (int i = 0; i < _providers.Length; i++)
+        {
+            _providers[i].Save();
+        }
+    }
+
+    public void DeleteAll()
+    {
+        for (int i = 0; i < _providers.Length; i++)
+        {
+            _providers[i].Delete();
+        }
     }
 }

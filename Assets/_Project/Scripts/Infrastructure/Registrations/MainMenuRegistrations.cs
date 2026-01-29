@@ -5,6 +5,9 @@ public static class MainMenuRegistrations
         container.BindTransient<MenuFlow>(c => new MenuFlow(
             c.Resolve<KeyboardInputReader>(),
             c.Resolve<SceneLoader>(),
-            c.Resolve<PlayerProgressService>()));
+            c.Resolve<GameStatsService>(),
+            c.Resolve<WalletService>(),
+            c.Resolve<ProgressResetService>(),
+            c.Resolve<SaveService>()));
     }
 }
