@@ -15,7 +15,26 @@ public sealed class WalletSaveProvider : ISaveProvider
     {
         if (_repo.TryLoad(out WalletData data))
         {
+            if (data.currencies != null && data.currencies.Count > 0)
+            {
+                for (int i = 0; i < data.currencies.Count; i++)
+                {
+                    CurrencyAmountData item = data.currencies[i];
+
+                    if (item.amount < 0)
+                    {
+                        throw new System.InvalidOperationException("Wallet save is corrupted. Negative amount.");
+                    }
+
+                    _wallet.Set(item.type, item.amount);
+                }
+
+                return;
+            }
+
+            // миграция со старого сейва
             _wallet.SetGold(data.gold);
+            Save();
             return;
         }
 
@@ -28,7 +47,8 @@ public sealed class WalletSaveProvider : ISaveProvider
     {
         WalletData data = new WalletData
         {
-            gold = _wallet.GoldValue
+            gold = _wallet.GoldValue,
+            currencies = _wallet.CreateSnapshot()
         };
 
         _repo.Save(data);
