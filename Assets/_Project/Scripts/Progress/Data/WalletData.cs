@@ -4,10 +4,10 @@ using System.Collections.Generic;
 [Serializable]
 public sealed class WalletData
 {
-    // старое поле оставляем, чтобы старые сейвы не сломались
+    //  старые сейвы 
     public int gold;
 
-    // новая схема (JsonUtility умеет List)
+    // новые сейвы
     public List<CurrencyAmountData> currencies;
 }
 

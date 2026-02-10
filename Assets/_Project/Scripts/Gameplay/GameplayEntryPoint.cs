@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 public sealed class GameplayEntryPoint : SceneEntryPointBase
 {
@@ -15,6 +17,14 @@ public sealed class GameplayEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("GameplayArgs not found. Go to gameplay through menu.");
         }
+
+        GameplayHudView hud = Object.FindObjectOfType<GameplayHudView>(true);
+        if (hud == null)
+        {
+            throw new InvalidOperationException("GameplayHudView not found. Add GameplayHudView to Gameplay scene.");
+        }
+
+        ((IContainer)container).BindInstance(hud);
 
         _loop = container.Resolve<GameplayLoop>();
         _loop.Start(args.Mode);

@@ -2,12 +2,12 @@ public static class MainMenuRegistrations
 {
     public static void Register(IContainer container)
     {
-        container.BindTransient<MenuFlow>(c => new MenuFlow(
-            c.Resolve<KeyboardInputReader>(),
+        container.BindTransient<MainMenuPresenter>(c => new MainMenuPresenter(
+            c.Resolve<MainMenuView>(),
             c.Resolve<SceneLoader>(),
+            c.Resolve<ConfigService>(),
             c.Resolve<GameStatsService>(),
             c.Resolve<WalletService>(),
-            c.Resolve<ProgressResetService>(),
-            c.Resolve<SaveService>()));
+            c.Resolve<ProgressResetService>()));
     }
 }

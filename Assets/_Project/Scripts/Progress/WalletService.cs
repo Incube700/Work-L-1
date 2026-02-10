@@ -70,9 +70,7 @@ public sealed class WalletService
         variable.Value -= amount;
         return true;
     }
-
-    // --- СТАРЫЙ API оставляем для совместимости (твой проект не ломаем) ---
-
+    
     public void SetGold(int gold) => Set(CurrencyType.Gold, gold);
     public void AddGold(int value) => Add(CurrencyType.Gold, value);
     public void SubtractGoldClamped(int value) => SubtractClamped(CurrencyType.Gold, value);

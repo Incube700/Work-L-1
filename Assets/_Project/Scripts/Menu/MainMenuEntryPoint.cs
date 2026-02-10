@@ -1,6 +1,10 @@
+using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
 public sealed class MainMenuEntryPoint : SceneEntryPointBase
 {
-    private MenuFlow _flow;
+    private MainMenuPresenter _presenter;
 
     protected override void Register(IContainer container)
     {
@@ -9,16 +13,24 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
 
     protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
     {
-        _flow = container.Resolve<MenuFlow>();
-        _flow.Start();
+        MainMenuView view = Object.FindObjectOfType<MainMenuView>(true);
+        if (view == null)
+        {
+            throw new InvalidOperationException("MainMenuView not found. Add MainMenuView to MainMenu scene.");
+        }
+
+        ((IContainer)container).BindInstance(view);
+
+        _presenter = container.Resolve<MainMenuPresenter>();
+        _presenter.Start();
     }
 
     private void OnDestroy()
     {
-        if (_flow != null)
+        if (_presenter != null)
         {
-            _flow.Stop();
-            _flow = null;
+            _presenter.Stop();
+            _presenter = null;
         }
     }
 }

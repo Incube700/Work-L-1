@@ -17,22 +17,7 @@ public sealed class KeyboardInputReader
         {
             SpacePressed?.Invoke();
         }
-
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            StatsPressed?.Invoke();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            ResetPressed?.Invoke();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            WipePressed?.Invoke();
-        }
-
+        
         string input = Input.inputString;
 
         if (string.IsNullOrEmpty(input))

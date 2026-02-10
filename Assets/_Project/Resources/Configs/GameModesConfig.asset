@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 318278e99994648ada54f3b7518d362f, type: 3}
   m_Name: GameModesConfig
   m_EditorClassIdentifier: 
-  modes:
+  _modes:
   - <Mode>k__BackingField: 0
     <AvailableChars>k__BackingField: 0987654321
   - <Mode>k__BackingField: 1
-    <AvailableChars>k__BackingField: afbvrqwe4trh
+    <AvailableChars>k__BackingField: qwertyuiop

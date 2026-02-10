@@ -1,6 +1,6 @@
-using UnityEngine;
+using System.Text;
 
-public sealed class GameplayLoop
+public sealed partial class GameplayLoop
 {
     private const int SequenceLength = 5;
 
@@ -9,8 +9,11 @@ public sealed class GameplayLoop
     private readonly ConfigService _configService;
     private readonly SequenceGenerator _generator;
     private readonly PlayerProgressService _progress;
+    private readonly GameplayHudView _hud;
 
     private TypingChecker _checker;
+
+    private readonly StringBuilder _typed = new StringBuilder(16);
 
     private bool _isFinished;
     private bool _isWin;
@@ -21,25 +24,31 @@ public sealed class GameplayLoop
         SceneLoader sceneLoader,
         ConfigService configService,
         SequenceGenerator generator,
-        PlayerProgressService progress)
+        PlayerProgressService progress,
+        GameplayHudView hud)
     {
         _input = input;
         _sceneLoader = sceneLoader;
         _configService = configService;
         _generator = generator;
         _progress = progress;
+        _hud = hud;
     }
 
     public void Start(GameMode mode)
     {
         _mode = mode;
+
         GameModesConfig modesConfig = _configService.Load<GameModesConfig>();
         string available = modesConfig.GetAvailableChars(_mode);
 
         string target = _generator.Generate(available, SequenceLength);
 
-        Debug.Log($"MODE: {_mode}");
-        Debug.Log($"TARGET: {target}");
+        _typed.Clear();
+
+        _hud.SetTarget(target);
+        _hud.SetTyped(string.Empty);
+        _hud.SetStatus("Type the sequence.");
 
         _checker = new TypingChecker(target);
         _checker.Won += OnWon;
@@ -72,6 +81,10 @@ public sealed class GameplayLoop
             return;
         }
 
+        char typedChar = char.ToUpperInvariant(c);
+        _typed.Append(typedChar);
+        _hud.SetTyped(_typed.ToString());
+
         _checker.HandleChar(c);
     }
 
@@ -81,13 +94,13 @@ public sealed class GameplayLoop
         {
             return;
         }
-        
+
         _isFinished = true;
         _isWin = true;
-        
+
         _progress.RegisterWin();
-        
-        Debug.Log($"WIN! Gold={_progress.Gold}. Press SPACE to return to menu.");
+
+        _hud.SetStatus($"WIN! Gold={_progress.Gold}. Press SPACE to return to menu.");
     }
 
     private void OnLost()
@@ -96,13 +109,13 @@ public sealed class GameplayLoop
         {
             return;
         }
-        
+
         _isFinished = true;
         _isWin = false;
-        
+
         _progress.RegisterLoss();
-        
-        Debug.Log($"LOSE!Gold={_progress.Gold} Press SPACE to restart.");
+
+        _hud.SetStatus($"LOSE! Gold={_progress.Gold}. Press SPACE to restart.");
     }
 
     private void OnSpacePressed()

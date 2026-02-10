@@ -9,6 +9,7 @@ public static class GameplayRegistrations
             c.Resolve<SceneLoader>(),
             c.Resolve<ConfigService>(),
             c.Resolve<SequenceGenerator>(),
-            c.Resolve<PlayerProgressService>()));
+            c.Resolve<PlayerProgressService>(),
+            c.Resolve<GameplayHudView>()));
     }
 }
