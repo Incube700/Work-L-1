@@ -33,13 +33,13 @@ public sealed class WalletSaveProvider : ISaveProvider
             }
 
             // миграция со старого сейва
-            _wallet.SetGold(data.gold);
+            _wallet.Set(CurrencyType.Gold, data.gold);
             Save();
             return;
         }
 
         EconomyConfig economy = _configs.Load<EconomyConfig>();
-        _wallet.SetGold(economy.StartGold);
+        _wallet.Set(CurrencyType.Gold, economy.StartGold);
         Save();
     }
 
@@ -47,7 +47,7 @@ public sealed class WalletSaveProvider : ISaveProvider
     {
         WalletData data = new WalletData
         {
-            gold = _wallet.GoldValue,
+            gold = _wallet.Get(CurrencyType.Gold),
             currencies = _wallet.CreateSnapshot()
         };
 

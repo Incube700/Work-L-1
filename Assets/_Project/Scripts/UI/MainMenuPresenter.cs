@@ -1,26 +1,29 @@
 public sealed class MainMenuPresenter
 {
     private readonly MainMenuView _view;
-    private readonly SceneLoader _sceneLoader;
+    private readonly GameFlowService _flow;
     private readonly ConfigService _configs;
     private readonly GameStatsService _stats;
     private readonly WalletService _wallet;
     private readonly ProgressResetService _reset;
+    private readonly PopupService _popups;
 
     public MainMenuPresenter(
         MainMenuView view,
-        SceneLoader sceneLoader,
+        GameFlowService flow,
         ConfigService configs,
         GameStatsService stats,
         WalletService wallet,
-        ProgressResetService reset)
+        ProgressResetService reset,
+        PopupService popups)
     {
         _view = view;
-        _sceneLoader = sceneLoader;
+        _flow = flow;
         _configs = configs;
         _stats = stats;
         _wallet = wallet;
         _reset = reset;
+        _popups = popups;
     }
 
     public void Start()
@@ -34,7 +37,8 @@ public sealed class MainMenuPresenter
 
         _stats.Wins.Changed += OnStatsChanged;
         _stats.Losses.Changed += OnStatsChanged;
-        _wallet.Gold.Changed += OnGoldChanged;
+
+        _wallet.GetReactive(CurrencyType.Gold).Changed += OnGoldChanged;
 
         RefreshAll();
         _view.SetStatus(string.Empty);
@@ -48,14 +52,15 @@ public sealed class MainMenuPresenter
 
         _stats.Wins.Changed -= OnStatsChanged;
         _stats.Losses.Changed -= OnStatsChanged;
-        _wallet.Gold.Changed -= OnGoldChanged;
+
+        _wallet.GetReactive(CurrencyType.Gold).Changed -= OnGoldChanged;
     }
 
     private void RefreshAll()
     {
         _view.SetWins(_stats.WinsValue);
         _view.SetLosses(_stats.LossesValue);
-        _view.SetGold(_wallet.GoldValue);
+        _view.SetGold(_wallet.Get(CurrencyType.Gold));
     }
 
     private void OnStatsChanged()
@@ -66,17 +71,17 @@ public sealed class MainMenuPresenter
 
     private void OnGoldChanged()
     {
-        _view.SetGold(_wallet.GoldValue);
+        _view.SetGold(_wallet.Get(CurrencyType.Gold));
     }
 
     private void OnNumbersClicked()
     {
-        _sceneLoader.Load(SceneNames.Gameplay, new GameplayArgs(GameMode.Numbers));
+        _flow.OpenGameplay(GameMode.Numbers);
     }
 
     private void OnLettersClicked()
     {
-        _sceneLoader.Load(SceneNames.Gameplay, new GameplayArgs(GameMode.Letters));
+        _flow.OpenGameplay(GameMode.Letters);
     }
 
     private void OnResetClicked()
@@ -87,7 +92,8 @@ public sealed class MainMenuPresenter
         }
         else
         {
-            _view.SetStatus(reason);
+            _view.SetStatus(string.Empty);
+            _popups.OpenMessagePopup("Not enough gold", reason);
         }
     }
 }

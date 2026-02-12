@@ -18,9 +18,10 @@ public sealed class ProgressResetService
         EconomyConfig economy = _configs.Load<EconomyConfig>();
         int cost = economy.ResetCost;
 
-        if (_wallet.TrySpendGold(cost) == false)
+        if (_wallet.TrySpend(CurrencyType.Gold, cost) == false)
         {
-            failReason = $"Not enough gold. Need {cost}, have {_wallet.GoldValue}.";
+            int have = _wallet.Get(CurrencyType.Gold);
+            failReason = $"Not enough gold. Need {cost}, have {have}.";
             return false;
         }
 

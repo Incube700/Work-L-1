@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 public sealed class GameplayEntryPoint : SceneEntryPointBase
 {
-    private GameplayLoop _loop;
+    private GameplayPresenter _presenter;
 
     protected override void Register(IContainer container)
     {
@@ -26,16 +26,16 @@ public sealed class GameplayEntryPoint : SceneEntryPointBase
 
         ((IContainer)container).BindInstance(hud);
 
-        _loop = container.Resolve<GameplayLoop>();
-        _loop.Start(args.Mode);
+        _presenter = container.Resolve<GameplayPresenter>();
+        _presenter.Start(args.Mode);
     }
 
     private void OnDestroy()
     {
-        if (_loop != null)
+        if (_presenter != null)
         {
-            _loop.Stop();
-            _loop = null;
+            _presenter.Stop();
+            _presenter = null;
         }
     }
 }

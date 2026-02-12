@@ -1,15 +1,17 @@
+using System;
 using System.Text;
 
 public sealed partial class GameplayLoop
 {
     private const int SequenceLength = 5;
 
-    private readonly KeyboardInputReader _input;
-    private readonly SceneLoader _sceneLoader;
+    public event Action<string> TargetChanged;
+    public event Action<string> TypedChanged;
+    public event Action<bool> Finished; // true = win, false = lose
+
     private readonly ConfigService _configService;
     private readonly SequenceGenerator _generator;
     private readonly PlayerProgressService _progress;
-    private readonly GameplayHudView _hud;
 
     private TypingChecker _checker;
 
@@ -19,20 +21,18 @@ public sealed partial class GameplayLoop
     private bool _isWin;
     private GameMode _mode;
 
+    public bool IsFinished => _isFinished;
+    public bool IsWin => _isWin;
+    public GameMode Mode => _mode;
+
     public GameplayLoop(
-        KeyboardInputReader input,
-        SceneLoader sceneLoader,
         ConfigService configService,
         SequenceGenerator generator,
-        PlayerProgressService progress,
-        GameplayHudView hud)
+        PlayerProgressService progress)
     {
-        _input = input;
-        _sceneLoader = sceneLoader;
         _configService = configService;
         _generator = generator;
         _progress = progress;
-        _hud = hud;
     }
 
     public void Start(GameMode mode)
@@ -46,16 +46,12 @@ public sealed partial class GameplayLoop
 
         _typed.Clear();
 
-        _hud.SetTarget(target);
-        _hud.SetTyped(string.Empty);
-        _hud.SetStatus("Type the sequence.");
+        TargetChanged?.Invoke(target);
+        TypedChanged?.Invoke(string.Empty);
 
         _checker = new TypingChecker(target);
         _checker.Won += OnWon;
         _checker.Lost += OnLost;
-
-        _input.CharTyped += OnCharTyped;
-        _input.SpacePressed += OnSpacePressed;
 
         _isFinished = false;
         _isWin = false;
@@ -63,9 +59,6 @@ public sealed partial class GameplayLoop
 
     public void Stop()
     {
-        _input.CharTyped -= OnCharTyped;
-        _input.SpacePressed -= OnSpacePressed;
-
         if (_checker != null)
         {
             _checker.Won -= OnWon;
@@ -74,7 +67,7 @@ public sealed partial class GameplayLoop
         }
     }
 
-    private void OnCharTyped(char c)
+    public void HandleChar(char c)
     {
         if (_isFinished)
         {
@@ -83,7 +76,8 @@ public sealed partial class GameplayLoop
 
         char typedChar = char.ToUpperInvariant(c);
         _typed.Append(typedChar);
-        _hud.SetTyped(_typed.ToString());
+
+        TypedChanged?.Invoke(_typed.ToString());
 
         _checker.HandleChar(c);
     }
@@ -100,7 +94,7 @@ public sealed partial class GameplayLoop
 
         _progress.RegisterWin();
 
-        _hud.SetStatus($"WIN! Gold={_progress.Gold}. Press SPACE to return to menu.");
+        Finished?.Invoke(true);
     }
 
     private void OnLost()
@@ -115,23 +109,6 @@ public sealed partial class GameplayLoop
 
         _progress.RegisterLoss();
 
-        _hud.SetStatus($"LOSE! Gold={_progress.Gold}. Press SPACE to restart.");
-    }
-
-    private void OnSpacePressed()
-    {
-        if (_isFinished == false)
-        {
-            return;
-        }
-
-        if (_isWin)
-        {
-            _sceneLoader.Load(SceneNames.MainMenu);
-        }
-        else
-        {
-            _sceneLoader.Load(SceneNames.Gameplay, new GameplayArgs(_mode));
-        }
+        Finished?.Invoke(false);
     }
 }

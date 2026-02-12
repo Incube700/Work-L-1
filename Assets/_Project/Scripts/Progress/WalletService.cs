@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 public sealed class WalletService
 {
-    public IReadOnlyReactiveVariable<int> Gold => GetReactive(CurrencyType.Gold);
-    public int GoldValue => Get(CurrencyType.Gold);
-
     private readonly Dictionary<CurrencyType, ReactiveVariable<int>> _currencies;
 
     public WalletService()
@@ -20,8 +17,6 @@ public sealed class WalletService
             _currencies.Add(type, new ReactiveVariable<int>(0));
         }
     }
-
-    // --- НОВЫЙ универсальный API ---
 
     public int Get(CurrencyType type)
     {
@@ -70,11 +65,6 @@ public sealed class WalletService
         variable.Value -= amount;
         return true;
     }
-    
-    public void SetGold(int gold) => Set(CurrencyType.Gold, gold);
-    public void AddGold(int value) => Add(CurrencyType.Gold, value);
-    public void SubtractGoldClamped(int value) => SubtractClamped(CurrencyType.Gold, value);
-    public bool TrySpendGold(int value) => TrySpend(CurrencyType.Gold, value);
 
     public List<CurrencyAmountData> CreateSnapshot()
     {

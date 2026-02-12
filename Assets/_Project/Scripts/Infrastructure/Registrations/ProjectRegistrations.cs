@@ -9,6 +9,9 @@ public static class ProjectRegistrations
 
         container.BindLazy<SceneLoader>(c => new SceneLoader(
             c.Resolve<SceneArgsService>()));
+        
+        container.BindLazy<GameFlowService>(c => new GameFlowService(
+            c.Resolve<SceneLoader>()));
 
         // save pipeline
         container.BindLazy<ISaveStorage>(_ => new PlayerPrefsSaveStorage());
@@ -49,5 +52,8 @@ public static class ProjectRegistrations
             c.Resolve<WalletService>(),
             c.Resolve<ConfigService>(),
             c.Resolve<SaveService>()));
+        
+        container.BindLazy<ViewsFactory>(_ => new ViewsFactory());
+        container.BindLazy<ProjectPresentersFactory>(_ => new ProjectPresentersFactory());
     }
 }

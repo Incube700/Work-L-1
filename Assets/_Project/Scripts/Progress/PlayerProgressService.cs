@@ -9,7 +9,6 @@ public sealed class PlayerProgressService
 
     public int Wins => _stats.WinsValue;
     public int Losses => _stats.LossesValue;
-    public int Gold => _wallet.GoldValue;
 
     public PlayerProgressService(GameStatsService stats, WalletService wallet, ConfigService configs, SaveService save)
     {
@@ -24,14 +23,14 @@ public sealed class PlayerProgressService
     public void RegisterWin()
     {
         _stats.AddWin();
-        _wallet.AddGold(_economy.WinGold);
+        _wallet.Add(CurrencyType.Gold, _economy.WinGold);
         _save.SaveAll();
     }
 
     public void RegisterLoss()
     {
         _stats.AddLoss();
-        _wallet.SubtractGoldClamped(_economy.LoseGold);
+        _wallet.SubtractClamped(CurrencyType.Gold, _economy.LoseGold);
         _save.SaveAll();
     }
 }
