@@ -7,13 +7,18 @@ public static class MainMenuRegistrations
             c.Resolve<ProjectPresentersFactory>(),
             c.Resolve<PopupLayer>().transform));
 
+        container.BindTransient<CurrencyListPresenter>(c => new CurrencyListPresenter(
+            c.Resolve<CurrencyListView>(),
+            c.Resolve<ViewsFactory>(),
+            c.Resolve<WalletService>()));
+
         container.BindTransient<MainMenuPresenter>(c => new MainMenuPresenter(
             c.Resolve<MainMenuView>(),
             c.Resolve<GameFlowService>(),
             c.Resolve<ConfigService>(),
             c.Resolve<GameStatsService>(),
-            c.Resolve<WalletService>(),
             c.Resolve<ProgressResetService>(),
-            c.Resolve<PopupService>()));
+            c.Resolve<PopupService>(),
+            c.Resolve<CurrencyListPresenter>()));
     }
 }

@@ -13,7 +13,6 @@ public sealed class MainMenuView : MonoBehaviour
 
     [SerializeField] private TMP_Text _winsText;
     [SerializeField] private TMP_Text _lossesText;
-    [SerializeField] private TMP_Text _goldText;
     [SerializeField] private TMP_Text _statusText;
     [SerializeField] private TMP_Text _resetButtonText;
 
@@ -37,7 +36,6 @@ public sealed class MainMenuView : MonoBehaviour
 
     public void SetWins(int wins) => _winsText.text = $"Wins: {wins}";
     public void SetLosses(int losses) => _lossesText.text = $"Losses: {losses}";
-    public void SetGold(int gold) => _goldText.text = $"Gold: {gold}";
 
     public void SetResetCost(int cost)
     {

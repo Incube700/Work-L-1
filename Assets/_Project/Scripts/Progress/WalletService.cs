@@ -91,4 +91,18 @@ public sealed class WalletService
 
         return variable;
     }
+    
+    public CurrencyType[] GetAvailableCurrencies()
+    {
+        CurrencyType[] result = new CurrencyType[_currencies.Count];
+
+        int index = 0;
+        foreach (var pair in _currencies)
+        {
+            result[index] = pair.Key;
+            index++;
+        }
+
+        return result;
+    }
 }

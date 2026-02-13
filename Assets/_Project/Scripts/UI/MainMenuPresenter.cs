@@ -4,26 +4,26 @@ public sealed class MainMenuPresenter
     private readonly GameFlowService _flow;
     private readonly ConfigService _configs;
     private readonly GameStatsService _stats;
-    private readonly WalletService _wallet;
     private readonly ProgressResetService _reset;
     private readonly PopupService _popups;
+    private readonly CurrencyListPresenter _currencyList;
 
     public MainMenuPresenter(
         MainMenuView view,
         GameFlowService flow,
         ConfigService configs,
         GameStatsService stats,
-        WalletService wallet,
         ProgressResetService reset,
-        PopupService popups)
+        PopupService popups,
+        CurrencyListPresenter currencyList)
     {
         _view = view;
         _flow = flow;
         _configs = configs;
         _stats = stats;
-        _wallet = wallet;
         _reset = reset;
         _popups = popups;
+        _currencyList = currencyList;
     }
 
     public void Start()
@@ -38,9 +38,9 @@ public sealed class MainMenuPresenter
         _stats.Wins.Changed += OnStatsChanged;
         _stats.Losses.Changed += OnStatsChanged;
 
-        _wallet.GetReactive(CurrencyType.Gold).Changed += OnGoldChanged;
+        _currencyList.Initialize();
 
-        RefreshAll();
+        RefreshStats();
         _view.SetStatus(string.Empty);
     }
 
@@ -53,25 +53,18 @@ public sealed class MainMenuPresenter
         _stats.Wins.Changed -= OnStatsChanged;
         _stats.Losses.Changed -= OnStatsChanged;
 
-        _wallet.GetReactive(CurrencyType.Gold).Changed -= OnGoldChanged;
+        _currencyList.Dispose();
     }
 
-    private void RefreshAll()
+    private void RefreshStats()
     {
         _view.SetWins(_stats.WinsValue);
         _view.SetLosses(_stats.LossesValue);
-        _view.SetGold(_wallet.Get(CurrencyType.Gold));
     }
 
     private void OnStatsChanged()
     {
-        _view.SetWins(_stats.WinsValue);
-        _view.SetLosses(_stats.LossesValue);
-    }
-
-    private void OnGoldChanged()
-    {
-        _view.SetGold(_wallet.Get(CurrencyType.Gold));
+        RefreshStats();
     }
 
     private void OnNumbersClicked()

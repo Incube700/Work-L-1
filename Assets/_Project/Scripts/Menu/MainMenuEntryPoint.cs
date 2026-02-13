@@ -25,7 +25,14 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("PopupLayer not found. Add PopupLayer to MainMenu scene (under Canvas).");
         }
+        
+        CurrencyListView currencyListView = Object.FindObjectOfType<CurrencyListView>(true);
+        if (currencyListView == null)
+        {
+            throw new InvalidOperationException("CurrencyListView not found. Add CurrencyListView to MainMenu scene.");
+        }
 
+        ((IContainer)container).BindInstance(currencyListView);
         ((IContainer)container).BindInstance(view);
         ((IContainer)container).BindInstance(popupLayer);
 

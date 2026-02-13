@@ -10,6 +10,7 @@ public sealed class ViewsFactory
     public ViewsFactory()
     {
         _paths.Add(ViewIDs.MessagePopup, "UI/Popups/MessagePopupView");
+        _paths.Add(ViewIDs.CurrencyRow, "UI/Currency/CurrencyRowView");
     }
 
     public T Create<T>(string viewId, Transform parent) where T : MonoBehaviour

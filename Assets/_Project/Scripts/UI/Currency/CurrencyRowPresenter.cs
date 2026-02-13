@@ -1,0 +1,36 @@
+public sealed class CurrencyRowPresenter
+{
+    private readonly CurrencyRowView _view;
+    private readonly WalletService _wallet;
+    private readonly CurrencyType _type;
+
+    private IReadOnlyReactiveVariable<int> _amount;
+
+    public CurrencyRowPresenter(CurrencyRowView view, WalletService wallet, CurrencyType type)
+    {
+        _view = view;
+        _wallet = wallet;
+        _type = type;
+    }
+
+    public void Initialize()
+    {
+        _view.SetName(_type.ToString());
+
+        _amount = _wallet.GetReactive(_type);
+        _amount.Changed += OnAmountChanged;
+
+        OnAmountChanged(); // первичная отрисовка
+    }
+
+    public void Dispose()
+    {
+        if (_amount != null)
+            _amount.Changed -= OnAmountChanged;
+    }
+
+    private void OnAmountChanged()
+    {
+        _view.SetAmount(_amount.Value);
+    }
+}
