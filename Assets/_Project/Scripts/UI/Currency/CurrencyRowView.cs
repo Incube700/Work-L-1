@@ -8,13 +8,11 @@ public sealed class CurrencyRowView : MonoBehaviour
 
     public void SetName(string value)
     {
-        if (_nameText != null)
-            _nameText.text = value ?? string.Empty;
+        _nameText.text = value ?? string.Empty;
     }
 
     public void SetAmount(int value)
     {
-        if (_amountText != null)
-            _amountText.text = value.ToString();
+        _amountText.text = value.ToString();
     }
 }

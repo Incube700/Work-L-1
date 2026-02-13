@@ -12,13 +12,17 @@ public static class MainMenuRegistrations
             c.Resolve<ViewsFactory>(),
             c.Resolve<WalletService>()));
 
+        container.BindTransient<StatsPresenter>(c => new StatsPresenter(
+            c.Resolve<StatsView>(),
+            c.Resolve<GameStatsService>()));
+
         container.BindTransient<MainMenuPresenter>(c => new MainMenuPresenter(
             c.Resolve<MainMenuView>(),
             c.Resolve<GameFlowService>(),
             c.Resolve<ConfigService>(),
-            c.Resolve<GameStatsService>(),
             c.Resolve<ProgressResetService>(),
             c.Resolve<PopupService>(),
-            c.Resolve<CurrencyListPresenter>()));
+            c.Resolve<CurrencyListPresenter>(),
+            c.Resolve<StatsPresenter>()));
     }
 }

@@ -3,27 +3,27 @@ public sealed class MainMenuPresenter
     private readonly MainMenuView _view;
     private readonly GameFlowService _flow;
     private readonly ConfigService _configs;
-    private readonly GameStatsService _stats;
     private readonly ProgressResetService _reset;
     private readonly PopupService _popups;
     private readonly CurrencyListPresenter _currencyList;
+    private readonly StatsPresenter _statsPresenter;
 
     public MainMenuPresenter(
         MainMenuView view,
         GameFlowService flow,
         ConfigService configs,
-        GameStatsService stats,
         ProgressResetService reset,
         PopupService popups,
-        CurrencyListPresenter currencyList)
+        CurrencyListPresenter currencyList,
+        StatsPresenter statsPresenter)
     {
         _view = view;
         _flow = flow;
         _configs = configs;
-        _stats = stats;
         _reset = reset;
         _popups = popups;
         _currencyList = currencyList;
+        _statsPresenter = statsPresenter;
     }
 
     public void Start()
@@ -35,36 +35,20 @@ public sealed class MainMenuPresenter
         _view.LettersClicked += OnLettersClicked;
         _view.ResetClicked += OnResetClicked;
 
-        _stats.Wins.Changed += OnStatsChanged;
-        _stats.Losses.Changed += OnStatsChanged;
-
         _currencyList.Initialize();
+        _statsPresenter.Initialize();
 
-        RefreshStats();
         _view.SetStatus(string.Empty);
     }
 
     public void Stop()
     {
+        _statsPresenter.Dispose();
+        _currencyList.Dispose();
+
         _view.NumbersClicked -= OnNumbersClicked;
         _view.LettersClicked -= OnLettersClicked;
         _view.ResetClicked -= OnResetClicked;
-
-        _stats.Wins.Changed -= OnStatsChanged;
-        _stats.Losses.Changed -= OnStatsChanged;
-
-        _currencyList.Dispose();
-    }
-
-    private void RefreshStats()
-    {
-        _view.SetWins(_stats.WinsValue);
-        _view.SetLosses(_stats.LossesValue);
-    }
-
-    private void OnStatsChanged()
-    {
-        RefreshStats();
     }
 
     private void OnNumbersClicked()
@@ -86,7 +70,7 @@ public sealed class MainMenuPresenter
         else
         {
             _view.SetStatus(string.Empty);
-            _popups.OpenMessagePopup("Not enough gold", reason);
+            _popups.OpenMessagePopup("Not enough currency", reason);
         }
     }
 }

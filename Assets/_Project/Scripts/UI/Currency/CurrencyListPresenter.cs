@@ -6,7 +6,7 @@ public sealed class CurrencyListPresenter
     private readonly ViewsFactory _views;
     private readonly WalletService _wallet;
 
-    private readonly List<CurrencyRowPresenter> _rows = new();
+    private readonly List<CurrencyRowPresenter> _rows = new List<CurrencyRowPresenter>();
 
     public CurrencyListPresenter(CurrencyListView view, ViewsFactory views, WalletService wallet)
     {
@@ -34,7 +34,11 @@ public sealed class CurrencyListPresenter
     public void Dispose()
     {
         for (int i = 0; i < _rows.Count; i++)
-            _rows[i].Dispose();
+        {
+            CurrencyRowPresenter presenter = _rows[i];
+            presenter.Dispose();
+            _views.Release(presenter.View);
+        }
 
         _rows.Clear();
     }

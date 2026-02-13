@@ -18,13 +18,26 @@ public sealed class GameplayEntryPoint : SceneEntryPointBase
             throw new InvalidOperationException("GameplayArgs not found. Go to gameplay through menu.");
         }
 
-        GameplayHudView hud = Object.FindObjectOfType<GameplayHudView>(true);
-        if (hud == null)
-        {
-            throw new InvalidOperationException("GameplayHudView not found. Add GameplayHudView to Gameplay scene.");
-        }
+        GameplayTargetView targetView = Object.FindObjectOfType<GameplayTargetView>(true);
+        if (targetView == null)
+            throw new InvalidOperationException("GameplayTargetView not found. Add it to TargetText in Gameplay scene.");
 
-        ((IContainer)container).BindInstance(hud);
+        GameplayTypedView typedView = Object.FindObjectOfType<GameplayTypedView>(true);
+        if (typedView == null)
+            throw new InvalidOperationException("GameplayTypedView not found. Add it to TypedText in Gameplay scene.");
+
+        GameplayStatusView statusView = Object.FindObjectOfType<GameplayStatusView>(true);
+        if (statusView == null)
+            throw new InvalidOperationException("GameplayStatusView not found. Add it to StatusText in Gameplay scene.");
+
+        CurrencyListView currencyListView = Object.FindObjectOfType<CurrencyListView>(true);
+        if (currencyListView == null)
+            throw new InvalidOperationException("CurrencyListView not found. Add CurrencyListView to Gameplay scene (CurrencyPanel).");
+
+        ((IContainer)container).BindInstance(targetView);
+        ((IContainer)container).BindInstance(typedView);
+        ((IContainer)container).BindInstance(statusView);
+        ((IContainer)container).BindInstance(currencyListView);
 
         _presenter = container.Resolve<GameplayPresenter>();
         _presenter.Start(args.Mode);

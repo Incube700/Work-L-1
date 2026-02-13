@@ -1,94 +1,56 @@
 public sealed class GameplayPresenter
 {
     private readonly GameplayLoop _loop;
-    private readonly GameplayHudView _view;
-    private readonly KeyboardInputReader _input;
-    private readonly GameFlowService _flow;
-    private readonly WalletService _wallet;
+
+    private readonly GameplayTargetPresenter _target;
+    private readonly GameplayTypedPresenter _typed;
+    private readonly GameplayStatusPresenter _status;
+    private readonly GameplayInputPresenter _input;
+
+    private readonly CurrencyListPresenter _currencyList;
 
     public GameplayPresenter(
         GameplayLoop loop,
-        GameplayHudView view,
-        KeyboardInputReader input,
-        GameFlowService flow,
-        WalletService wallet)
+        GameplayTargetPresenter target,
+        GameplayTypedPresenter typed,
+        GameplayStatusPresenter status,
+        GameplayInputPresenter input,
+        CurrencyListPresenter currencyList)
     {
         _loop = loop;
-        _view = view;
+        _target = target;
+        _typed = typed;
+        _status = status;
         _input = input;
-        _flow = flow;
-        _wallet = wallet;
+        _currencyList = currencyList;
     }
 
     public void Start(GameMode mode)
     {
-        _loop.TargetChanged += OnTargetChanged;
-        _loop.TypedChanged += OnTypedChanged;
-        _loop.Finished += OnFinished;
+        // Подписки на события ДО loop.Start — чтобы поймать TargetChanged/TypedChanged
+        _target.Initialize();
+        _typed.Initialize();
+        _status.Initialize();
 
-        _input.CharTyped += OnCharTyped;
-        _input.SpacePressed += OnSpacePressed;
+        // Кошелек показываем универсально (без hardcode Gold)
+        _currencyList.Initialize();
 
-        _view.SetStatus("Type the sequence.");
         _loop.Start(mode);
+
+        // Инпут включаем после Start — чтобы _checker точно был создан
+        _input.Initialize();
     }
 
     public void Stop()
     {
-        _input.CharTyped -= OnCharTyped;
-        _input.SpacePressed -= OnSpacePressed;
-
-        _loop.TargetChanged -= OnTargetChanged;
-        _loop.TypedChanged -= OnTypedChanged;
-        _loop.Finished -= OnFinished;
+        _input.Dispose();
 
         _loop.Stop();
-    }
 
-    private void OnTargetChanged(string target)
-    {
-        _view.SetTarget(target);
-        _view.SetTyped(string.Empty);
-    }
+        _currencyList.Dispose();
 
-    private void OnTypedChanged(string typed)
-    {
-        _view.SetTyped(typed);
-    }
-
-    private void OnFinished(bool isWin)
-    {
-        int gold = _wallet.Get(CurrencyType.Gold);
-
-        if (isWin)
-        {
-            _view.SetStatus($"WIN! Gold={gold}. Press SPACE to return to menu.");
-        }
-        else
-        {
-            _view.SetStatus($"LOSE! Gold={gold}. Press SPACE to restart.");
-        }
-    }
-
-    private void OnCharTyped(char c)
-    {
-        _loop.HandleChar(c);
-    }
-
-    private void OnSpacePressed()
-    {
-        if (_loop.IsFinished == false)
-        {
-            return;
-        }
-
-        if (_loop.IsWin)
-        {
-            _flow.OpenMainMenu();
-        }
-        else
-        {
-            _flow.OpenGameplay(_loop.Mode);
-        }
+        _status.Dispose();
+        _typed.Dispose();
+        _target.Dispose();
     }
 }

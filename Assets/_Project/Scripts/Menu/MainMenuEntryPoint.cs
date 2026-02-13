@@ -31,10 +31,17 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("CurrencyListView not found. Add CurrencyListView to MainMenu scene.");
         }
+        
+        StatsView statsView = Object.FindObjectOfType<StatsView>(true);
+        if (statsView == null)
+        {
+            throw new InvalidOperationException("StatsView not found. Add StatsView to MainMenu scene.");
+        }
 
         ((IContainer)container).BindInstance(currencyListView);
         ((IContainer)container).BindInstance(view);
         ((IContainer)container).BindInstance(popupLayer);
+        ((IContainer)container).BindInstance(statsView);
 
         _popupService = container.Resolve<PopupService>();
 

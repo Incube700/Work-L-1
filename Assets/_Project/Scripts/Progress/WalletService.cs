@@ -94,15 +94,13 @@ public sealed class WalletService
     
     public CurrencyType[] GetAvailableCurrencies()
     {
-        CurrencyType[] result = new CurrencyType[_currencies.Count];
-
-        int index = 0;
-        foreach (var pair in _currencies)
-        {
-            result[index] = pair.Key;
-            index++;
-        }
-
-        return result;
+      System.Array values = Enum.GetValues(typeof(CurrencyType));
+      CurrencyType[] result = new CurrencyType[values.Length];
+      
+      for (int i = 0; i < values.Length; i++)
+      {
+        result[i] = (CurrencyType)values.GetValue(i);
+      }
+      return result;
     }
 }

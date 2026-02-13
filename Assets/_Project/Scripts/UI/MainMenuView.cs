@@ -11,8 +11,7 @@ public sealed class MainMenuView : MonoBehaviour
     public event Action LettersClicked;
     public event Action ResetClicked;
 
-    [SerializeField] private TMP_Text _winsText;
-    [SerializeField] private TMP_Text _lossesText;
+    
     [SerializeField] private TMP_Text _statusText;
     [SerializeField] private TMP_Text _resetButtonText;
 
@@ -34,8 +33,7 @@ public sealed class MainMenuView : MonoBehaviour
         _resetButton.onClick.RemoveListener(OnResetClicked);
     }
 
-    public void SetWins(int wins) => _winsText.text = $"Wins: {wins}";
-    public void SetLosses(int losses) => _lossesText.text = $"Losses: {losses}";
+   
 
     public void SetResetCost(int cost)
     {
