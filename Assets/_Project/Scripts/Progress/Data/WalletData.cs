@@ -4,10 +4,6 @@ using System.Collections.Generic;
 [Serializable]
 public sealed class WalletData
 {
-    //  старые сейвы 
-    public int gold;
-
-    // новые сейвы
     public List<CurrencyAmountData> currencies;
 }
 
