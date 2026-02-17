@@ -46,14 +46,14 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
         _popupService = container.Resolve<PopupService>();
 
         _presenter = container.Resolve<MainMenuPresenter>();
-        _presenter.Start();
+        _presenter.Initialize();
     }
 
     private void OnDestroy()
     {
         if (_presenter != null)
         {
-            _presenter.Stop();
+            _presenter.Dispose();
             _presenter = null;
         }
 

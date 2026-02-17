@@ -26,7 +26,7 @@ public sealed class MainMenuPresenter
         _statsPresenter = statsPresenter;
     }
 
-    public void Start()
+    public void Initialize()
     {
         EconomyConfig economy = _configs.Load<EconomyConfig>();
         _view.SetResetCost(economy.ResetCost);
@@ -41,7 +41,7 @@ public sealed class MainMenuPresenter
         _view.SetStatus(string.Empty);
     }
 
-    public void Stop()
+    public void Dispose()
     {
         _statsPresenter.Dispose();
         _currencyList.Dispose();
