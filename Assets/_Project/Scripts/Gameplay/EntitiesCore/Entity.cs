@@ -1,6 +1,4 @@
-﻿using Assets._Project.Scripts.Gameplay.Common;
-using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using Assets._Project.Scripts.Gameplay.MovementFeature;
+﻿using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,10 +7,6 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
 {
     public partial class Entity : IDisposable
     {
-        public ReactiveVariable<Vector3> MoveDirection => GetComponent<MoveDirection>().Value;
-        public ReactiveVariable<float> MoveSpeed => GetComponent<MoveSpeed>().Value;
-        public Rigidbody Rigidbody => GetComponent<RigidbodyComponent>().Value;
-
         private readonly Dictionary<Type, IEntityComponent> _components = new();
 
         private readonly List<IEntitySystem> _systems = new();
@@ -53,10 +47,6 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
             _components.Add(typeof(TComponent), component);
             return this;
         }
-
-        public Entity AddMoveDirection() => AddComponent(new MoveDirection { Value = new ReactiveVariable<Vector3>(Vector3.zero) });
-        public Entity AddMoveSpeed(ReactiveVariable<float> value) => AddComponent(new MoveSpeed { Value = value });
-        public Entity AddRigidbody(Rigidbody rb) => AddComponent(new RigidbodyComponent { Value = rb });
 
         public bool HasComponent<TComponent>() where TComponent : class, IEntityComponent
         {

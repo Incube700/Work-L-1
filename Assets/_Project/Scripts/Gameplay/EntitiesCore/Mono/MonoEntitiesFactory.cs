@@ -1,5 +1,4 @@
-﻿using Assets._Project.Scripts.Gameplay.Infrastructure.DI;
-using Assets._Project.Scripts.Gameplay.Infrastructure.AssetsManagment;
+﻿using Assets._Project.Scripts.Infrastructure.AssetsManagment;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace Assets._Project.Scripts.Gameplay.EntitiesCore.Mono
 {
-    public class MonoEntitiesFactory : IInitializable, IDisposable
+    public class MonoEntitiesFactory : IDisposable
     {
         private readonly ResourcesAssetsLoader _resources;
         private readonly EntitiesLifeContext _entitiesLifeContext;

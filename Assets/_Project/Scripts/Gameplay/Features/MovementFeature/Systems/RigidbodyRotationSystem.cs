@@ -1,28 +1,29 @@
-﻿using Assets._Project.Scripts.Gameplay.Common;
+using UnityEngine;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using UnityEngine;
 
-namespace Assets._Project.Scripts.Gameplay.MovementFeature
+namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
-    public class RigidbodyMovementSystem : IInitializableSystem, IUpdatableSystem
+    public sealed class RigidbodyRotationSystem : IInitializableSystem, IUpdatableSystem
     {
         private ReactiveVariable<Vector3> _moveDirection;
-        private ReactiveVariable<float> _moveSpeed;
         private Rigidbody _rigidbody;
 
         public void OnInit(Entity entity)
         {
             _moveDirection = entity.MoveDirection;
-            _moveSpeed = entity.MoveSpeed;
             _rigidbody = entity.Rigidbody;
         }
 
         public void OnUpdate(float deltaTime)
         {
-            Vector3 velocity = _moveDirection.Value.normalized * _moveSpeed.Value;
+            Vector3 dir = _moveDirection.Value;
 
-            _rigidbody.velocity = velocity;
+            if (dir.sqrMagnitude < 0.0001f)
+                return;
+
+            Quaternion rot = Quaternion.LookRotation(dir.normalized, Vector3.up);
+            _rigidbody.MoveRotation(rot);
         }
     }
 }

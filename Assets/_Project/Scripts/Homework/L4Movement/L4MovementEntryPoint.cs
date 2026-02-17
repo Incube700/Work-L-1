@@ -1,6 +1,5 @@
 using UnityEngine;
-using Assets._Project.Scripts.Gameplay.Infrastructure.DI;
-using Assets._Project.Scripts.Gameplay.Infrastructure.AssetsManagment;
+using Assets._Project.Scripts.Infrastructure.AssetsManagment;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 
@@ -17,33 +16,23 @@ namespace Assets._Project.Scripts.Homework.L4Movement
         [SerializeField] private MovementMode _mode;
         [SerializeField] private Vector3 _spawnPosition;
 
-        private DIContainer _container;
         private EntitiesLifeContext _life;
         private Entity _player;
+        private MonoEntitiesFactory _monoFactory;
 
         private void Awake()
         {
-            _container = new DIContainer();
+            ResourcesAssetsLoader loader = new ResourcesAssetsLoader();
+            _life = new EntitiesLifeContext();
 
-            _container.RegisterAsSingle(_ => new ResourcesAssetsLoader()).NonLazy();
-            _container.RegisterAsSingle(_ => new EntitiesLifeContext()).NonLazy();
+            _monoFactory = new MonoEntitiesFactory(loader, _life);
+            _monoFactory.Initialize();
 
-            _container.RegisterAsSingle(c => new MonoEntitiesFactory(
-                c.Resolve<ResourcesAssetsLoader>(),
-                c.Resolve<EntitiesLifeContext>())).NonLazy();
-
-            _container.RegisterAsSingle(c => new MovementEntitiesFactory(
-                c.Resolve<EntitiesLifeContext>(),
-                c.Resolve<MonoEntitiesFactory>())).NonLazy();
-
-            _container.Initialize();
-
-            _life = _container.Resolve<EntitiesLifeContext>();
-            MovementEntitiesFactory factory = _container.Resolve<MovementEntitiesFactory>();
+            MovementEntitiesFactory movementFactory = new MovementEntitiesFactory(_life, _monoFactory);
 
             _player = _mode == MovementMode.Rigidbody
-                ? factory.CreateRigidbodyPlayer(_spawnPosition)
-                : factory.CreateCharacterControllerPlayer(_spawnPosition);
+                ? movementFactory.CreateRigidbodyPlayer(_spawnPosition)
+                : movementFactory.CreateCharacterControllerPlayer(_spawnPosition);
         }
 
         private void Update()
@@ -52,19 +41,13 @@ namespace Assets._Project.Scripts.Homework.L4Movement
             Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
             _player.MoveDirection.Value = input;
 
-            if (_mode == MovementMode.CharacterController)
-                _life.Update(Time.deltaTime);
-        }
-
-        private void FixedUpdate()
-        {
-            if (_mode == MovementMode.Rigidbody)
-                _life.Update(Time.fixedDeltaTime);
+            _life.Update(Time.deltaTime);
         }
 
         private void OnDestroy()
         {
-            _container?.Dispose();
+            _life?.Dispose();
+            _monoFactory?.Dispose();
         }
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets._Project.Scripts.Gameplay.Infrastructure.AssetsManagment
+namespace Assets._Project.Scripts.Infrastructure.AssetsManagment
 {
     public class ResourcesAssetsLoader
     {

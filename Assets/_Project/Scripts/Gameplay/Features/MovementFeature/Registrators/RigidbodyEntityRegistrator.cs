@@ -1,9 +1,8 @@
 ﻿using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
-using Assets._Project.Scripts.Gameplay.MovementFeature;
 using UnityEngine;
 
-namespace Assets._Project.Scripts.Gameplay.Common
+namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
     public class RigidbodyEntityRegistrator : MonoEntityRegistrator
     {

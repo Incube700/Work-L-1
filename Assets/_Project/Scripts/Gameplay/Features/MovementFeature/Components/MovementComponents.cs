@@ -1,7 +1,7 @@
 ﻿using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using UnityEngine;
 
-namespace Assets._Project.Scripts.Gameplay.MovementFeature
+namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
     public class MoveDirection : IEntityComponent
     {
@@ -11,5 +11,10 @@ namespace Assets._Project.Scripts.Gameplay.MovementFeature
     public class MoveSpeed : IEntityComponent
     {
         public ReactiveVariable<float> Value;
+    }
+
+    public class TransformComponent : IEntityComponent
+    {
+        public Transform Value;
     }
 }

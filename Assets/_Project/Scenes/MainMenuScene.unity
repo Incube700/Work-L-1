@@ -1036,6 +1036,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _winsText: {fileID: 267045547}
   _lossesText: {fileID: 255621442}
+  _winsPrefix: 'Wins: '
+  _lossesPrefix: 'Losses: '
 --- !u!1 &904829487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1738,9 +1740,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 884293389}
   - {fileID: 904829488}
   - {fileID: 1061111396}
+  - {fileID: 884293389}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

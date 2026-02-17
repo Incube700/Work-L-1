@@ -1,7 +1,7 @@
 using UnityEngine;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
-using Assets._Project.Scripts.Gameplay.MovementFeature;
+using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 
 namespace Assets._Project.Scripts.Homework.L4Movement
 {
@@ -41,7 +41,8 @@ namespace Assets._Project.Scripts.Homework.L4Movement
             entity.AddMoveDirection();
             entity.AddMoveSpeed(new ReactiveVariable<float>(10f));
 
-            entity.AddSystem(new CharacterControllerMovementSystem());
+            entity.AddSystem(new CharacterControllerMoveSystem());
+            entity.AddSystem(new TransformRotationSystem());
 
             _life.Add(entity);
             return entity;

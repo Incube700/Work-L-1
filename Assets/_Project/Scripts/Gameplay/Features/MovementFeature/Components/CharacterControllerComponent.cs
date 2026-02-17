@@ -1,7 +1,7 @@
 using UnityEngine;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 
-namespace Assets._Project.Scripts.Homework.L4Movement
+namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
     public sealed class CharacterControllerComponent : IEntityComponent
     {

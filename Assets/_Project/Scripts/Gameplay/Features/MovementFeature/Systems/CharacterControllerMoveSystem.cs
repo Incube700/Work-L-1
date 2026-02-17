@@ -2,9 +2,9 @@ using UnityEngine;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
 
-namespace Assets._Project.Scripts.Homework.L4Movement
+namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
-    public sealed class CharacterControllerMovementSystem : IInitializableSystem, IUpdatableSystem
+    public sealed class CharacterControllerMoveSystem : IInitializableSystem, IUpdatableSystem
     {
         private ReactiveVariable<Vector3> _moveDirection;
         private ReactiveVariable<float> _moveSpeed;
@@ -26,11 +26,6 @@ namespace Assets._Project.Scripts.Homework.L4Movement
                 dir.Normalize();
 
             _controller.Move(dir * _moveSpeed.Value * deltaTime);
-
-            if (dir.sqrMagnitude < 0.0001f)
-                return;
-
-            _controller.transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
     }
 }
