@@ -23,6 +23,7 @@ namespace Assets._Project.Scripts.Homework.L4Movement
             _mono.Create(entity, position, "Entities/PlayerRigidbody");
             
             entity.AddMoveSpeed(new ReactiveVariable<float>(10f));
+            entity.AddMoveDirection(Vector3.zero);
 
             entity.AddSystem(new RigidbodyMovementSystem());
             entity.AddSystem(new RigidbodyRotationSystem());
@@ -38,6 +39,7 @@ namespace Assets._Project.Scripts.Homework.L4Movement
             _mono.Create(entity, position, "Entities/PlayerCharacterController");
             
             entity.AddMoveSpeed(new ReactiveVariable<float>(10f));
+            entity.AddMoveDirection(Vector3.zero);
 
             entity.AddSystem(new CharacterControllerMoveSystem());
             entity.AddSystem(new TransformRotationSystem());
