@@ -1,4 +1,6 @@
-public sealed class MainMenuPresenter
+using _Project.Scripts.UI.Common;
+
+public sealed class MainMenuPresenter : IPresenter
 {
     private readonly MainMenuView _view;
     private readonly GameFlowService _flow;

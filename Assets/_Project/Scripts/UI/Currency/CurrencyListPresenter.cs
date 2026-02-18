@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using _Project.Scripts.UI.Common;
 
-public sealed class CurrencyListPresenter
+public sealed class CurrencyListPresenter : IPresenter
 {
     private readonly CurrencyListView _view;
     private readonly ViewsFactory _views;

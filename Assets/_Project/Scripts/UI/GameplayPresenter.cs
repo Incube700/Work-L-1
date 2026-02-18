@@ -1,4 +1,6 @@
-public sealed class GameplayPresenter
+using _Project.Scripts.UI.Common;
+
+public sealed class GameplayPresenter : IPresenter
 {
     private readonly GameplayTargetPresenter _target;
     private readonly GameplayTypedPresenter _typed;
