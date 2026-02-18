@@ -13,6 +13,7 @@ public sealed class GameplayTypedPresenter
     {
         _loop.TargetChanged += OnTargetChanged;
         _loop.TypedChanged += OnTypedChanged;
+        OnTypedChanged(_loop.Typed);
     }
 
     public void Dispose()

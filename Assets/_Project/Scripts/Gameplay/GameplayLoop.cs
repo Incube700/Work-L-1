@@ -17,6 +17,8 @@ public sealed partial class GameplayLoop
 
     private readonly StringBuilder _typed = new StringBuilder(16);
 
+    private string _target = string.Empty;
+
     private bool _isFinished;
     private bool _isWin;
     private GameMode _mode;
@@ -24,6 +26,11 @@ public sealed partial class GameplayLoop
     public bool IsFinished => _isFinished;
     public bool IsWin => _isWin;
     public GameMode Mode => _mode;
+
+    // Важно для UI: можно в любой момент прочитать текущее состояние,
+    // даже если подписка на события произошла после Start().
+    public string Target => _target;
+    public string Typed => _typed.ToString();
 
     public GameplayLoop(
         ConfigService configService,
@@ -42,14 +49,14 @@ public sealed partial class GameplayLoop
         GameModesConfig modesConfig = _configService.Load<GameModesConfig>();
         string available = modesConfig.GetAvailableChars(_mode);
 
-        string target = _generator.Generate(available, SequenceLength);
+        _target = _generator.Generate(available, SequenceLength);
 
         _typed.Clear();
 
-        TargetChanged?.Invoke(target);
+        TargetChanged?.Invoke(_target);
         TypedChanged?.Invoke(string.Empty);
 
-        _checker = new TypingChecker(target);
+        _checker = new TypingChecker(_target);
         _checker.Won += OnWon;
         _checker.Lost += OnLost;
 

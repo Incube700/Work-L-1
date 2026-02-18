@@ -12,6 +12,8 @@ public sealed class GameplayTargetPresenter
     public void Initialize()
     {
         _loop.TargetChanged += OnTargetChanged;
+        
+        OnTargetChanged(_loop.Target);
     }
 
     public void Dispose()

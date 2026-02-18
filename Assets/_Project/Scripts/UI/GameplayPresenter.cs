@@ -1,7 +1,5 @@
 public sealed class GameplayPresenter
 {
-    private readonly GameplayLoop _loop;
-
     private readonly GameplayTargetPresenter _target;
     private readonly GameplayTypedPresenter _typed;
     private readonly GameplayStatusPresenter _status;
@@ -10,14 +8,12 @@ public sealed class GameplayPresenter
     private readonly CurrencyListPresenter _currencyList;
 
     public GameplayPresenter(
-        GameplayLoop loop,
         GameplayTargetPresenter target,
         GameplayTypedPresenter typed,
         GameplayStatusPresenter status,
         GameplayInputPresenter input,
         CurrencyListPresenter currencyList)
     {
-        _loop = loop;
         _target = target;
         _typed = typed;
         _status = status;
@@ -25,9 +21,8 @@ public sealed class GameplayPresenter
         _currencyList = currencyList;
     }
 
-    public void Start(GameMode mode)
+    public void Initialize()
     {
-        // Подписки на события ДО loop.Start — чтобы поймать TargetChanged/TypedChanged
         _target.Initialize();
         _typed.Initialize();
         _status.Initialize();
@@ -35,17 +30,12 @@ public sealed class GameplayPresenter
         // Кошелек показываем универсально (без hardcode Gold)
         _currencyList.Initialize();
 
-        _loop.Start(mode);
-
-        // Инпут включаем после Start — чтобы _checker точно был создан
         _input.Initialize();
     }
 
-    public void Stop()
+    public void Dispose()
     {
         _input.Dispose();
-
-        _loop.Stop();
 
         _currencyList.Dispose();
 

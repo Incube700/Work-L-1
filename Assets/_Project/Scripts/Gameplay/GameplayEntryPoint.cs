@@ -5,6 +5,7 @@ using Object = UnityEngine.Object;
 public sealed class GameplayEntryPoint : SceneEntryPointBase
 {
     private GameplayPresenter _presenter;
+    private GameplayLoop _loop;
 
     protected override void Register(IContainer container)
     {
@@ -39,15 +40,21 @@ public sealed class GameplayEntryPoint : SceneEntryPointBase
         ((IContainer)container).BindInstance(statusView);
         ((IContainer)container).BindInstance(currencyListView);
 
+        // Сначала запускаем логику. UI должен быть просто подписчиком.
+        _loop = container.Resolve<GameplayLoop>();
+        _loop.Start(args.Mode);
+
         _presenter = container.Resolve<GameplayPresenter>();
-        _presenter.Start(args.Mode);
+        _presenter.Initialize();
     }
 
     private void OnDestroy()
     {
         if (_presenter != null)
         {
-            _presenter.Stop();
+            // Сначала отписываем UI от событий, потом останавливаем луп.
+            _presenter.Dispose();
+            _loop.Stop();
             _presenter = null;
         }
     }

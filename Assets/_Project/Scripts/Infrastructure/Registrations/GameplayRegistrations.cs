@@ -32,7 +32,6 @@ public static class GameplayRegistrations
             c.Resolve<GameFlowService>()));
 
         container.BindTransient<GameplayPresenter>(c => new GameplayPresenter(
-            c.Resolve<GameplayLoop>(),
             c.Resolve<GameplayTargetPresenter>(),
             c.Resolve<GameplayTypedPresenter>(),
             c.Resolve<GameplayStatusPresenter>(),
