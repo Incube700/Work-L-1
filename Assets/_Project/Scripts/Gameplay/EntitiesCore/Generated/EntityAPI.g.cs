@@ -9,6 +9,43 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::UnityEngine.CharacterController CharacterController => CharacterControllerComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCharacterController(global::UnityEngine.CharacterController value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent { Value = value });
 
+        public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.CurrentEnergy CurrentEnergyComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.CurrentEnergy>();
+        public global::ReactiveVariable<global::System.Single> CurrentEnergy => CurrentEnergyComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentEnergy(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.CurrentEnergy { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentEnergy(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.CurrentEnergy { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth CurrentHealthComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth>();
+        public global::ReactiveVariable<global::System.Single> CurrentHealth => CurrentHealthComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentHealth(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentHealth(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval EnergyRegenIntervalComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval>();
+        public global::System.Single EnergyRegenInterval => EnergyRegenIntervalComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEnergyRegenInterval(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenPercent EnergyRegenPercentComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenPercent>();
+        public global::System.Single EnergyRegenPercent => EnergyRegenPercentComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEnergyRegenPercent(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenPercent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer EnergyRegenTimerComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer>();
+        public global::System.Single EnergyRegenTimer => EnergyRegenTimerComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEnergyRegenTimer(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead IsDeadComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead>();
+        public global::ReactiveVariable<global::System.Boolean> IsDead => IsDeadComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddIsDead(global::ReactiveVariable<global::System.Boolean> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddIsDead(global::System.Boolean startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead { Value = new global::ReactiveVariable<global::System.Boolean>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.MaxEnergy MaxEnergyComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.MaxEnergy>();
+        public global::ReactiveVariable<global::System.Single> MaxEnergy => MaxEnergyComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMaxEnergy(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.MaxEnergy { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMaxEnergy(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.MaxEnergy { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.MaxHealth MaxHealthComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.MaxHealth>();
+        public global::ReactiveVariable<global::System.Single> MaxHealth => MaxHealthComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMaxHealth(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.MaxHealth { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMaxHealth(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.MaxHealth { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.MoveDirection MoveDirectionComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.MoveDirection>();
         public global::ReactiveVariable<global::UnityEngine.Vector3> MoveDirection => MoveDirectionComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMoveDirection(global::ReactiveVariable<global::UnityEngine.Vector3> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.MoveDirection { Value = value });
@@ -22,6 +59,38 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent RigidbodyComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent>();
         public global::UnityEngine.Rigidbody Rigidbody => RigidbodyComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddRigidbody(global::UnityEngine.Rigidbody value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.TakeDamageRequest TakeDamageRequestComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.TakeDamageRequest>();
+        public global::SimpleEvent<global::System.Single> TakeDamageRequest => TakeDamageRequestComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTakeDamageRequest(global::SimpleEvent<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.TakeDamageRequest { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEDamage TeleportAoEDamageComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEDamage>();
+        public global::System.Single TeleportAoEDamage => TeleportAoEDamageComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportAoEDamage(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEDamage { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEMask TeleportAoEMaskComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEMask>();
+        public global::System.Int32 TeleportAoEMask => TeleportAoEMaskComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportAoEMask(global::System.Int32 value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoEMask { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoERadius TeleportAoERadiusComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoERadius>();
+        public global::System.Single TeleportAoERadius => TeleportAoERadiusComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportAoERadius(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportAoERadius { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportedEvent TeleportedEventComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportedEvent>();
+        public global::SimpleEvent TeleportedEvent => TeleportedEventComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportedEvent(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportedEvent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportEnergyCost TeleportEnergyCostComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportEnergyCost>();
+        public global::System.Single TeleportEnergyCost => TeleportEnergyCostComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportEnergyCost(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportEnergyCost { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRadius TeleportRadiusComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRadius>();
+        public global::System.Single TeleportRadius => TeleportRadiusComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportRadius(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRadius { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest TeleportRequestComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest>();
+        public global::SimpleEvent TeleportRequest => TeleportRequestComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportRequest(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest { Value = value });
 
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.TransformComponent TransformComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.TransformComponent>();
         public global::UnityEngine.Transform Transform => TransformComponent.Value;
