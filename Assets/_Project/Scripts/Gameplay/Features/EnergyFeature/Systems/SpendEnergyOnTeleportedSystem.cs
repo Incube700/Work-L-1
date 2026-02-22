@@ -31,6 +31,11 @@ namespace Assets._Project.Scripts.Gameplay.Features.EnergyFeature
 
         private void OnTeleported()
         {
+            float next = _currentEnergy.Value - _energyCost;
+            
+            if (next < 0f)
+                next = 0f;
+            
             _currentEnergy.Value -= _energyCost;
         }
     }
