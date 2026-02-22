@@ -3,6 +3,9 @@ using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.EnergyFeature;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using Assets._Project.Scripts.Gameplay.Features.TeleportFeature;
+using Assets._Project.Scripts.Gameplay.EntitiesCore.Conditions;
+using Assets._Project.Scripts.Gameplay.Features.LifeFeature.Conditions;
+using Assets._Project.Scripts.Gameplay.Features.TeleportFeature.Conditions;
 using UnityEngine;
 
 namespace Assets._Project.Scripts.Homework.L5Teleport
@@ -27,8 +30,7 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
         {
             Entity entity = new Entity();
             MonoEntity view = _mono.Create(entity, position, prefabPath);
-
-            // AddTransform должен быть из EntityAPI.g.cs (генератор).
+            
             entity.AddTransform(view.transform);
 
             entity.AddMaxHealth(settings.MaxHealth);
@@ -51,10 +53,17 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
             entity.AddTeleportAoERadius(settings.AoERadius);
             entity.AddTeleportAoEMask(~0);
 
+            ICondition canTeleport = new AllConditions(
+                new IsAliveCondition(),
+                new HasEnoughEnergyForTeleportCondition());
+
+            ICondition canRegenEnergy = new IsAliveCondition();
+            
             entity.AddSystem(new ApplyDamageSystem());
             entity.AddSystem(new DeathSystem());
-            entity.AddSystem(new EnergyRegenerationSystem());
-            entity.AddSystem(new TeleportSystem());
+            entity.AddSystem(new EnergyRegenerationSystem(canRegenEnergy));
+            entity.AddSystem(new TeleportSystem(canTeleport));
+            entity.AddSystem(new SpendEnergyOnTeleportedSystem());
             entity.AddSystem(new TeleportAoEDamageSystem(_collidersRegistry));
             entity.AddSystem(new SelfReleaseOnDeathSystem(_life));
 
