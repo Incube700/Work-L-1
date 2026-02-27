@@ -36,7 +36,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.EnergyFeature
             if (next < 0f)
                 next = 0f;
             
-            _currentEnergy.Value -= _energyCost;
+            _currentEnergy.Value = next;
         }
     }
 }

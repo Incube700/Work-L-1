@@ -28,6 +28,9 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore.Mono
         public MonoEntity Create(Entity entity, Vector3 position, string path)
         {
             MonoEntity prefab = _resources.Load<MonoEntity>(path);
+            
+            if (prefab == null)
+                throw new ArgumentException($"MonoEntity prefab not found at path: {path}.");
 
             MonoEntity viewInstance = Object.Instantiate(prefab, position, Quaternion.identity, null);
             viewInstance.Initialize(_collidersRegistryService);

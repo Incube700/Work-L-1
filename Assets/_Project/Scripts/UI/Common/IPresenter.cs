@@ -1,4 +1,4 @@
-namespace _Project.Scripts.UI.Common
+namespace Assets._Project.Scripts.UI.Common
 {
     public interface IPresenter
     {

@@ -5,6 +5,43 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
 {
     public partial class Entity
     {
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCanceledEvent AttackCanceledEventComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCanceledEvent>();
+        public global::SimpleEvent AttackCanceledEvent => AttackCanceledEventComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackCanceledEvent(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCanceledEvent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownCurrentTime AttackCooldownCurrentTimeComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownCurrentTime>();
+        public global::ReactiveVariable<global::System.Single> AttackCooldownCurrentTime => AttackCooldownCurrentTimeComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackCooldownCurrentTime(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownCurrentTime { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackCooldownCurrentTime(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownCurrentTime { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownInitialTime AttackCooldownInitialTimeComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownInitialTime>();
+        public global::ReactiveVariable<global::System.Single> AttackCooldownInitialTime => AttackCooldownInitialTimeComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackCooldownInitialTime(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownInitialTime { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackCooldownInitialTime(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackCooldownInitialTime { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayEndEvent AttackDelayEndEventComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayEndEvent>();
+        public global::SimpleEvent AttackDelayEndEvent => AttackDelayEndEventComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackDelayEndEvent(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayEndEvent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayTime AttackDelayTimeComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayTime>();
+        public global::ReactiveVariable<global::System.Single> AttackDelayTime => AttackDelayTimeComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackDelayTime(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayTime { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackDelayTime(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackDelayTime { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessCurrentTime AttackProcessCurrentTimeComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessCurrentTime>();
+        public global::ReactiveVariable<global::System.Single> AttackProcessCurrentTime => AttackProcessCurrentTimeComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackProcessCurrentTime(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessCurrentTime { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackProcessCurrentTime(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessCurrentTime { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessInitialTime AttackProcessInitialTimeComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessInitialTime>();
+        public global::ReactiveVariable<global::System.Single> AttackProcessInitialTime => AttackProcessInitialTimeComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackProcessInitialTime(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessInitialTime { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddAttackProcessInitialTime(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.AttackProcessInitialTime { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.CanStartAttack CanStartAttackComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.CanStartAttack>();
+        public global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition CanStartAttack => CanStartAttackComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCanStartAttack(global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.CanStartAttack { Value = value });
+
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent CharacterControllerComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent>();
         public global::UnityEngine.CharacterController CharacterController => CharacterControllerComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCharacterController(global::UnityEngine.CharacterController value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent { Value = value });
@@ -19,6 +56,15 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentHealth(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth { Value = value });
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentHealth(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.CurrentHealth { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
 
+        public global::Assets._Project.Scripts.Gameplay.Features.AIFeature.CurrentTarget CurrentTargetComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AIFeature.CurrentTarget>();
+        public global::ReactiveVariable<global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity> CurrentTarget => CurrentTargetComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentTarget(global::ReactiveVariable<global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AIFeature.CurrentTarget { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCurrentTarget(global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AIFeature.CurrentTarget { Value = new global::ReactiveVariable<global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.EndAttackEvent EndAttackEventComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.EndAttackEvent>();
+        public global::SimpleEvent EndAttackEvent => EndAttackEventComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEndAttackEvent(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.EndAttackEvent { Value = value });
+
         public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval EnergyRegenIntervalComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval>();
         public global::System.Single EnergyRegenInterval => EnergyRegenIntervalComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEnergyRegenInterval(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenInterval { Value = value });
@@ -30,6 +76,16 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer EnergyRegenTimerComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer>();
         public global::System.Single EnergyRegenTimer => EnergyRegenTimerComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddEnergyRegenTimer(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.EnergyFeature.EnergyRegenTimer { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackCooldown InAttackCooldownComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackCooldown>();
+        public global::ReactiveVariable<global::System.Boolean> InAttackCooldown => InAttackCooldownComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddInAttackCooldown(global::ReactiveVariable<global::System.Boolean> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackCooldown { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddInAttackCooldown(global::System.Boolean startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackCooldown { Value = new global::ReactiveVariable<global::System.Boolean>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackProcess InAttackProcessComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackProcess>();
+        public global::ReactiveVariable<global::System.Boolean> InAttackProcess => InAttackProcessComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddInAttackProcess(global::ReactiveVariable<global::System.Boolean> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackProcess { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddInAttackProcess(global::System.Boolean startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.InAttackProcess { Value = new global::ReactiveVariable<global::System.Boolean>(startValue) });
 
         public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead IsDeadComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.IsDead>();
         public global::ReactiveVariable<global::System.Boolean> IsDead => IsDeadComponent.Value;
@@ -56,9 +112,26 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMoveSpeed(global::ReactiveVariable<global::System.Single> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.MoveSpeed { Value = value });
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMoveSpeed(global::System.Single startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.MoveSpeed { Value = new global::ReactiveVariable<global::System.Single>(startValue) });
 
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.MustCancelAttack MustCancelAttackComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.MustCancelAttack>();
+        public global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition MustCancelAttack => MustCancelAttackComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddMustCancelAttack(global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.MustCancelAttack { Value = value });
+
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent RigidbodyComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent>();
         public global::UnityEngine.Rigidbody Rigidbody => RigidbodyComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddRigidbody(global::UnityEngine.Rigidbody value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RigidbodyComponent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RotationDirection RotationDirectionComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RotationDirection>();
+        public global::ReactiveVariable<global::UnityEngine.Vector3> RotationDirection => RotationDirectionComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddRotationDirection(global::ReactiveVariable<global::UnityEngine.Vector3> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RotationDirection { Value = value });
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddRotationDirection(global::UnityEngine.Vector3 startValue) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.RotationDirection { Value = new global::ReactiveVariable<global::UnityEngine.Vector3>(startValue) });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackEvent StartAttackEventComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackEvent>();
+        public global::SimpleEvent StartAttackEvent => StartAttackEventComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddStartAttackEvent(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackEvent { Value = value });
+
+        public global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackRequest StartAttackRequestComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackRequest>();
+        public global::SimpleEvent StartAttackRequest => StartAttackRequestComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddStartAttackRequest(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.StartAttackRequest { Value = value });
 
         public global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.TakeDamageRequest TakeDamageRequestComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.LifeFeature.TakeDamageRequest>();
         public global::SimpleEvent<global::System.Single> TakeDamageRequest => TakeDamageRequestComponent.Value;

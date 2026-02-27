@@ -6,18 +6,18 @@ namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
 {
     public sealed class RigidbodyRotationSystem : IInitializableSystem, IUpdatableSystem
     {
-        private ReactiveVariable<Vector3> _moveDirection;
+        private ReactiveVariable<Vector3> _rotationDirection;
         private Rigidbody _rigidbody;
 
         public void OnInit(Entity entity)
         {
-            _moveDirection = entity.MoveDirection;
+            _rotationDirection = entity.RotationDirection;
             _rigidbody = entity.Rigidbody;
         }
 
         public void OnUpdate(float deltaTime)
         {
-            Vector3 dir = _moveDirection.Value;
+            Vector3 dir = _rotationDirection.Value;
 
             if (dir.sqrMagnitude < 0.0001f)
                 return;

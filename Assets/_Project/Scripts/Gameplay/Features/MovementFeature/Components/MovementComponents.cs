@@ -17,4 +17,9 @@ namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
     {
         public Transform Value;
     }
+    
+    public class RotationDirection : IEntityComponent
+    {
+        public ReactiveVariable<Vector3> Value;
+    }
 }

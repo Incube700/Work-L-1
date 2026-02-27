@@ -1,4 +1,4 @@
-using _Project.Scripts.UI.Common;
+using Assets._Project.Scripts.UI.Common;
 
 public sealed class GameplayPresenter : IPresenter
 {

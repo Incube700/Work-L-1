@@ -9,6 +9,9 @@ namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
         public override void Register(Entity entity)
         {
             entity.AddRigidbody(GetComponent<Rigidbody>());
+
+            if (entity.HasComponent<TransformComponent>() == false)
+                entity.AddTransform(transform);
         }
     }
 }

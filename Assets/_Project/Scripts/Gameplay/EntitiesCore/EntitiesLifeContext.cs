@@ -7,6 +7,8 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
     {
         public event Action<Entity> Added;
         public event Action<Entity> Released;
+        
+        public IReadOnlyList<Entity> Entities => _entities;
 
         private readonly List<Entity> _entities = new();
         private readonly List<Entity> _releaseRequests = new();
