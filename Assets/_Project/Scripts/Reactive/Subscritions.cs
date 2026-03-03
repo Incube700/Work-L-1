@@ -18,7 +18,7 @@ public sealed class Subscription : IDisposable
 
 public static class ReactiveExtensions
 {
-    public static IDisposable Subscribe(this SimpleEvent evt, Action handler)
+    public static IDisposable Subscribe(this IReadOnlySimpleEvent evt, Action handler)
     {
         if (evt == null)
             throw new ArgumentNullException(nameof(evt));
@@ -30,7 +30,7 @@ public static class ReactiveExtensions
         return new Subscription(() => evt.Invoked -= handler);
     }
 
-    public static IDisposable Subscribe<T>(this SimpleEvent<T> evt, Action<T> handler)
+    public static IDisposable Subscribe<T>(this IReadOnlySimpleEvent<T> evt, Action<T> handler)
     {
         if (evt == null)
             throw new ArgumentNullException(nameof(evt));

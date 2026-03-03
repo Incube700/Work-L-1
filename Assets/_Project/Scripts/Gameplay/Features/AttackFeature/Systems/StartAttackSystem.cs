@@ -17,11 +17,11 @@ namespace Assets._Project.Scripts.Gameplay.Features.AttackFeature
 
         public void OnInit(Entity entity)
         {
-            _startAttackRequest = entity.GetComponent<StartAttackRequest>().Value;
-            _startAttackEvent = entity.GetComponent<StartAttackEvent>().Value;
+            _startAttackRequest = entity.StartAttackRequest;
+            _startAttackEvent = entity.StartAttackEvent;
 
-            _inAttackProcess = entity.GetComponent<InAttackProcess>().Value;
-            _canStartAttack = entity.GetComponent<CanStartAttack>().Value;
+            _inAttackProcess = entity.InAttackProcess;
+            _canStartAttack = entity.CanStartAttack;
 
             _requestSubscription = _startAttackRequest.Subscribe(OnStartAttackRequested);
         }

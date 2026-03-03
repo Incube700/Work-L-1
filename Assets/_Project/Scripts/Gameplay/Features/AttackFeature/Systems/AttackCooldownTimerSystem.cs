@@ -15,11 +15,11 @@ namespace Assets._Project.Scripts.Gameplay.Features.AttackFeature
 
         public void OnInit(Entity entity)
         {
-            _inCooldown = entity.GetComponent<InAttackCooldown>().Value;
-            _currentCooldown = entity.GetComponent<AttackCooldownCurrentTime>().Value;
-            _initialCooldown = entity.GetComponent<AttackCooldownInitialTime>().Value;
+            _inCooldown = entity.InAttackCooldown;
+            _currentCooldown = entity.AttackCooldownCurrentTime;
+            _initialCooldown = entity.AttackCooldownInitialTime;
 
-            _endAttackEvent = entity.GetComponent<EndAttackEvent>().Value;
+            _endAttackEvent = entity.EndAttackEvent;
             _endSubscription = _endAttackEvent.Subscribe(OnEndAttack);
         }
 

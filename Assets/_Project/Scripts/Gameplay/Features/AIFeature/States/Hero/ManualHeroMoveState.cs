@@ -20,18 +20,16 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Hero
 
         public void Update(float deltaTime)
         {
-            Vector3 dir = _input.Direction;
-
-            if (dir.sqrMagnitude < 0.0001f)
-            {
-                _moveDirection.Value = Vector3.zero;
-                return;
-            }
-
-            dir = dir.normalized;
+            Vector3 dir = _input.Direction.normalized;
 
             _moveDirection.Value = dir;
             _rotationDirection.Value = dir;
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            _moveDirection.Value = Vector3.zero;
         }
     }
 }

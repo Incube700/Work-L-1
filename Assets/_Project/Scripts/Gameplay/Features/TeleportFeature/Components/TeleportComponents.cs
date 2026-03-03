@@ -14,7 +14,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
 
     public sealed class TeleportRequest : IEntityComponent
     {
-        public SimpleEvent Value;
+        public SimpleEvent<UnityEngine.Vector3> Value;
     }
 
     public sealed class TeleportedEvent : IEntityComponent

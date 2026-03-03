@@ -21,7 +21,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
             sm.AddState(move);
             sm.AddState(attack);
 
-            var canStartAttack = hero.GetComponent<CanStartAttack>().Value;
+            var canStartAttack = hero.CanStartAttack;
 
             sm.AddTransition(idle, move, new FuncCondition(() => input.Direction.sqrMagnitude > MoveThresholdSqr));
             sm.AddTransition(move, idle, new FuncCondition(() => input.Direction.sqrMagnitude <= MoveThresholdSqr));

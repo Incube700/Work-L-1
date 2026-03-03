@@ -33,10 +33,10 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Targeting
                 if (candidate.HasComponent<TransformComponent>() == false)
                     continue;
 
-                if (candidate.GetComponent<IsDead>().Value.Value)
+                if (candidate.IsDead.Value)
                     continue;
 
-                float hp = candidate.GetComponent<CurrentHealth>().Value.Value;
+                float hp = candidate.CurrentHealth.Value;
 
                 if (hp < bestHp)
                 {

@@ -13,12 +13,12 @@ namespace Assets._Project.Scripts.Gameplay.Features.AttackFeature
 
         public void OnInit(Entity entity)
         {
-            _inAttackProcess = entity.GetComponent<InAttackProcess>().Value;
+            _inAttackProcess = entity.InAttackProcess;
 
-            _currentTime = entity.GetComponent<AttackProcessCurrentTime>().Value;
-            _initialTime = entity.GetComponent<AttackProcessInitialTime>().Value;
+            _currentTime = entity.AttackProcessCurrentTime;
+            _initialTime = entity.AttackProcessInitialTime;
 
-            _endAttackEvent = entity.GetComponent<EndAttackEvent>().Value;
+            _endAttackEvent = entity.EndAttackEvent;
         }
 
         public void OnUpdate(float deltaTime)

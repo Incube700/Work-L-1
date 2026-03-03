@@ -1,6 +1,6 @@
 using System;
 
-public sealed class SimpleEvent
+public sealed class SimpleEvent : IReadOnlySimpleEvent
 {
     public event Action Invoked;
 
@@ -10,7 +10,7 @@ public sealed class SimpleEvent
     }
 }
 
-public sealed class SimpleEvent<T>
+public sealed class SimpleEvent<T> : IReadOnlySimpleEvent<T>
 {
     public event Action<T> Invoked;
 

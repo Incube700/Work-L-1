@@ -1,6 +1,7 @@
 using System;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
+using Assets._Project.Scripts.Gameplay.Features.TeleportFeature;
 using Assets._Project.Scripts.Infrastructure.AssetsManagment;
 using UnityEngine;
 
@@ -77,7 +78,7 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
         {
             // "Кнопка" (как в runtime TestGameplay): нажимаем T -> просим телепорт.
             if (Input.GetKeyDown(KeyCode.T))
-                _teleporter.TeleportRequest.Invoke();
+                _teleporter.TeleportRequest.Invoke(TeleportPositionCalculator.GetRandomPoint(_teleporter));
 
             // Для проверки смерти телепортера (не часть ТЗ, но удобно).
             if (Input.GetKeyDown(KeyCode.Space))

@@ -1,14 +1,17 @@
-using System;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.AIFeature;
-using Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Targeting;
-using Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Teleport;
 using Assets._Project.Scripts.Infrastructure.AssetsManagment;
 using UnityEngine;
 
 namespace Assets._Project.Scripts.Homework.L6AI
 {
+    public enum TeleportBrainMode
+    {
+        Random,
+        Smart
+    }
+
     public sealed class L6AIEntryPoint : MonoBehaviour
     {
         private const string TeleporterPath = "Entities/Teleporter";
@@ -20,7 +23,11 @@ namespace Assets._Project.Scripts.Homework.L6AI
         [SerializeField] private float _randomInterval = 2f;
         [SerializeField] private float _smartInterval = 2f;
         [SerializeField, Range(0f, 1f)] private float _smartMinEnergyPercent = 0.4f;
-        [SerializeField] private Vector3 _smartOffset = new Vector3(6f, 0f, 0f);
+
+        [Header("Brain Switching")]
+        [SerializeField] private TeleportBrainMode _startBrainMode = TeleportBrainMode.Random;
+        [SerializeField] private KeyCode _randomBrainKey = KeyCode.Alpha1;
+        [SerializeField] private KeyCode _smartBrainKey = KeyCode.Alpha2;
 
         [Header("Targets")]
         [SerializeField, Min(0)] private int _targetsCount = 6;
@@ -35,6 +42,9 @@ namespace Assets._Project.Scripts.Homework.L6AI
         private CollidersRegistryService _collidersRegistry;
 
         private AIBrainsContext _brains;
+        private Entity _teleporter;
+        private bool _hasBrain;
+        private TeleportBrainMode _currentBrainMode;
 
         private void Awake()
         {
@@ -59,38 +69,19 @@ namespace Assets._Project.Scripts.Homework.L6AI
                 factory.CreateDummy(pos, DummyPath, _dummyHealth);
             }
 
-            // Random
-            Entity randomTeleporter = factory.CreateRandomTeleporter(_spawnPosition, TeleporterPath, _teleporterSettings);
-
-            // Smart
-            Entity smartTeleporter = factory.CreateSmartTeleporter(_spawnPosition + _smartOffset, TeleporterPath, _teleporterSettings);
-
-            // brains
-            {
-                AIStateMachine sm = new AIStateMachine();
-                sm.AddState(new RandomTeleportState(randomTeleporter, _randomInterval));
-
-                _brains.SetFor(randomTeleporter, new StateMachineBrain(sm));
-            }
-
-            {
-                LowestHealthTargetSelector selector = new LowestHealthTargetSelector(smartTeleporter);
-                FindTargetState find = new FindTargetState(selector, _life, smartTeleporter);
-
-                SmartTeleportState smart = new SmartTeleportState(smartTeleporter, _smartInterval, _smartMinEnergyPercent);
-
-                AIParallelState rootParallel = new AIParallelState(find, smart);
-
-                AIStateMachine root = new AIStateMachine();
-                root.AddState(rootParallel);
-
-                _brains.SetFor(smartTeleporter, new StateMachineBrain(root));
-            }
+            _teleporter = factory.CreateTeleporter(_spawnPosition, TeleporterPath, _teleporterSettings);
+            SetBrain(_startBrainMode);
         }
 
         private void Update()
         {
             float dt = Time.deltaTime;
+
+            if (Input.GetKeyDown(_randomBrainKey))
+                SetBrain(TeleportBrainMode.Random);
+
+            if (Input.GetKeyDown(_smartBrainKey))
+                SetBrain(TeleportBrainMode.Smart);
 
             _brains.Update(dt);
             _life.Update(dt);
@@ -101,6 +92,24 @@ namespace Assets._Project.Scripts.Homework.L6AI
             _brains?.Dispose();
             _life?.Dispose();
             _monoFactory?.Dispose();
+        }
+
+        private void SetBrain(TeleportBrainMode mode)
+        {
+            if (_teleporter == null)
+                return;
+
+            if (_hasBrain && _currentBrainMode == mode)
+                return;
+
+            _currentBrainMode = mode;
+            _hasBrain = true;
+
+            IBrain brain = mode == TeleportBrainMode.Random
+                ? TeleportBrainFactory.CreateRandom(_teleporter, _randomInterval)
+                : TeleportBrainFactory.CreateSmart(_teleporter, _life, _smartInterval, _smartMinEnergyPercent);
+
+            _brains.SetFor(_teleporter, brain);
         }
     }
 }

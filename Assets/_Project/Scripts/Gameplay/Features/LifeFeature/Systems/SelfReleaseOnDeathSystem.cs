@@ -22,7 +22,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
         public void OnInit(Entity entity)
         {
             _entity = entity;
-            _isDead = entity.GetComponent<IsDead>().Value;
+            _isDead = entity.IsDead;
             _released = false;
         }
 
@@ -36,7 +36,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
 
             _released = true;
             
-            string name = _entity.HasComponent<TransformComponent>() ? _entity.GetComponent<TransformComponent>().Value.name : "Unknown";
+            string name = _entity.Transform.name;
             Debug.Log($"[REL] {name} released");
             
             _life.Release(_entity);

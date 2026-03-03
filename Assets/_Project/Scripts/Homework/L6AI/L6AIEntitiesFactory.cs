@@ -1,7 +1,6 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Conditions;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
-using Assets._Project.Scripts.Gameplay.Features.AIFeature;
 using Assets._Project.Scripts.Gameplay.Features.EnergyFeature;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature.Conditions;
@@ -25,29 +24,18 @@ namespace Assets._Project.Scripts.Homework.L6AI
             _colliders = colliders;
         }
 
-        public Entity CreateRandomTeleporter(Vector3 position, string prefabPath, TeleportingCharacterSettings settings)
+        public Entity CreateTeleporter(Vector3 position, string prefabPath, TeleportingCharacterSettings settings)
         {
             Entity entity = CreateBaseTeleporter(position, prefabPath, settings);
+
+            entity.AddCurrentTarget((Entity)null);
 
             ICondition canTeleport = new AllConditions(
                 new IsAliveCondition(),
                 new HasEnoughEnergyForTeleportCondition());
 
+            entity.AddCanTeleportCondition(canTeleport);
             entity.AddSystem(new TeleportSystem(canTeleport));
-            return entity;
-        }
-
-        public Entity CreateSmartTeleporter(Vector3 position, string prefabPath, TeleportingCharacterSettings settings)
-        {
-            Entity entity = CreateBaseTeleporter(position, prefabPath, settings);
-
-            entity.AddComponent(new CurrentTarget { Value = new ReactiveVariable<Entity>(null) });
-
-            ICondition canTeleport = new AllConditions(
-                new IsAliveCondition(),
-                new HasEnoughEnergyForTeleportCondition());
-
-            entity.AddSystem(new TeleportTowardsTargetSystem(canTeleport));
             return entity;
         }
 
@@ -91,7 +79,7 @@ namespace Assets._Project.Scripts.Homework.L6AI
 
             entity.AddTeleportRadius(settings.TeleportRadius);
             entity.AddTeleportEnergyCost(settings.TeleportEnergyCost);
-            entity.AddTeleportRequest(new SimpleEvent());
+            entity.AddTeleportRequest(new SimpleEvent<Vector3>());
             entity.AddTeleportedEvent(new SimpleEvent());
 
             entity.AddTeleportAoEDamage(settings.AoEDamage);

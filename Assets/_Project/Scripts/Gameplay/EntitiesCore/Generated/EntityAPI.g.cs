@@ -42,6 +42,10 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition CanStartAttack => CanStartAttackComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCanStartAttack(global::Assets._Project.Scripts.Utilities.Conditions.ICompositeCondition value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.AttackFeature.CanStartAttack { Value = value });
 
+        public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.CanTeleportConditionComponent CanTeleportConditionComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.CanTeleportConditionComponent>();
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Conditions.ICondition CanTeleportCondition => CanTeleportConditionComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCanTeleportCondition(global::Assets._Project.Scripts.Gameplay.EntitiesCore.Conditions.ICondition value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.CanTeleportConditionComponent { Value = value });
+
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent CharacterControllerComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent>();
         public global::UnityEngine.CharacterController CharacterController => CharacterControllerComponent.Value;
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddCharacterController(global::UnityEngine.CharacterController value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.CharacterControllerComponent { Value = value });
@@ -162,8 +166,8 @@ namespace Assets._Project.Scripts.Gameplay.EntitiesCore
         public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportRadius(global::System.Single value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRadius { Value = value });
 
         public global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest TeleportRequestComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest>();
-        public global::SimpleEvent TeleportRequest => TeleportRequestComponent.Value;
-        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportRequest(global::SimpleEvent value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest { Value = value });
+        public global::SimpleEvent<global::UnityEngine.Vector3> TeleportRequest => TeleportRequestComponent.Value;
+        public global::Assets._Project.Scripts.Gameplay.EntitiesCore.Entity AddTeleportRequest(global::SimpleEvent<global::UnityEngine.Vector3> value) => AddComponent(new global::Assets._Project.Scripts.Gameplay.Features.TeleportFeature.TeleportRequest { Value = value });
 
         public global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.TransformComponent TransformComponent => GetComponent<global::Assets._Project.Scripts.Gameplay.Features.MovementFeature.TransformComponent>();
         public global::UnityEngine.Transform Transform => TransformComponent.Value;

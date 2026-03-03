@@ -12,7 +12,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
         public void OnInit(Entity entity)
         {
             _rotationDirection = entity.RotationDirection;
-            _transform = entity.GetComponent<TransformComponent>().Value;
+            _transform = entity.Transform;
         }
 
         public void OnUpdate(float deltaTime)

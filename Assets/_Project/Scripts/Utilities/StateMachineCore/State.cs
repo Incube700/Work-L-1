@@ -5,8 +5,8 @@ namespace Assets._Project.Scripts.Utilities.StateMachineCore
         private readonly SimpleEvent _entered = new SimpleEvent();
         private readonly SimpleEvent _exited = new SimpleEvent();
 
-        public SimpleEvent Entered => _entered;
-        public SimpleEvent Exited => _exited;
+        public IReadOnlySimpleEvent Entered => _entered;
+        public IReadOnlySimpleEvent Exited => _exited;
 
         public virtual void Enter()
         {

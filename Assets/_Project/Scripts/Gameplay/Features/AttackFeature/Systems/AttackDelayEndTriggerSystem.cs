@@ -19,12 +19,12 @@ namespace Assets._Project.Scripts.Gameplay.Features.AttackFeature
 
         public void OnInit(Entity entity)
         {
-            _delayEndEvent = entity.GetComponent<AttackDelayEndEvent>().Value;
-            _startAttackEvent = entity.GetComponent<StartAttackEvent>().Value;
+            _delayEndEvent = entity.AttackDelayEndEvent;
+            _startAttackEvent = entity.StartAttackEvent;
 
-            _delay = entity.GetComponent<AttackDelayTime>().Value;
-            _currentTime = entity.GetComponent<AttackProcessCurrentTime>().Value;
-            _inAttackProcess = entity.GetComponent<InAttackProcess>().Value;
+            _delay = entity.AttackDelayTime;
+            _currentTime = entity.AttackProcessCurrentTime;
+            _inAttackProcess = entity.InAttackProcess;
 
             _startSubscription = _startAttackEvent.Subscribe(OnStartAttack);
         }

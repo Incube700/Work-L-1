@@ -14,8 +14,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
         public void OnInit(Entity entity)
         {
             _entity = entity;
-            _currentHealth = entity.GetComponent<CurrentHealth>().Value;
-            _isDead = entity.GetComponent<IsDead>().Value;
+            _currentHealth = entity.CurrentHealth;
+            _isDead = entity.IsDead;
         }
 
         public void OnUpdate(float deltaTime)
@@ -29,7 +29,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
             _currentHealth.Value = 0f;
             _isDead.Value = true;
 
-            string name = _entity.HasComponent<TransformComponent>() ? _entity.GetComponent<TransformComponent>().Value.name : "Unknown";
+            string name = _entity.Transform.name;
             Debug.Log($"[DEAD] {name}");
         }
     }

@@ -46,7 +46,7 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
 
             entity.AddTeleportRadius(settings.TeleportRadius);
             entity.AddTeleportEnergyCost(settings.TeleportEnergyCost);
-            entity.AddTeleportRequest(new SimpleEvent());
+            entity.AddTeleportRequest(new SimpleEvent<Vector3>());
             entity.AddTeleportedEvent(new SimpleEvent());
 
             entity.AddTeleportAoEDamage(settings.AoEDamage);
@@ -56,6 +56,8 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
             ICondition canTeleport = new AllConditions(
                 new IsAliveCondition(),
                 new HasEnoughEnergyForTeleportCondition());
+
+            entity.AddCanTeleportCondition(canTeleport);
 
             ICondition canRegenEnergy = new IsAliveCondition();
             

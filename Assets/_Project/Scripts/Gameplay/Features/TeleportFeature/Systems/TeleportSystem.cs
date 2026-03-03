@@ -11,9 +11,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
 
         private Entity _entity;
         private Transform _transform;
-        private float _teleportRadius;
 
-        private SimpleEvent _teleportRequest;
+        private SimpleEvent<Vector3> _teleportRequest;
         private SimpleEvent _teleportedEvent;
 
         public TeleportSystem(ICondition canTeleport)
@@ -26,7 +25,6 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
             _entity = entity;
 
             _transform = entity.Transform;
-            _teleportRadius = entity.TeleportRadius;
 
             _teleportRequest = entity.TeleportRequest;
             _teleportedEvent = entity.TeleportedEvent;
@@ -45,17 +43,12 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
             _teleportedEvent = null;
         }
 
-        private void OnTeleportRequested()
+        private void OnTeleportRequested(Vector3 position)
         {
             if (_canTeleport.IsSatisfied(_entity) == false)
                 return;
 
-            Vector3 before = _transform.position;
-
-            Vector2 offset2 = Random.insideUnitCircle * _teleportRadius;
-            Vector3 offset3 = new Vector3(offset2.x, 0f, offset2.y);
-
-            _transform.position = before + offset3;
+            _transform.position = position;
 
             _teleportedEvent.Invoke();
         }

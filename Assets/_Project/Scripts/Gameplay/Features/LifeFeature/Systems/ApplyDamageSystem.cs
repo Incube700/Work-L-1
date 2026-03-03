@@ -15,9 +15,9 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
         public void OnInit(Entity entity)
         {
             _entity = entity;
-            _currentHealth = entity.GetComponent<CurrentHealth>().Value;
-            _isDead = entity.GetComponent<IsDead>().Value;
-            _takeDamageRequest = entity.GetComponent<TakeDamageRequest>().Value;
+            _currentHealth = entity.CurrentHealth;
+            _isDead = entity.IsDead;
+            _takeDamageRequest = entity.TakeDamageRequest;
 
             _takeDamageRequest.Invoked += OnTakeDamageRequested;
         }
@@ -45,7 +45,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
             float next = before - damage;
             _currentHealth.Value = next;
 
-            string name = _entity.HasComponent<TransformComponent>() ? _entity.GetComponent<TransformComponent>().Value.name : "Unknown";
+            string name = _entity.Transform.name  ;
             Debug.Log($"[DMG] {name} -{damage} HP: {before} -> {next}");
         }
     }

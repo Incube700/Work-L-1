@@ -15,7 +15,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.MovementFeature
             _moveDirection = entity.MoveDirection;
             _moveSpeed = entity.MoveSpeed;
 
-            _controller = entity.GetComponent<CharacterControllerComponent>().Value;
+            _controller = entity.CharacterController;
         }
 
         public void OnUpdate(float deltaTime)
