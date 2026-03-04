@@ -20,8 +20,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Teleport
         {
             base.Enter();
 
-            if (TeleportPositionCalculator.TryGetPointTowardsCurrentTarget(_entity, out Vector3 position))
-                _teleportRequest.Invoke(position);
+            Vector3 position = TeleportPositionCalculator.GetPointTowardsCurrentTarget(_entity);
+            _teleportRequest.Invoke(position);
         }
 
         public void Update(float deltaTime)

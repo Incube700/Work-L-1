@@ -1,6 +1,7 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.AIFeature;
+using Assets._Project.Scripts.Gameplay.Features.InputFeature;
 using Assets._Project.Scripts.Infrastructure.AssetsManagment;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace Assets._Project.Scripts.Homework.L6AI
         [SerializeField] private TeleportBrainMode _startBrainMode = TeleportBrainMode.Random;
         [SerializeField] private KeyCode _randomBrainKey = KeyCode.Alpha1;
         [SerializeField] private KeyCode _smartBrainKey = KeyCode.Alpha2;
+        [SerializeField] private bool _enableBrainHotkeys = true;
 
         [Header("Targets")]
         [SerializeField, Min(0)] private int _targetsCount = 6;
@@ -42,6 +44,7 @@ namespace Assets._Project.Scripts.Homework.L6AI
         private CollidersRegistryService _collidersRegistry;
 
         private AIBrainsContext _brains;
+        private IBrainSwitchInputService _brainInput;
         private Entity _teleporter;
         private bool _hasBrain;
         private TeleportBrainMode _currentBrainMode;
@@ -57,6 +60,7 @@ namespace Assets._Project.Scripts.Homework.L6AI
             _monoFactory.Initialize();
 
             _brains = new AIBrainsContext();
+            _brainInput = new BrainSwitchInputService(_randomBrainKey, _smartBrainKey);
 
             L6AIEntitiesFactory factory = new L6AIEntitiesFactory(_life, _monoFactory, _collidersRegistry);
 
@@ -77,11 +81,16 @@ namespace Assets._Project.Scripts.Homework.L6AI
         {
             float dt = Time.deltaTime;
 
-            if (Input.GetKeyDown(_randomBrainKey))
-                SetBrain(TeleportBrainMode.Random);
+            if (_enableBrainHotkeys)
+            {
+                _brainInput.Tick();
 
-            if (Input.GetKeyDown(_smartBrainKey))
-                SetBrain(TeleportBrainMode.Smart);
+                if (_brainInput.RandomPressed)
+                    SetBrain(TeleportBrainMode.Random);
+
+                if (_brainInput.SmartPressed)
+                    SetBrain(TeleportBrainMode.Smart);
+            }
 
             _brains.Update(dt);
             _life.Update(dt);
