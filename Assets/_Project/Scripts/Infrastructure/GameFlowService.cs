@@ -16,4 +16,14 @@ public sealed class GameFlowService
     {
         _sceneLoader.Load(SceneNames.Gameplay, new GameplayArgs(mode));
     }
+
+    public void OpenDefendGameplay(DefendLevelConfig level)
+    {
+        if (level == null)
+        {
+            throw new System.ArgumentNullException(nameof(level));
+        }
+
+        _sceneLoader.Load(SceneNames.DefendGameplay, new DefendGameplayArgs(level));
+    }
 }

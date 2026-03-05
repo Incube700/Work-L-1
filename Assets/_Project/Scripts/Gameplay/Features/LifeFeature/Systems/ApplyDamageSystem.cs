@@ -1,20 +1,16 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
-using UnityEngine;
 
 namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
 {
     public sealed class ApplyDamageSystem : IInitializableSystem, IDisposableSystem
     {
-        private Entity _entity;
         private ReactiveVariable<float> _currentHealth;
         private ReactiveVariable<bool> _isDead;
         private SimpleEvent<float> _takeDamageRequest;
 
         public void OnInit(Entity entity)
         {
-            _entity = entity;
             _currentHealth = entity.CurrentHealth;
             _isDead = entity.IsDead;
             _takeDamageRequest = entity.TakeDamageRequest;
@@ -27,7 +23,6 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
             if (_takeDamageRequest != null)
                 _takeDamageRequest.Invoked -= OnTakeDamageRequested;
 
-            _entity = null;
             _currentHealth = null;
             _isDead = null;
             _takeDamageRequest = null;
@@ -41,12 +36,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
             if (damage <= 0f)
                 return;
 
-            float before = _currentHealth.Value;
-            float next = before - damage;
+            float next = _currentHealth.Value - damage;
             _currentHealth.Value = next;
-
-            string name = _entity.Transform.name  ;
-            Debug.Log($"[DMG] {name} -{damage} HP: {before} -> {next}");
         }
     }
 }

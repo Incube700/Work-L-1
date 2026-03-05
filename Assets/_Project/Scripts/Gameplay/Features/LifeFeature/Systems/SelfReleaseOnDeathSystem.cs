@@ -1,7 +1,5 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
-using UnityEngine;
 
 namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
 {
@@ -35,10 +33,6 @@ namespace Assets._Project.Scripts.Gameplay.Features.LifeFeature
                 return;
 
             _released = true;
-            
-            string name = _entity.Transform.name;
-            Debug.Log($"[REL] {name} released");
-            
             _life.Release(_entity);
         }
     }

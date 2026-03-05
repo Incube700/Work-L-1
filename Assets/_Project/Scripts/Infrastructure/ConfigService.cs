@@ -11,6 +11,8 @@ public sealed class ConfigService
     {
         _resourcesPaths.Add(typeof(GameModesConfig), "Configs/GameModesConfig");
         _resourcesPaths.Add(typeof(EconomyConfig), "Configs/EconomyConfig");
+        
+        _resourcesPaths.Add(typeof(DefendLevelsConfig), "Configs/DefendGame/DefendLevelsConfig");
     }
 
     public T Load<T>() where T : UnityEngine.Object

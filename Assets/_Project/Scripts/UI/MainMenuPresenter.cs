@@ -33,8 +33,7 @@ public sealed class MainMenuPresenter : IPresenter
         EconomyConfig economy = _configs.Load<EconomyConfig>();
         _view.SetResetCost(economy.ResetCost);
 
-        _view.NumbersClicked += OnNumbersClicked;
-        _view.LettersClicked += OnLettersClicked;
+        _view.PlayClicked += OnPlayClicked;
         _view.ResetClicked += OnResetClicked;
 
         _currencyList.Initialize();
@@ -48,19 +47,17 @@ public sealed class MainMenuPresenter : IPresenter
         _statsPresenter.Dispose();
         _currencyList.Dispose();
 
-        _view.NumbersClicked -= OnNumbersClicked;
-        _view.LettersClicked -= OnLettersClicked;
+        _view.PlayClicked -= OnPlayClicked;
         _view.ResetClicked -= OnResetClicked;
     }
 
-    private void OnNumbersClicked()
+    private void OnPlayClicked()
     {
-        _flow.OpenGameplay(GameMode.Numbers);
-    }
+        DefendLevelsConfig levels = _configs.Load<DefendLevelsConfig>();
+        DefendLevelConfig level = levels.GetRandom();
 
-    private void OnLettersClicked()
-    {
-        _flow.OpenGameplay(GameMode.Letters);
+        UnityEngine.Debug.Log($"[Defend] Selected level: {level.name}");
+        _flow.OpenDefendGameplay(level);
     }
 
     private void OnResetClicked()

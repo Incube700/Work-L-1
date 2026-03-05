@@ -1091,9 +1091,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _statusText: {fileID: 439977570}
   _resetButtonText: {fileID: 1363820832}
-  _numbersButton: {fileID: 1960795667}
-  _lettersButton: {fileID: 1012872357}
+  _playButton: {fileID: 1960795667}
   _resetButton: {fileID: 1721086953}
+  _legacyNumbersButton: {fileID: 0}
+  _legacyLettersButton: {fileID: 0}
 --- !u!1 &905469117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1340,7 +1341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1012872355
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1356,10 +1357,10 @@ RectTransform:
   - {fileID: 810099667}
   m_Father: {fileID: 233944299}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 147.281, y: -140.89427}
+  m_SizeDelta: {x: 264.562, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012872356
 MonoBehaviour:
@@ -1569,7 +1570,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play Numbers
+  m_text: Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2218,7 +2219,7 @@ GameObject:
   - component: {fileID: 1960795667}
   - component: {fileID: 1960795666}
   m_Layer: 5
-  m_Name: PlayNumbersButton
+  m_Name: PlayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

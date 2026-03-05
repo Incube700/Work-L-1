@@ -7,30 +7,40 @@ public sealed class MainMenuView : MonoBehaviour
 {
     // View только сообщает “кнопку нажали”.
     // Логику делаем в презентере.
-    public event Action NumbersClicked;
-    public event Action LettersClicked;
+    public event Action PlayClicked;
     public event Action ResetClicked;
 
     
     [SerializeField] private TMP_Text _statusText;
     [SerializeField] private TMP_Text _resetButtonText;
 
-    [SerializeField] private Button _numbersButton;
-    [SerializeField] private Button _lettersButton;
+    [SerializeField] private Button _playButton;
     [SerializeField] private Button _resetButton;
 
     private void OnEnable()
     {
-        _numbersButton.onClick.AddListener(OnNumbersClicked);
-        _lettersButton.onClick.AddListener(OnLettersClicked);
-        _resetButton.onClick.AddListener(OnResetClicked);
+        if (_playButton != null)
+        {
+            _playButton.onClick.AddListener(OnPlayClicked);
+        }
+
+        if (_resetButton != null)
+        {
+            _resetButton.onClick.AddListener(OnResetClicked);
+        }
     }
 
     private void OnDisable()
     {
-        _numbersButton.onClick.RemoveListener(OnNumbersClicked);
-        _lettersButton.onClick.RemoveListener(OnLettersClicked);
-        _resetButton.onClick.RemoveListener(OnResetClicked);
+        if (_playButton != null)
+        {
+            _playButton.onClick.RemoveListener(OnPlayClicked);
+        }
+
+        if (_resetButton != null)
+        {
+            _resetButton.onClick.RemoveListener(OnResetClicked);
+        }
     }
 
    
@@ -48,7 +58,6 @@ public sealed class MainMenuView : MonoBehaviour
         _statusText.text = message ?? string.Empty;
     }
 
-    private void OnNumbersClicked() => NumbersClicked?.Invoke();
-    private void OnLettersClicked() => LettersClicked?.Invoke();
+    private void OnPlayClicked() => PlayClicked?.Invoke();
     private void OnResetClicked() => ResetClicked?.Invoke();
 }

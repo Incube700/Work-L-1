@@ -22,15 +22,25 @@ public sealed class PlayerProgressService
 
     public void RegisterWin()
     {
+        RegisterWin(_economy.WinGold);
+    }
+
+    public void RegisterWin(int rewardGold)
+    {
+        if (rewardGold <= 0)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(rewardGold), "Win reward must be > 0.");
+        }
+
         _stats.AddWin();
-        _wallet.Add(CurrencyType.Gold, _economy.WinGold);
+        _wallet.Add(CurrencyType.Gold, rewardGold);
         _save.SaveAll();
     }
 
     public void RegisterLoss()
     {
         _stats.AddLoss();
-        _wallet.SubtractClamped(CurrencyType.Gold, _economy.LoseGold);
+        // По текущему ТЗ поражение не меняет золото.
         _save.SaveAll();
     }
 }

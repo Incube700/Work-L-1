@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - DefendBuilding
   - Water
   - UI
-  - 
-  - 
+  - DefendEnemy
+  - DefendMine
   - 
   - 
   - 
