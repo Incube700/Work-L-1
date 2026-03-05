@@ -15,9 +15,10 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
         public static IBrain CreateRandom(Entity entity, float interval)
         {
             CooldownTimer timer = new CooldownTimer(interval);
+            ITeleportPositionCalculator calculator = new RandomTeleportPositionCalculator();
 
             EmptyState wait = new EmptyState(timer.Tick);
-            RandomTeleportState teleport = new RandomTeleportState(entity);
+            TeleportState teleport = new TeleportState(entity, calculator);
 
             AIStateMachine stateMachine = new AIStateMachine(new List<IDisposable>
             {
@@ -29,7 +30,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
 
             stateMachine.AddTransition(wait, teleport, new CompositeCondition()
                 .Add(new FuncCondition(() => timer.IsFinished))
-                .Add(new FuncCondition(() => entity.CanTeleportCondition.IsSatisfied(entity))));
+                .Add(new FuncCondition(() => entity.CanTeleportCondition.IsSatisfied(entity)))
+                .Add(new FuncCondition(() => calculator.CanCalculate(entity))));
 
             stateMachine.AddTransition(teleport, wait, new FuncCondition(() => true));
             return new StateMachineBrain(stateMachine);
@@ -38,6 +40,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
         public static IBrain CreateSmart(Entity entity, EntitiesLifeContext life, float interval, float minEnergyPercent)
         {
             CooldownTimer timer = new CooldownTimer(interval);
+            ITeleportPositionCalculator calculator = new TargetTeleportPositionCalculator();
 
             FindTargetState findTarget = new FindTargetState(
                 new LowestHealthTargetSelector(entity),
@@ -45,7 +48,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
                 entity,
                 timer.Tick);
 
-            SmartTeleportState teleport = new SmartTeleportState(entity);
+            TeleportState teleport = new TeleportState(entity, calculator);
 
             AIStateMachine stateMachine = new AIStateMachine(new List<IDisposable>
             {
@@ -58,9 +61,8 @@ namespace Assets._Project.Scripts.Gameplay.Features.AIFeature
             stateMachine.AddTransition(findTarget, teleport, new CompositeCondition()
                 .Add(new FuncCondition(() => timer.IsFinished))
                 .Add(new FuncCondition(() => entity.CanTeleportCondition.IsSatisfied(entity)))
-                .Add(new FuncCondition(() => entity.CurrentTarget.Value != null))
                 .Add(new FuncCondition(() => HasEnoughEnergyPercent(entity, minEnergyPercent)))
-                .Add(new FuncCondition(() => TeleportPositionCalculator.CanTeleportTowardsCurrentTarget(entity))));
+                .Add(new FuncCondition(() => calculator.CanCalculate(entity))));
 
             stateMachine.AddTransition(teleport, findTarget, new FuncCondition(() => true));
             return new StateMachineBrain(stateMachine);

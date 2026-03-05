@@ -3,9 +3,17 @@ using UnityEngine;
 
 namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
 {
-    public static class TeleportPositionCalculator
+    public interface ITeleportPositionCalculator
     {
-        public static Vector3 GetRandomPoint(Entity entity)
+        bool CanCalculate(Entity entity);
+        Vector3 Calculate(Entity entity);
+    }
+
+    public sealed class RandomTeleportPositionCalculator : ITeleportPositionCalculator
+    {
+        public bool CanCalculate(Entity entity) => true;
+
+        public Vector3 Calculate(Entity entity)
         {
             Vector3 from = entity.Transform.position;
             Vector2 offset2 = Random.insideUnitCircle * entity.TeleportRadius;
@@ -13,21 +21,29 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
 
             return from + offset3;
         }
+    }
 
-        public static bool CanTeleportTowardsCurrentTarget(Entity entity)
-        {
-            return TryGetPointTowardsCurrentTarget(entity, out _);
-        }
-
-        public static bool TryGetPointTowardsCurrentTarget(Entity entity, out Vector3 position)
+    public sealed class TargetTeleportPositionCalculator : ITeleportPositionCalculator
+    {
+        public bool CanCalculate(Entity entity)
         {
             Entity target = entity.CurrentTarget.Value;
 
             if (target == null)
-            {
-                position = default;
                 return false;
-            }
+
+            Vector3 direction = target.Transform.position - entity.Transform.position;
+            direction.y = 0f;
+
+            return direction.sqrMagnitude > 0.0001f;
+        }
+
+        public Vector3 Calculate(Entity entity)
+        {
+            Entity target = entity.CurrentTarget.Value;
+
+            if (target == null)
+                return entity.Transform.position;
 
             Vector3 from = entity.Transform.position;
             Vector3 to = target.Transform.position;
@@ -36,27 +52,7 @@ namespace Assets._Project.Scripts.Gameplay.Features.TeleportFeature
             direction.y = 0f;
 
             if (direction.sqrMagnitude < 0.0001f)
-            {
-                position = default;
-                return false;
-            }
-
-            float distance = direction.magnitude;
-            float step = Mathf.Min(distance, entity.TeleportRadius);
-
-            position = from + direction.normalized * step;
-            return true;
-        }
-
-        public static Vector3 GetPointTowardsCurrentTarget(Entity entity)
-        {
-            Entity target = entity.CurrentTarget.Value;
-
-            Vector3 from = entity.Transform.position;
-            Vector3 to = target.Transform.position;
-
-            Vector3 direction = to - from;
-            direction.y = 0f;
+                return from;
 
             float distance = direction.magnitude;
             float step = Mathf.Min(distance, entity.TeleportRadius);

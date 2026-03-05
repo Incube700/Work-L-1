@@ -13,28 +13,28 @@ MonoBehaviour:
   m_Name: Level_01
   m_EditorClassIdentifier: 
   _buildingHealth: 200
-  _buildingPrefabPath: Entities/Dummy
+  _buildingPrefabPath: Entities/DummyBuilding
   _winRewardGold: 20
   _enemyHealth: 40
   _enemyMoveSpeed: 2.5
   _enemySpawnRadius: 10
   _enemyExplodeDistance: 1.25
   _enemyExplodeDamage: 25
-  _enemyPrefabPath: Entities/Dummy
+  _enemyPrefabPath: Entities/DummyEnemy
   _explosionRadius: 2.5
   _explosionDamage: 40
   _explosionMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   _mineCostGold: 10
   _restDurationSeconds: 5
   _mineTriggerRadius: 1.5
   _mineExplosionRadius: 2.5
   _mineDamage: 60
-  _minePrefabPath: Entities/Dummy
+  _minePrefabPath: Entities/DummyMine
   _mineMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   _waves:
   - _enemiesCount: 4
     _spawnInterval: 0.6

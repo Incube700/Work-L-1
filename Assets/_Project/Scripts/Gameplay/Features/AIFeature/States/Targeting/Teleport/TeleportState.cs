@@ -5,22 +5,23 @@ using UnityEngine;
 
 namespace Assets._Project.Scripts.Gameplay.Features.AIFeature.States.Teleport
 {
-    public sealed class SmartTeleportState : State, IUpdatableState
+    public sealed class TeleportState : State, IUpdatableState
     {
         private readonly Entity _entity;
+        private readonly ITeleportPositionCalculator _calculator;
         private readonly SimpleEvent<Vector3> _teleportRequest;
 
-        public SmartTeleportState(Entity entity)
+        public TeleportState(Entity entity, ITeleportPositionCalculator calculator)
         {
             _entity = entity;
+            _calculator = calculator;
             _teleportRequest = entity.TeleportRequest;
         }
 
         public override void Enter()
         {
             base.Enter();
-
-            Vector3 position = TeleportPositionCalculator.GetPointTowardsCurrentTarget(_entity);
+            Vector3 position = _calculator.Calculate(_entity);
             _teleportRequest.Invoke(position);
         }
 

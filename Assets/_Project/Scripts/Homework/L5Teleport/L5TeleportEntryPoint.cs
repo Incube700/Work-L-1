@@ -44,6 +44,7 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
         private CollidersRegistryService _collidersRegistry;
 
         private Entity _teleporter;
+        private readonly ITeleportPositionCalculator _manualTeleportCalculator = new RandomTeleportPositionCalculator();
 
         private void Awake()
         {
@@ -78,7 +79,7 @@ namespace Assets._Project.Scripts.Homework.L5Teleport
         {
             // "Кнопка" (как в runtime TestGameplay): нажимаем T -> просим телепорт.
             if (Input.GetKeyDown(KeyCode.T))
-                _teleporter.TeleportRequest.Invoke(TeleportPositionCalculator.GetRandomPoint(_teleporter));
+                _teleporter.TeleportRequest.Invoke(_manualTeleportCalculator.Calculate(_teleporter));
 
             // Для проверки смерти телепортера (не часть ТЗ, но удобно).
             if (Input.GetKeyDown(KeyCode.Space))
