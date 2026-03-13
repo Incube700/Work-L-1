@@ -71,7 +71,6 @@ public sealed class DefendEntitiesFactory
 
         entity.AddTransform(view.transform);
 
-        _life.Add(entity);
         return entity;
     }
 }

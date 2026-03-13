@@ -1,50 +1,53 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
+using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
+using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using UnityEngine;
 
-public sealed class MineEntity
+public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatableSystem
 {
     private const int BufferSize = 32;
 
-    private readonly EntitiesLifeContext _life;
     private readonly ExplosionService _explosionService;
-    private readonly Collider[] _buffer = new Collider[BufferSize];
     private readonly CollidersRegistryService _colliders;
-
-    private Entity _entity;
-    private Transform _transform;
     private readonly float _triggerRadius;
     private readonly float _explosionRadius;
     private readonly float _damage;
     private readonly int _mask;
+    private readonly Collider[] _buffer = new Collider[BufferSize];
 
-    public MineEntity(
-        EntitiesLifeContext life,
+    private Entity _entity;
+    private Transform _transform;
+    private ReactiveVariable<bool> _isDead;
+    private bool _triggered;
+
+    public MineTriggerExplosionSystem(
         ExplosionService explosionService,
         CollidersRegistryService colliders,
-        Entity entity,
-        Transform transform,
         float triggerRadius,
         float explosionRadius,
         float damage,
         int mask)
     {
-        _life = life;
         _explosionService = explosionService;
         _colliders = colliders;
-        _entity = entity;
-        _transform = transform;
         _triggerRadius = triggerRadius;
         _explosionRadius = explosionRadius;
         _damage = damage;
         _mask = mask;
     }
 
-    public bool IsReleased { get; private set; }
-
-    public void Update(float deltaTime)
+    public void OnInit(Entity entity)
     {
-        if (IsReleased || _transform == null)
+        _entity = entity;
+        _transform = entity.Transform;
+        _isDead = entity.IsDead;
+        _triggered = false;
+    }
+
+    public void OnUpdate(float deltaTime)
+    {
+        if (_triggered || _transform == null || _isDead.Value)
         {
             return;
         }
@@ -77,27 +80,15 @@ public sealed class MineEntity
 
             Log($"[Defend] Mine triggered at {_transform.position}");
             _explosionService.Explode(_transform.position, _explosionRadius, _damage, _mask);
-            Release();
+
+            if (_entity.HasComponent<TakeDamageRequest>())
+            {
+                _entity.TakeDamageRequest.Invoke(_entity.CurrentHealth.Value);
+            }
+
+            _triggered = true;
             break;
         }
-    }
-
-    public void Release()
-    {
-        if (IsReleased)
-        {
-            return;
-        }
-
-        IsReleased = true;
-
-        if (_entity != null)
-        {
-            _life.Release(_entity);
-        }
-
-        _entity = null;
-        _transform = null;
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
