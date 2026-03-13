@@ -51,7 +51,7 @@ public sealed class DefendEntitiesFactory
 
         entity.AddSystem(new ApplyDamageSystem());
         entity.AddSystem(new DeathSystem());
-        entity.AddSystem(new EnemyMoveToBuildingSystem(building.Transform));
+        entity.AddSystem(new EnemyMoveToBuildingDecisionSystem(building.Transform));
         entity.AddSystem(new TransformMoveByDirectionSystem());
         entity.AddSystem(new TransformRotationSystem());
         entity.AddSystem(new EnemyExplodeNearBuildingSystem(

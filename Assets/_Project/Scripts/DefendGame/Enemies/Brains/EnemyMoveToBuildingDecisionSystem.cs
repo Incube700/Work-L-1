@@ -3,7 +3,7 @@ using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using UnityEngine;
 
-public sealed class EnemyMoveToBuildingSystem : IInitializableSystem, IUpdatableSystem
+public sealed class EnemyMoveToBuildingDecisionSystem : IInitializableSystem, IUpdatableSystem
 {
     private readonly Transform _buildingTransform;
 
@@ -11,7 +11,7 @@ public sealed class EnemyMoveToBuildingSystem : IInitializableSystem, IUpdatable
     private ReactiveVariable<Vector3> _moveDirection;
     private ReactiveVariable<Vector3> _rotationDirection;
 
-    public EnemyMoveToBuildingSystem(Transform buildingTransform)
+    public EnemyMoveToBuildingDecisionSystem(Transform buildingTransform)
     {
         _buildingTransform = buildingTransform;
     }
