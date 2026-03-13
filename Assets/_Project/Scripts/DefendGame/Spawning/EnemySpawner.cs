@@ -29,7 +29,7 @@ public sealed class EnemySpawner
 
     public bool IsCompleted => _spawnCompleted;
 
-    public void StartWave(DefendLevelConfig.WaveConfig wave)
+    public void StartWave(WaveConfig wave)
     {
         if (wave.SpawnInterval <= 0f)
         {

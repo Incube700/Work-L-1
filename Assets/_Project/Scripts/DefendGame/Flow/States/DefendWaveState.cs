@@ -22,7 +22,7 @@ public sealed class DefendWaveState : State, IUpdatableState
         _controller.SetPhase(DefendPhase.Wave);
 
         int waveIndex = _controller.MoveToNextWave();
-        DefendLevelConfig.WaveConfig wave = _controller.GetWaveConfig(waveIndex);
+        WaveConfig wave = _controller.GetWaveConfig(waveIndex);
 
         _controller.StartWaveSpawn(wave);
 

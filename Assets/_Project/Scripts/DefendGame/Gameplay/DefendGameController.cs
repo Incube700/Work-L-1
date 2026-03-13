@@ -142,12 +142,12 @@ public sealed class DefendGameController : IDisposable
         return _currentWaveIndex;
     }
 
-    public DefendLevelConfig.WaveConfig GetWaveConfig(int waveIndex)
+    public WaveConfig GetWaveConfig(int waveIndex)
     {
         return _level.Waves[waveIndex];
     }
 
-    public void StartWaveSpawn(DefendLevelConfig.WaveConfig wave)
+    public void StartWaveSpawn(WaveConfig wave)
     {
         _enemySpawner.StartWave(wave);
     }
