@@ -38,10 +38,10 @@ public sealed class MineFactory
         mine.AddSystem(new MineTriggerExplosionSystem(
             _explosions,
             _colliders,
-            _level.MineTriggerRadius,
-            _level.MineExplosionRadius,
-            _level.MineDamage,
-            _level.MineMask));
+            _level.MineConfig.TriggerRadius,
+            _level.MineConfig.ExplosionRadius,
+            _level.MineConfig.Damage,
+            _level.MineConfig.Mask));
         mine.AddSystem(new SelfReleaseOnDeathSystem(_life));
 
         _life.Add(mine);

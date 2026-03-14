@@ -17,4 +17,4 @@ MonoBehaviour:
   _spawnRadius: 10
   _explodeDistance: 1.25
   _explodeDamage: 25
-  _prefabPath: Entities/Dummy
+  _prefabPath: Entities/DummyEnemy

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BuildingConfig
   m_EditorClassIdentifier: 
   _health: 200
-  _prefabPath: Entities/Dummy
+  _prefabPath: Entities/DummyBuilding

@@ -39,7 +39,7 @@ public sealed class DefendInputHandler
 
         if (phase == DefendPhase.Wave)
         {
-            _explosions.Explode(point, _level.ExplosionRadius, _level.ExplosionDamage, _level.ExplosionMask);
+            _explosions.Explode(point, _level.PlayerExplosionConfig.Radius, _level.PlayerExplosionConfig.Damage, _level.PlayerExplosionConfig.Mask);
             return;
         }
 

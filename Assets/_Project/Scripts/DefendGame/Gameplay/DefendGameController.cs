@@ -91,7 +91,7 @@ public sealed class DefendGameController : IDisposable
             _building,
             OnEnemySpawned);
 
-        Log($"[Defend] Session started. Building HP: {_level.BuildingHealth}");
+        Log($"[Defend] Session started. Building HP: {_level.BuildingConfig.Health}");
 
         if (_level.Waves == null || _level.Waves.Count == 0)
         {

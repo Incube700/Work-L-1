@@ -12,33 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 119062da63074c37a0e047b4410ecc2f, type: 3}
   m_Name: Level_02
   m_EditorClassIdentifier: 
-  _buildingHealth: 260
-  _buildingPrefabPath: Entities/DummyBuilding
-  _winRewardGold: 32
-  _enemyHealth: 52
-  _enemyMoveSpeed: 3
-  _enemySpawnRadius: 11
-  _enemyExplodeDistance: 1.25
-  _enemyExplodeDamage: 30
-  _enemyPrefabPath: Entities/DummyEnemy
-  _explosionRadius: 2.5
-  _explosionDamage: 46
-  _explosionMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _mineCostGold: 14
-  _restDurationSeconds: 5
-  _mineTriggerRadius: 1.5
-  _mineExplosionRadius: 2.5
-  _mineDamage: 75
-  _minePrefabPath: Entities/DummyMine
-  _mineMask:
-    serializedVersion: 2
-    m_Bits: 64
+  _winRewardGold: 40
+  _restDurationSeconds: 7
+  _buildingConfig: {fileID: 11400000, guid: b85710ff39afb427db0eb0b0ebfd5ea7, type: 2}
+  _enemyConfig: {fileID: 11400000, guid: c2e1e2bd7eb1d408d90cbcdf520789a6, type: 2}
+  _playerExplosionConfig: {fileID: 11400000, guid: 9f53576f9208145e0a54786033d7f6c8,
+    type: 2}
+  _mineConfig: {fileID: 11400000, guid: 09cf4cfd103834d5997f2135b8f06f08, type: 2}
   _waves:
-  - _enemiesCount: 6
-    _spawnInterval: 0.52
-  - _enemiesCount: 9
-    _spawnInterval: 0.44
-  - _enemiesCount: 12
-    _spawnInterval: 0.36
+  - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
+  - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
+  - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}

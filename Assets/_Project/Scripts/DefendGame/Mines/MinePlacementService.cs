@@ -18,10 +18,10 @@ public sealed class MinePlacementService
 
     public bool TryPlace(Vector3 point)
     {
-        if (_wallet.TrySpend(CurrencyType.Gold, _level.MineCostGold) == false)
+        if (_wallet.TrySpend(CurrencyType.Gold, _level.MineConfig.CostGold) == false)
         {
             Log(
-                $"[Defend] Mine not placed. Need {_level.MineCostGold} gold, current {_wallet.Get(CurrencyType.Gold)}");
+                $"[Defend] Mine not placed. Need {_level.MineConfig.CostGold} gold, current {_wallet.Get(CurrencyType.Gold)}");
             return false;
         }
 

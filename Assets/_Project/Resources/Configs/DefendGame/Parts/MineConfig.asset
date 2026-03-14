@@ -16,7 +16,7 @@ MonoBehaviour:
   _triggerRadius: 1.5
   _explosionRadius: 2.5
   _damage: 60
-  _prefabPath: Entities/Dummy
+  _prefabPath: Entities/DummyMIne
   _mask:
     serializedVersion: 2
     m_Bits: 4294967295

@@ -25,32 +25,7 @@ public sealed class DefendLevelConfig : ScriptableObject
     public PlayerExplosionConfig PlayerExplosionConfig => _playerExplosionConfig;
     public MineConfig MineConfig => _mineConfig;
     public IReadOnlyList<WaveConfig> Waves => _waves;
-
-    // ВРЕМЕННЫЕ PROXY-СВОЙСТВА ДЛЯ СОВМЕСТИМОСТИ.
-    // Следующим шагом переведём код на новые child-config references
-    // и эти свойства удалим.
-
-    public float BuildingHealth => _buildingConfig.Health;
-    public string BuildingPrefabPath => _buildingConfig.PrefabPath;
-
-    public float EnemyHealth => _enemyConfig.Health;
-    public float EnemyMoveSpeed => _enemyConfig.MoveSpeed;
-    public float EnemySpawnRadius => _enemyConfig.SpawnRadius;
-    public float EnemyExplodeDistance => _enemyConfig.ExplodeDistance;
-    public float EnemyExplodeDamage => _enemyConfig.ExplodeDamage;
-    public string EnemyPrefabPath => _enemyConfig.PrefabPath;
-
-    public float ExplosionRadius => _playerExplosionConfig.Radius;
-    public float ExplosionDamage => _playerExplosionConfig.Damage;
-    public LayerMask ExplosionMask => _playerExplosionConfig.Mask;
-
-    public int MineCostGold => _mineConfig.CostGold;
-    public float MineTriggerRadius => _mineConfig.TriggerRadius;
-    public float MineExplosionRadius => _mineConfig.ExplosionRadius;
-    public float MineDamage => _mineConfig.Damage;
-    public string MinePrefabPath => _mineConfig.PrefabPath;
-    public LayerMask MineMask => _mineConfig.Mask;
-
+    
 #if UNITY_EDITOR
     private void OnValidate()
     {

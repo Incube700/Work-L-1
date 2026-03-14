@@ -18,12 +18,12 @@ public sealed class DefendEntitiesFactory
     public Entity CreateBuilding(Vector3 position, DefendLevelConfig level)
     {
         Entity entity = new Entity();
-        MonoEntity view = _mono.Create(entity, position, level.BuildingPrefabPath);
+        MonoEntity view = _mono.Create(entity, position, level.BuildingConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
 
-        entity.AddMaxHealth(level.BuildingHealth);
-        entity.AddCurrentHealth(level.BuildingHealth);
+        entity.AddMaxHealth(level.BuildingConfig.Health);
+        entity.AddCurrentHealth(level.BuildingConfig.Health);
         entity.AddIsDead(false);
         entity.AddTakeDamageRequest(new SimpleEvent<float>());
 
@@ -37,15 +37,15 @@ public sealed class DefendEntitiesFactory
     public Entity CreateEnemy(Vector3 position, DefendLevelConfig level, Entity building)
     {
         Entity entity = new Entity();
-        MonoEntity view = _mono.Create(entity, position, level.EnemyPrefabPath);
+        MonoEntity view = _mono.Create(entity, position, level.EnemyConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
         entity.AddMoveDirection(Vector3.zero);
         entity.AddRotationDirection(Vector3.forward);
-        entity.AddMoveSpeed(level.EnemyMoveSpeed);
+        entity.AddMoveSpeed(level.EnemyConfig.MoveSpeed);
 
-        entity.AddMaxHealth(level.EnemyHealth);
-        entity.AddCurrentHealth(level.EnemyHealth);
+        entity.AddMaxHealth(level.EnemyConfig.Health);
+        entity.AddCurrentHealth(level.EnemyConfig.Health);
         entity.AddIsDead(false);
         entity.AddTakeDamageRequest(new SimpleEvent<float>());
 
@@ -56,8 +56,8 @@ public sealed class DefendEntitiesFactory
         entity.AddSystem(new TransformRotationSystem());
         entity.AddSystem(new EnemyExplodeNearBuildingSystem(
             building,
-            level.EnemyExplodeDistance,
-            level.EnemyExplodeDamage));
+            level.EnemyConfig.ExplodeDistance,
+            level.EnemyConfig.ExplodeDamage));
         entity.AddSystem(new SelfReleaseOnDeathSystem(_life));
 
         _life.Add(entity);
@@ -67,7 +67,7 @@ public sealed class DefendEntitiesFactory
     public Entity CreateMine(Vector3 position, DefendLevelConfig level)
     {
         Entity entity = new Entity();
-        MonoEntity view = _mono.Create(entity, position, level.MinePrefabPath);
+        MonoEntity view = _mono.Create(entity, position, level.MineConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
 
