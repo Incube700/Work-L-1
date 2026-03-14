@@ -11,8 +11,7 @@ public sealed class EnemySpawner
 
     private int _enemiesToSpawn;
     private int _enemiesSpawned;
-    private float _spawnInterval;
-    private float _spawnTimer;
+    private IntervalTimer _spawnTimer;
     private bool _spawnCompleted;
 
     public EnemySpawner(
@@ -38,8 +37,8 @@ public sealed class EnemySpawner
 
         _enemiesToSpawn = wave.EnemiesCount;
         _enemiesSpawned = 0;
-        _spawnInterval = wave.SpawnInterval;
-        _spawnTimer = 0f;
+        _spawnTimer = new IntervalTimer(wave.SpawnInterval);
+        _spawnTimer.Reset();
         _spawnCompleted = _enemiesToSpawn <= 0;
     }
 
@@ -50,13 +49,17 @@ public sealed class EnemySpawner
             return;
         }
 
-        _spawnTimer -= Mathf.Max(0f, deltaTime);
+        int spawnCount = _spawnTimer.Tick(deltaTime);
 
-        while (_spawnTimer <= 0f && _enemiesSpawned < _enemiesToSpawn)
+        for (int i = 0; i < spawnCount; i++)
         {
+            if (_enemiesSpawned >= _enemiesToSpawn)
+            {
+                break;
+            }
+
             SpawnEnemy();
             _enemiesSpawned++;
-            _spawnTimer += _spawnInterval;
         }
 
         if (_enemiesSpawned >= _enemiesToSpawn)
