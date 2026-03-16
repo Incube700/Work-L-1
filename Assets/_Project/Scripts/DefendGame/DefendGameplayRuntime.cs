@@ -6,11 +6,22 @@ using UnityEngine;
 
 public sealed class DefendGameplayRuntime
 {
+    private readonly DefendLevelConfig _level;
     private readonly Vector3 _buildingSpawnPoint;
-    private readonly EntitiesLifeContext _life;
-    private readonly MonoEntitiesFactory _monoFactory;
-    private readonly IInputService _input;
-    private readonly DefendGameController _controller;
+    private readonly LayerMask _groundMask;
+    private readonly WalletService _wallet;
+    private readonly PlayerProgressService _progress;
+    private readonly GameFlowService _flow;
+    private readonly DefendGameplayScreenView _screenView;
+
+    private EntitiesLifeContext _life;
+    private CollidersRegistryService _collidersRegistry;
+    private MonoEntitiesFactory _monoFactory;
+    private DefendEntitiesFactory _entitiesFactory;
+    private IInputService _input;
+    private IPointerService _pointer;
+    private ExplosionService _explosions;
+    private DefendGameController _controller;
 
     private bool _isStarted;
 
@@ -20,35 +31,16 @@ public sealed class DefendGameplayRuntime
         LayerMask groundMask,
         WalletService wallet,
         PlayerProgressService progress,
-        GameFlowService flow)
+        GameFlowService flow,
+        DefendGameplayScreenView screenView)
     {
+        _level = level;
         _buildingSpawnPoint = buildingSpawnPoint;
-
-        ResourcesAssetsLoader loader = new ResourcesAssetsLoader();
-
-        _life = new EntitiesLifeContext();
-
-        CollidersRegistryService collidersRegistry = new CollidersRegistryService();
-        _monoFactory = new MonoEntitiesFactory(loader, _life, collidersRegistry);
-        _monoFactory.Initialize();
-
-        _input = new DesktopInputService();
-        IPointerService pointer = new DesktopPointerService(Camera.main, groundMask, _buildingSpawnPoint.y);
-        ExplosionService explosions = new ExplosionService(collidersRegistry);
-
-        DefendEntitiesFactory entitiesFactory = new DefendEntitiesFactory(_life, _monoFactory);
-
-        _controller = new DefendGameController(
-            level,
-            entitiesFactory,
-            _life,
-            _input,
-            pointer,
-            explosions,
-            collidersRegistry,
-            wallet,
-            progress,
-            flow);
+        _groundMask = groundMask;
+        _wallet = wallet;
+        _progress = progress;
+        _flow = flow;
+        _screenView = screenView;
     }
 
     public void Start()
@@ -58,7 +50,40 @@ public sealed class DefendGameplayRuntime
             return;
         }
 
+        ResourcesAssetsLoader loader = new ResourcesAssetsLoader();
+
+        _life = new EntitiesLifeContext();
+
+        _collidersRegistry = new CollidersRegistryService();
+        _monoFactory = new MonoEntitiesFactory(loader, _life, _collidersRegistry);
+        _monoFactory.Initialize();
+
+        _input = new DesktopInputService();
+        _pointer = new DesktopPointerService(Camera.main, _groundMask, _buildingSpawnPoint.y);
+        _explosions = new ExplosionService(_collidersRegistry);
+
+        _entitiesFactory = new DefendEntitiesFactory(_life, _monoFactory);
+
+        _controller = new DefendGameController(
+            _level,
+            _entitiesFactory,
+            _life,
+            _input,
+            _pointer,
+            _explosions,
+            _collidersRegistry,
+            _wallet,
+            _progress,
+            _flow);
+
         _controller.Start(_buildingSpawnPoint);
+
+        // ScreenView пока просто прокинут в runtime.
+        // Следующим шагом подключим HudPresenter.
+        if (_screenView != null)
+        {
+        }
+
         _isStarted = true;
     }
 
@@ -84,6 +109,15 @@ public sealed class DefendGameplayRuntime
         _controller.Dispose();
         _life.Dispose();
         _monoFactory.Dispose();
+
+        _controller = null;
+        _life = null;
+        _collidersRegistry = null;
+        _monoFactory = null;
+        _entitiesFactory = null;
+        _input = null;
+        _pointer = null;
+        _explosions = null;
 
         _isStarted = false;
     }

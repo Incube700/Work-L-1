@@ -5,13 +5,12 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
 {
     [SerializeField] private Transform _buildingSpawnPoint;
     [SerializeField] private LayerMask _groundMask = ~0;
+    [SerializeField] private DefendGameplayScreenView _screenView;
 
     private DefendGameplayRuntime _runtime;
 
     protected override void Register(IContainer container)
     {
-        // Пока специальных scene-bind'ов для Defend не нужно.
-        // UI глубоко не трогаем на этом этапе.
     }
 
     protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
@@ -24,6 +23,11 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
         if (args.LevelConfig == null)
         {
             throw new InvalidOperationException("Defend level config is null.");
+        }
+
+        if (_screenView == null)
+        {
+            throw new InvalidOperationException("DefendGameplayScreenView is not assigned.");
         }
 
         WalletService wallet = container.Resolve<WalletService>();
@@ -40,7 +44,8 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
             _groundMask,
             wallet,
             progress,
-            flow);
+            flow,
+            _screenView);
 
         _runtime.Start();
     }

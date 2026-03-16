@@ -74,7 +74,9 @@ public sealed class DefendGameController : IDisposable
     public bool HasNextWave => _currentWaveIndex + 1 < _level.Waves.Count;
     public bool IsBuildingDead => _building != null && _building.IsDead.Value;
     public bool IsWaveSpawnCompleted => _enemySpawner != null && _enemySpawner.IsCompleted;
-
+    public float BuildingCurrentHealth => _building != null ? _building.CurrentHealth.Value : 0f;
+    public float BuildingMaxHealth => _building != null ? _building.MaxHealth.Value : 0f;
+    
     public void Start(Vector3 buildingPosition)
     {
         if (_level.WinRewardGold <= 0)
