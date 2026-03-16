@@ -1,52 +1,68 @@
-using System;
 using Assets._Project.Scripts.Utilities.StateMachineCore;
+using UnityEngine;
 
 public sealed class DefendWaveState : State, IUpdatableState
 {
-    private readonly DefendGameController _controller;
+    private readonly DefendPhaseService _phaseService;
+    private readonly WaveProgressService _waveProgressService;
+    private readonly EnemySpawner _enemySpawner;
+    private readonly EnemyService _enemyService;
 
     private bool _spawnCompletedLogged;
     private bool _waveClearedLogged;
 
-    public DefendWaveState(DefendGameController controller)
+    public DefendWaveState(
+        DefendPhaseService phaseService,
+        WaveProgressService waveProgressService,
+        EnemySpawner enemySpawner,
+        EnemyService enemyService)
     {
-        _controller = controller;
+        _phaseService = phaseService;
+        _waveProgressService = waveProgressService;
+        _enemySpawner = enemySpawner;
+        _enemyService = enemyService;
     }
 
-    public bool IsCompleted => _controller.IsWaveSpawnCompleted && _controller.AliveEnemiesCount == 0;
+    public bool IsCompleted => _enemySpawner.IsCompleted && _enemyService.AliveCount == 0;
 
     public override void Enter()
     {
         base.Enter();
 
-        _controller.SetPhase(DefendPhase.Wave);
+        _phaseService.SetPhase(DefendPhase.Wave);
 
-        int waveIndex = _controller.MoveToNextWave();
-        WaveConfig wave = _controller.GetWaveConfig(waveIndex);
+        int waveIndex = _waveProgressService.MoveToNextWave();
+        WaveConfig wave = _waveProgressService.GetWaveConfig(waveIndex);
 
-        _controller.StartWaveSpawn(wave);
+        _enemySpawner.StartWave(wave);
 
         _spawnCompletedLogged = false;
         _waveClearedLogged = false;
 
-        _controller.LogState(
-            $"[Defend] Wave {waveIndex + 1}/{_controller.WavesCount} started. Enemies: {wave.EnemiesCount}, SpawnInterval: {wave.SpawnInterval:0.##}s");
+        Log(
+            $"[Defend] Wave {waveIndex + 1}/{_waveProgressService.WavesCount} started. Enemies: {wave.EnemiesCount}, SpawnInterval: {wave.SpawnInterval:0.##}s");
     }
 
     public void Update(float deltaTime)
     {
-        _controller.UpdateWaveSpawn(deltaTime);
+        _enemySpawner.Update(deltaTime);
 
-        if (_controller.IsWaveSpawnCompleted && _spawnCompletedLogged == false)
+        if (_enemySpawner.IsCompleted && _spawnCompletedLogged == false)
         {
             _spawnCompletedLogged = true;
-            _controller.LogState($"[Defend] Wave {_controller.CurrentWaveNumber}: all enemies spawned.");
+            Log($"[Defend] Wave {_waveProgressService.CurrentWaveNumber}: all enemies spawned.");
         }
 
-        if (_controller.IsWaveSpawnCompleted && _controller.AliveEnemiesCount == 0 && _waveClearedLogged == false)
+        if (_enemySpawner.IsCompleted && _enemyService.AliveCount == 0 && _waveClearedLogged == false)
         {
             _waveClearedLogged = true;
-            _controller.LogState($"[Defend] Wave {_controller.CurrentWaveNumber} cleared.");
+            Log($"[Defend] Wave {_waveProgressService.CurrentWaveNumber} cleared.");
         }
+    }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    private static void Log(string message)
+    {
+        Debug.Log(message);
     }
 }

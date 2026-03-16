@@ -6,7 +6,7 @@ public sealed class EnemySpawner
 {
     private readonly DefendLevelConfig _level;
     private readonly DefendEntitiesFactory _factory;
-    private readonly Entity _building;
+    private readonly BuildingStateService _buildingStateService;
     private readonly Action<Entity> _enemySpawned;
 
     private int _enemiesToSpawn;
@@ -17,12 +17,12 @@ public sealed class EnemySpawner
     public EnemySpawner(
         DefendLevelConfig level,
         DefendEntitiesFactory factory,
-        Entity building,
+        BuildingStateService buildingStateService,
         Action<Entity> enemySpawned)
     {
         _level = level;
         _factory = factory;
-        _building = building;
+        _buildingStateService = buildingStateService;
         _enemySpawned = enemySpawned;
     }
 
@@ -70,6 +70,13 @@ public sealed class EnemySpawner
 
     private void SpawnEnemy()
     {
+        if (_buildingStateService.HasBuilding == false)
+        {
+            throw new InvalidOperationException("Building is not initialized.");
+        }
+
+        Entity building = _buildingStateService.Building;
+
         Vector2 offset2 = UnityEngine.Random.insideUnitCircle;
 
         if (offset2.sqrMagnitude < 0.0001f)
@@ -78,9 +85,9 @@ public sealed class EnemySpawner
         }
 
         offset2 = offset2.normalized * _level.EnemyConfig.SpawnRadius;
-        Vector3 position = _building.Transform.position + new Vector3(offset2.x, 0f, offset2.y);
+        Vector3 position = building.Transform.position + new Vector3(offset2.x, 0f, offset2.y);
 
-        Entity enemy = _factory.CreateEnemy(position, _level, _building);
+        Entity enemy = _factory.CreateEnemy(position, _level, building);
         _enemySpawned?.Invoke(enemy);
     }
 }

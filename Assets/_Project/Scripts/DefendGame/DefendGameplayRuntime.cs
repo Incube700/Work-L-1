@@ -1,46 +1,38 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.InputFeature;
-using Assets._Project.Scripts.Infrastructure.AssetsManagment;
-using UnityEngine;
 
 public sealed class DefendGameplayRuntime
 {
     private readonly DefendLevelConfig _level;
-    private readonly Vector3 _buildingSpawnPoint;
-    private readonly LayerMask _groundMask;
-    private readonly WalletService _wallet;
-    private readonly PlayerProgressService _progress;
-    private readonly GameFlowService _flow;
-    private readonly DefendGameplayScreenView _screenView;
-
-    private EntitiesLifeContext _life;
-    private CollidersRegistryService _collidersRegistry;
-    private MonoEntitiesFactory _monoFactory;
-    private DefendEntitiesFactory _entitiesFactory;
-    private IInputService _input;
-    private IPointerService _pointer;
-    private ExplosionService _explosions;
-    private DefendGameController _controller;
+    private readonly DefendGameplaySceneData _sceneData;
+    private readonly EntitiesLifeContext _life;
+    private readonly MonoEntitiesFactory _monoFactory;
+    private readonly DefendEntitiesFactory _entitiesFactory;
+    private readonly IInputService _input;
+    private readonly BuildingStateService _buildingStateService;
+    private readonly DefendGameController _controller;
 
     private bool _isStarted;
 
     public DefendGameplayRuntime(
         DefendLevelConfig level,
-        Vector3 buildingSpawnPoint,
-        LayerMask groundMask,
-        WalletService wallet,
-        PlayerProgressService progress,
-        GameFlowService flow,
-        DefendGameplayScreenView screenView)
+        DefendGameplaySceneData sceneData,
+        EntitiesLifeContext life,
+        MonoEntitiesFactory monoFactory,
+        DefendEntitiesFactory entitiesFactory,
+        IInputService input,
+        BuildingStateService buildingStateService,
+        DefendGameController controller)
     {
         _level = level;
-        _buildingSpawnPoint = buildingSpawnPoint;
-        _groundMask = groundMask;
-        _wallet = wallet;
-        _progress = progress;
-        _flow = flow;
-        _screenView = screenView;
+        _sceneData = sceneData;
+        _life = life;
+        _monoFactory = monoFactory;
+        _entitiesFactory = entitiesFactory;
+        _input = input;
+        _buildingStateService = buildingStateService;
+        _controller = controller;
     }
 
     public void Start()
@@ -50,38 +42,14 @@ public sealed class DefendGameplayRuntime
             return;
         }
 
-        ResourcesAssetsLoader loader = new ResourcesAssetsLoader();
+        Entity building = _entitiesFactory.CreateBuilding(_sceneData.BuildingSpawnPoint, _level);
+        _buildingStateService.SetBuilding(building);
 
-        _life = new EntitiesLifeContext();
+        _controller.Start();
 
-        _collidersRegistry = new CollidersRegistryService();
-        _monoFactory = new MonoEntitiesFactory(loader, _life, _collidersRegistry);
-        _monoFactory.Initialize();
-
-        _input = new DesktopInputService();
-        _pointer = new DesktopPointerService(Camera.main, _groundMask, _buildingSpawnPoint.y);
-        _explosions = new ExplosionService(_collidersRegistry);
-
-        _entitiesFactory = new DefendEntitiesFactory(_life, _monoFactory);
-
-        _controller = new DefendGameController(
-            _level,
-            _entitiesFactory,
-            _life,
-            _input,
-            _pointer,
-            _explosions,
-            _collidersRegistry,
-            _wallet,
-            _progress,
-            _flow);
-
-        _controller.Start(_buildingSpawnPoint);
-
-        // ScreenView пока просто прокинут в runtime.
-        // Следующим шагом подключим HudPresenter.
-        if (_screenView != null)
+        if (_sceneData.ScreenView != null)
         {
+            // HUD подключим следующим шагом.
         }
 
         _isStarted = true;
@@ -109,15 +77,6 @@ public sealed class DefendGameplayRuntime
         _controller.Dispose();
         _life.Dispose();
         _monoFactory.Dispose();
-
-        _controller = null;
-        _life = null;
-        _collidersRegistry = null;
-        _monoFactory = null;
-        _entitiesFactory = null;
-        _input = null;
-        _pointer = null;
-        _explosions = null;
 
         _isStarted = false;
     }

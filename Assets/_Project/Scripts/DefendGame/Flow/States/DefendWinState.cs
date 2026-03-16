@@ -2,16 +2,16 @@ using Assets._Project.Scripts.Utilities.StateMachineCore;
 
 public sealed class DefendWinState : State
 {
-    private readonly DefendGameController _controller;
+    private readonly DefendResultService _resultService;
 
-    public DefendWinState(DefendGameController controller)
+    public DefendWinState(DefendResultService resultService)
     {
-        _controller = controller;
+        _resultService = resultService;
     }
 
     public override void Enter()
     {
         base.Enter();
-        _controller.Win();
+        _resultService.Win();
     }
 }

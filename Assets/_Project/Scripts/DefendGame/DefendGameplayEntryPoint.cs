@@ -7,10 +7,12 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
     [SerializeField] private LayerMask _groundMask = ~0;
     [SerializeField] private DefendGameplayScreenView _screenView;
 
+    private IContainer _sceneContainer;
     private DefendGameplayRuntime _runtime;
 
     protected override void Register(IContainer container)
     {
+        _sceneContainer = container.CreateChild();
     }
 
     protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
@@ -30,23 +32,19 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
             throw new InvalidOperationException("DefendGameplayScreenView is not assigned.");
         }
 
-        WalletService wallet = container.Resolve<WalletService>();
-        PlayerProgressService progress = container.Resolve<PlayerProgressService>();
-        GameFlowService flow = container.Resolve<GameFlowService>();
-
         Vector3 spawnPoint = _buildingSpawnPoint != null
             ? _buildingSpawnPoint.position
             : Vector3.zero;
 
-        _runtime = new DefendGameplayRuntime(
-            args.LevelConfig,
+        _sceneContainer.BindInstance(args.LevelConfig);
+        _sceneContainer.BindInstance(new DefendGameplaySceneData(
             spawnPoint,
             _groundMask,
-            wallet,
-            progress,
-            flow,
-            _screenView);
+            _screenView));
 
+        DefendGameplayRegistrations.Register(_sceneContainer);
+
+        _runtime = _sceneContainer.Resolve<DefendGameplayRuntime>();
         _runtime.Start();
     }
 
@@ -69,5 +67,6 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
 
         _runtime.Dispose();
         _runtime = null;
+        _sceneContainer = null;
     }
 }
