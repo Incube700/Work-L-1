@@ -1,6 +1,5 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
-using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using UnityEngine;
 
 public sealed class ExplosionService
@@ -43,8 +42,12 @@ public sealed class ExplosionService
                 continue;
             }
 
-            // Взрыв игрока/мины должен бить только врагов (у building нет MoveDirection).
-            if (target.HasComponent<MoveDirection>() == false)
+            if (target.TryGetComponent(out TeamComponent teamComponent) == false)
+            {
+                continue;
+            }
+
+            if (teamComponent.Value != Team.Enemy)
             {
                 continue;
             }

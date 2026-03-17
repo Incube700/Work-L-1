@@ -21,6 +21,7 @@ public sealed class DefendEntitiesFactory
         MonoEntity view = _mono.Create(entity, position, level.BuildingConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
+        entity.AddComponent(new TeamComponent(Team.Player));
 
         entity.AddMaxHealth(level.BuildingConfig.Health);
         entity.AddCurrentHealth(level.BuildingConfig.Health);
@@ -40,6 +41,8 @@ public sealed class DefendEntitiesFactory
         MonoEntity view = _mono.Create(entity, position, level.EnemyConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
+        entity.AddComponent(new TeamComponent(Team.Enemy));
+        
         entity.AddMoveDirection(Vector3.zero);
         entity.AddRotationDirection(Vector3.forward);
         entity.AddMoveSpeed(level.EnemyConfig.MoveSpeed);
@@ -70,6 +73,7 @@ public sealed class DefendEntitiesFactory
         MonoEntity view = _mono.Create(entity, position, level.MineConfig.PrefabPath);
 
         entity.AddTransform(view.transform);
+        entity.AddComponent(new TeamComponent(Team.Player));
 
         return entity;
     }

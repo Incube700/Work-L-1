@@ -1,6 +1,5 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using UnityEngine;
 
@@ -73,7 +72,12 @@ public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatabl
                 continue;
             }
 
-            if (target.HasComponent<MoveDirection>() == false)
+            if (target.TryGetComponent(out TeamComponent teamComponent) == false)
+            {
+                continue;
+            }
+
+            if (teamComponent.Value != Team.Enemy)
             {
                 continue;
             }
