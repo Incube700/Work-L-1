@@ -5,12 +5,9 @@ using UnityEngine.UI;
 
 public sealed class MainMenuView : MonoBehaviour
 {
-    // View только сообщает “кнопку нажали”.
-    // Логику делаем в презентере.
     public event Action PlayClicked;
     public event Action ResetClicked;
 
-    
     [SerializeField] private TMP_Text _statusText;
     [SerializeField] private TMP_Text _resetButtonText;
 
@@ -43,8 +40,6 @@ public sealed class MainMenuView : MonoBehaviour
         }
     }
 
-   
-
     public void SetResetCost(int cost)
     {
         if (_resetButtonText != null)
@@ -55,9 +50,19 @@ public sealed class MainMenuView : MonoBehaviour
 
     public void SetStatus(string message)
     {
-        _statusText.text = message ?? string.Empty;
+        if (_statusText != null)
+        {
+            _statusText.text = message ?? string.Empty;
+        }
     }
 
-    private void OnPlayClicked() => PlayClicked?.Invoke();
-    private void OnResetClicked() => ResetClicked?.Invoke();
+    private void OnPlayClicked()
+    {
+        PlayClicked?.Invoke();
+    }
+
+    private void OnResetClicked()
+    {
+        ResetClicked?.Invoke();
+    }
 }

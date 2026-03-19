@@ -32,11 +32,17 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
             throw new InvalidOperationException("DefendGameplayScreenView is not assigned.");
         }
 
+        if (_screenView.HudView == null)
+        {
+            throw new InvalidOperationException("DefendHudView is not assigned in DefendGameplayScreenView.");
+        }
+
         Vector3 spawnPoint = _buildingSpawnPoint != null
             ? _buildingSpawnPoint.position
             : Vector3.zero;
 
         _sceneContainer.BindInstance(args.LevelConfig);
+        _sceneContainer.BindInstance(_screenView.HudView);
         _sceneContainer.BindInstance(new DefendGameplaySceneData(
             spawnPoint,
             _groundMask,

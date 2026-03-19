@@ -103,6 +103,13 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendInputHandler>(),
             c.Resolve<DefendStateMachine>()));
 
+        container.BindTransient<DefendHudPresenter>(c => new DefendHudPresenter(
+            c.Resolve<DefendHudView>(),
+            c.Resolve<DefendPhaseService>(),
+            c.Resolve<WaveProgressService>(),
+            c.Resolve<BuildingStateService>(),
+            c.Resolve<WalletService>()));
+
         container.BindLazy<DefendGameplayRuntime>(c => new DefendGameplayRuntime(
             c.Resolve<DefendLevelConfig>(),
             c.Resolve<DefendGameplaySceneData>(),
@@ -111,6 +118,7 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<IInputService>(),
             c.Resolve<BuildingStateService>(),
-            c.Resolve<DefendGameController>()));
+            c.Resolve<DefendGameController>(),
+            c.Resolve<DefendHudPresenter>()));
     }
 }

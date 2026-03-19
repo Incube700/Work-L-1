@@ -12,6 +12,7 @@ public sealed class DefendGameplayRuntime
     private readonly IInputService _input;
     private readonly BuildingStateService _buildingStateService;
     private readonly DefendGameController _controller;
+    private readonly DefendHudPresenter _hudPresenter;
 
     private bool _isStarted;
 
@@ -23,7 +24,8 @@ public sealed class DefendGameplayRuntime
         DefendEntitiesFactory entitiesFactory,
         IInputService input,
         BuildingStateService buildingStateService,
-        DefendGameController controller)
+        DefendGameController controller,
+        DefendHudPresenter hudPresenter)
     {
         _level = level;
         _sceneData = sceneData;
@@ -33,6 +35,7 @@ public sealed class DefendGameplayRuntime
         _input = input;
         _buildingStateService = buildingStateService;
         _controller = controller;
+        _hudPresenter = hudPresenter;
     }
 
     public void Start()
@@ -45,12 +48,8 @@ public sealed class DefendGameplayRuntime
         Entity building = _entitiesFactory.CreateBuilding(_sceneData.BuildingSpawnPoint, _level);
         _buildingStateService.SetBuilding(building);
 
+        _hudPresenter.Initialize();
         _controller.Start();
-
-        if (_sceneData.ScreenView != null)
-        {
-            // HUD подключим следующим шагом.
-        }
 
         _isStarted = true;
     }
@@ -74,6 +73,7 @@ public sealed class DefendGameplayRuntime
             return;
         }
 
+        _hudPresenter.Dispose();
         _controller.Dispose();
         _life.Dispose();
         _monoFactory.Dispose();

@@ -1,6 +1,10 @@
+using System;
+
 public sealed class DefendPhaseService
 {
     private DefendPhase _currentPhase = DefendPhase.Rest;
+
+    public event Action PhaseChanged;
 
     public DefendPhase CurrentPhase => _currentPhase;
 
@@ -10,6 +14,12 @@ public sealed class DefendPhaseService
 
     public void SetPhase(DefendPhase phase)
     {
+        if (_currentPhase == phase)
+        {
+            return;
+        }
+
         _currentPhase = phase;
+        PhaseChanged?.Invoke();
     }
 }

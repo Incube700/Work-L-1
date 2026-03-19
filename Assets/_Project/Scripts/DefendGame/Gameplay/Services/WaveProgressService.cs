@@ -6,6 +6,8 @@ public sealed class WaveProgressService
 
     private int _currentWaveIndex = -1;
 
+    public event Action CurrentWaveChanged;
+
     public WaveProgressService(DefendLevelConfig level)
     {
         _level = level ?? throw new ArgumentNullException(nameof(level));
@@ -25,6 +27,8 @@ public sealed class WaveProgressService
         }
 
         _currentWaveIndex++;
+        CurrentWaveChanged?.Invoke();
+
         return _currentWaveIndex;
     }
 

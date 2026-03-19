@@ -10,14 +10,14 @@ public sealed class DefendHudView : MonoBehaviour
     [SerializeField] private TMP_Text _buildingHpText;
     [SerializeField] private Slider _buildingHpSlider;
 
-    public void SetGold(int value)
+    public void SetGold(int gold)
     {
-        _goldText.text = $"Gold: {value}";
+        _goldText.text = $"Gold: {gold}";
     }
 
     public void SetWave(int currentWave, int totalWaves)
     {
-        _waveText.text = $"Wave: {currentWave}/{totalWaves}";
+        _waveText.text = $"Wave {currentWave}/{totalWaves}";
     }
 
     public void SetPhase(string phase)

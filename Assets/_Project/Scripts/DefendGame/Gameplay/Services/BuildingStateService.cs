@@ -4,6 +4,10 @@ using Assets._Project.Scripts.Gameplay.EntitiesCore;
 public sealed class BuildingStateService
 {
     private Entity _building;
+    private IReadOnlyReactiveVariable<float> _currentHealth;
+
+    public event Action BuildingChanged;
+    public event Action HealthChanged;
 
     public Entity Building => _building;
 
@@ -14,6 +18,34 @@ public sealed class BuildingStateService
 
     public void SetBuilding(Entity building)
     {
-        _building = building ?? throw new ArgumentNullException(nameof(building));
+        if (building == null)
+        {
+            throw new ArgumentNullException(nameof(building));
+        }
+
+        UnsubscribeFromBuilding();
+
+        _building = building;
+        _currentHealth = _building.CurrentHealth;
+        _currentHealth.Changed += OnHealthChanged;
+
+        BuildingChanged?.Invoke();
+        HealthChanged?.Invoke();
+    }
+
+    private void OnHealthChanged()
+    {
+        HealthChanged?.Invoke();
+    }
+
+    private void UnsubscribeFromBuilding()
+    {
+        if (_currentHealth == null)
+        {
+            return;
+        }
+
+        _currentHealth.Changed -= OnHealthChanged;
+        _currentHealth = null;
     }
 }
