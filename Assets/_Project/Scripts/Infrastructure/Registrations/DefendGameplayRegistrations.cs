@@ -54,8 +54,18 @@ public static class DefendGameplayRegistrations
         container.BindLazy<DefendResultService>(c => new DefendResultService(
             c.Resolve<DefendLevelConfig>(),
             c.Resolve<PlayerProgressService>(),
-            c.Resolve<GameFlowService>(),
             c.Resolve<DefendPhaseService>()));
+
+        container.BindLazy<PopupService>(c => new PopupService(
+            c.Resolve<ViewsFactory>(),
+            c.Resolve<ProjectPresentersFactory>(),
+            c.Resolve<PopupLayer>().transform));
+
+        container.BindTransient<DefendResultPresenter>(c => new DefendResultPresenter(
+            c.Resolve<DefendResultService>(),
+            c.Resolve<PopupService>(),
+            c.Resolve<GameFlowService>(),
+            c.Resolve<DefendLevelConfig>()));
 
         container.BindLazy<MineFactory>(c => new MineFactory(
             c.Resolve<DefendLevelConfig>(),
@@ -93,16 +103,6 @@ public static class DefendGameplayRegistrations
 
         container.BindLazy<DefendStateMachine>(c => c.Resolve<DefendStateMachineFactory>().Create());
 
-        container.BindLazy<DefendGameController>(c => new DefendGameController(
-            c.Resolve<EntitiesLifeContext>(),
-            c.Resolve<DefendPhaseService>(),
-            c.Resolve<WaveProgressService>(),
-            c.Resolve<BuildingStateService>(),
-            c.Resolve<DefendResultService>(),
-            c.Resolve<EnemyService>(),
-            c.Resolve<DefendInputHandler>(),
-            c.Resolve<DefendStateMachine>()));
-
         container.BindTransient<DefendHudPresenter>(c => new DefendHudPresenter(
             c.Resolve<DefendHudView>(),
             c.Resolve<DefendPhaseService>(),
@@ -118,7 +118,14 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<IInputService>(),
             c.Resolve<BuildingStateService>(),
-            c.Resolve<DefendGameController>(),
-            c.Resolve<DefendHudPresenter>()));
+            c.Resolve<DefendResultService>(),
+            c.Resolve<EnemyService>(),
+            c.Resolve<DefendInputHandler>(),
+            c.Resolve<DefendStateMachine>(),
+            c.Resolve<WaveProgressService>(),
+            c.Resolve<DefendPhaseService>(),
+            c.Resolve<DefendHudPresenter>(),
+            c.Resolve<DefendResultPresenter>(),
+            c.Resolve<PopupService>()));
     }
 }

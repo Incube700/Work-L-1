@@ -3,8 +3,8 @@ using UnityEngine;
 public sealed class DefendGameplayScreenView : MonoBehaviour
 {
     [SerializeField] private DefendHudView _hudView;
-    [SerializeField] private Transform _popupRoot;
-
+    [SerializeField] private PopupLayer _popupLayer;
+    
     public DefendHudView HudView => _hudView;
-    public Transform PopupRoot => _popupRoot;
+    public PopupLayer PopupLayer => _popupLayer;
 }

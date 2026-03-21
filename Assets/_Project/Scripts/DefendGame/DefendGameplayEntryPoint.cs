@@ -37,12 +37,18 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
             throw new InvalidOperationException("DefendHudView is not assigned in DefendGameplayScreenView.");
         }
 
+        if (_screenView.PopupLayer == null)
+        {
+            throw new InvalidOperationException("PopupLayer is not assigned in DefendGameplayScreenView.");       
+        }
+
         Vector3 spawnPoint = _buildingSpawnPoint != null
             ? _buildingSpawnPoint.position
             : Vector3.zero;
 
         _sceneContainer.BindInstance(args.LevelConfig);
         _sceneContainer.BindInstance(_screenView.HudView);
+        _sceneContainer.BindInstance(_screenView.PopupLayer);       
         _sceneContainer.BindInstance(new DefendGameplaySceneData(
             spawnPoint,
             _groundMask,
