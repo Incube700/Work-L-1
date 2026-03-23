@@ -78,13 +78,17 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendLevelConfig>(),
             c.Resolve<WalletService>(),
             c.Resolve<MineFactory>()));
+        
+        container.BindLazy<PlayerClickEffectService>(c => new PlayerClickEffectService(
+            c.Resolve<ResourcesAssetsLoader>().Load<GameObject>("VFX/PlayerClickEffect")));
 
         container.BindLazy<DefendInputHandler>(c => new DefendInputHandler(
             c.Resolve<IInputService>(),
             c.Resolve<IPointerService>(),
             c.Resolve<ExplosionService>(),
             c.Resolve<MinePlacementService>(),
-            c.Resolve<DefendLevelConfig>()));
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<PlayerClickEffectService>()));
 
         container.BindLazy<EnemySpawner>(c => new EnemySpawner(
             c.Resolve<DefendLevelConfig>(),

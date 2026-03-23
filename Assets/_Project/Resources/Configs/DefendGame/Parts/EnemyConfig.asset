@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 40
   _moveSpeed: 2.5
-  _spawnRadius: 10
+  _spawnRadius: 24.06
   _explodeDistance: 1.25
   _explodeDamage: 25
   _prefabPath: Entities/DummyEnemy

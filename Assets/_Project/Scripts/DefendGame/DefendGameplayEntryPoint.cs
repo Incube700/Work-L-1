@@ -41,6 +41,7 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("PopupLayer is not assigned in DefendGameplayScreenView.");       
         }
+        
 
         Vector3 spawnPoint = _buildingSpawnPoint != null
             ? _buildingSpawnPoint.position

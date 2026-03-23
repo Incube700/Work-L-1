@@ -8,19 +8,22 @@ public sealed class DefendInputHandler
     private readonly ExplosionService _explosions;
     private readonly MinePlacementService _minePlacementService;
     private readonly DefendLevelConfig _level;
+    private readonly PlayerClickEffectService _playerClickEffectService;
 
     public DefendInputHandler(
         IInputService input,
         IPointerService pointer,
         ExplosionService explosions,
         MinePlacementService minePlacementService,
-        DefendLevelConfig level)
+        DefendLevelConfig level,
+        PlayerClickEffectService playerClickEffectService)
     {
         _input = input;
         _pointer = pointer;
         _explosions = explosions;
         _minePlacementService = minePlacementService;
         _level = level;
+        _playerClickEffectService = playerClickEffectService;
     }
 
     public void Update(DefendPhase phase, float buildingY)
@@ -40,7 +43,9 @@ public sealed class DefendInputHandler
         if (phase == DefendPhase.Wave)
         {
             _explosions.Explode(point, _level.PlayerExplosionConfig.Radius, _level.PlayerExplosionConfig.Damage, _level.PlayerExplosionConfig.Mask);
+            _playerClickEffectService.Play(point);
             return;
+            
         }
 
         if (phase == DefendPhase.Rest)

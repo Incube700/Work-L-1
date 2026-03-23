@@ -61,7 +61,7 @@ public sealed class DefendEntitiesFactory
             building,
             level.EnemyConfig.ExplodeDistance,
             level.EnemyConfig.ExplodeDamage));
-        entity.AddSystem(new SelfReleaseOnDeathSystem(_life));
+        entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
 
         _life.Add(entity);
         return entity;
