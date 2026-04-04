@@ -8,11 +8,16 @@ public sealed class DefendEntitiesFactory
 {
     private readonly EntitiesLifeContext _life;
     private readonly MonoEntitiesFactory _mono;
+    private readonly ExplosionService _explosionService;
 
-    public DefendEntitiesFactory(EntitiesLifeContext life, MonoEntitiesFactory mono)
+    public DefendEntitiesFactory(
+        EntitiesLifeContext life,
+        MonoEntitiesFactory mono,
+        ExplosionService explosionService)
     {
         _life = life;
         _mono = mono;
+        _explosionService = explosionService;
     }
 
     public Entity CreateBuilding(Vector3 position, DefendLevelConfig level)
@@ -42,7 +47,7 @@ public sealed class DefendEntitiesFactory
 
         entity.AddTransform(view.transform);
         entity.AddComponent(new TeamComponent(Team.Enemy));
-        
+
         entity.AddMoveDirection(Vector3.zero);
         entity.AddRotationDirection(Vector3.forward);
         entity.AddMoveSpeed(level.EnemyConfig.MoveSpeed);
@@ -60,7 +65,8 @@ public sealed class DefendEntitiesFactory
         entity.AddSystem(new EnemyExplodeNearBuildingSystem(
             building,
             level.EnemyConfig.ExplodeDistance,
-            level.EnemyConfig.ExplodeDamage));
+            level.EnemyConfig.ExplodeDamage,
+            _explosionService));
         entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
 
         _life.Add(entity);

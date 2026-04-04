@@ -8,4 +8,5 @@ public interface IContainer : IReadOnlyContainer
 
     bool IsRegistered<T>();
     IContainer CreateChild();
+    void Dispose();
 }

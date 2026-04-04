@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Assets._Project.Scripts.Gameplay.Features.InputFeature;
 
@@ -5,35 +6,36 @@ public sealed class DefendInputHandler
 {
     private readonly IInputService _input;
     private readonly IPointerService _pointer;
-    private readonly ExplosionService _explosions;
     private readonly MinePlacementService _minePlacementService;
-    private readonly DefendLevelConfig _level;
-    private readonly PlayerClickEffectService _playerClickEffectService;
+
+    public event Action<Vector3> AimPointChanged;
+
+    public event Action<Vector3> PlayerAttacked;
 
     public DefendInputHandler(
         IInputService input,
         IPointerService pointer,
-        ExplosionService explosions,
-        MinePlacementService minePlacementService,
-        DefendLevelConfig level,
-        PlayerClickEffectService playerClickEffectService)
+        MinePlacementService minePlacementService)
     {
         _input = input;
         _pointer = pointer;
-        _explosions = explosions;
         _minePlacementService = minePlacementService;
-        _level = level;
-        _playerClickEffectService = playerClickEffectService;
     }
 
     public void Update(DefendPhase phase, float buildingY)
     {
+        if (_pointer.TryGetGroundPoint(out Vector3 point))
+        {
+            point.y = buildingY;
+            AimPointChanged?.Invoke(point);
+        }
+
         if (_input.FireDown == false)
         {
             return;
         }
 
-        if (_pointer.TryGetGroundPoint(out Vector3 point) == false)
+        if (_pointer.TryGetGroundPoint(out point) == false)
         {
             return;
         }
@@ -42,10 +44,8 @@ public sealed class DefendInputHandler
 
         if (phase == DefendPhase.Wave)
         {
-            _explosions.Explode(point, _level.PlayerExplosionConfig.Radius, _level.PlayerExplosionConfig.Damage, _level.PlayerExplosionConfig.Mask);
-            _playerClickEffectService.Play(point);
+            PlayerAttacked?.Invoke(point);
             return;
-            
         }
 
         if (phase == DefendPhase.Rest)

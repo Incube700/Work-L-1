@@ -1,7 +1,7 @@
 using System;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 
-public sealed class BuildingStateService
+public sealed class BuildingStateService : IDisposable
 {
     private Entity _building;
     private IReadOnlyReactiveVariable<float> _currentHealth;
@@ -31,6 +31,15 @@ public sealed class BuildingStateService
 
         BuildingChanged?.Invoke();
         HealthChanged?.Invoke();
+    }
+
+    public void Dispose()
+    {
+        UnsubscribeFromBuilding();
+
+        _building = null;
+        BuildingChanged = null;
+        HealthChanged = null;
     }
 
     private void OnHealthChanged()

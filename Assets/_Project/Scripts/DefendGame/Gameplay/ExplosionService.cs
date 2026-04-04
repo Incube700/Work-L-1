@@ -1,3 +1,4 @@
+using System;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using UnityEngine;
@@ -8,6 +9,8 @@ public sealed class ExplosionService
 
     private readonly CollidersRegistryService _collidersRegistry;
     private readonly Collider[] _buffer = new Collider[CollidersBufferSize];
+
+    public event Action<Vector3, float> Exploded;
 
     public ExplosionService(CollidersRegistryService collidersRegistry)
     {
@@ -20,6 +23,8 @@ public sealed class ExplosionService
         {
             return;
         }
+
+        NotifyExploded(position, radius);
 
         int count = Physics.OverlapSphereNonAlloc(
             position,
@@ -59,5 +64,15 @@ public sealed class ExplosionService
 
             target.TakeDamageRequest.Invoke(damage);
         }
+    }
+
+    public void NotifyExploded(Vector3 position, float radius)
+    {
+        if (radius <= 0f)
+        {
+            return;
+        }
+
+        Exploded?.Invoke(position, radius);
     }
 }

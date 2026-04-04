@@ -6,13 +6,13 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
     [SerializeField] private Transform _buildingSpawnPoint;
     [SerializeField] private LayerMask _groundMask = ~0;
     [SerializeField] private DefendGameplayScreenView _screenView;
-
+    
     private IContainer _sceneContainer;
     private DefendGameplayRuntime _runtime;
 
     protected override void Register(IContainer container)
     {
-        _sceneContainer = container.CreateChild();
+        _sceneContainer = container;
     }
 
     protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
@@ -41,6 +41,11 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("PopupLayer is not assigned in DefendGameplayScreenView.");       
         }
+
+        if (_screenView.CurrencyListView == null)
+        {
+            throw new InvalidOperationException("CurrencyListView is not assigned in DefendGameplayScreenView.");      
+        }
         
 
         Vector3 spawnPoint = _buildingSpawnPoint != null
@@ -49,16 +54,17 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
 
         _sceneContainer.BindInstance(args.LevelConfig);
         _sceneContainer.BindInstance(_screenView.HudView);
+        _sceneContainer.BindInstance(_screenView.CurrencyListView);
         _sceneContainer.BindInstance(_screenView.PopupLayer);       
         _sceneContainer.BindInstance(new DefendGameplaySceneData(
             spawnPoint,
-            _groundMask,
-            _screenView));
-
+            _groundMask));
+        
         DefendGameplayRegistrations.Register(_sceneContainer);
-
+        
         _runtime = _sceneContainer.Resolve<DefendGameplayRuntime>();
         _runtime.Start();
+        
     }
 
     private void Update()
@@ -81,5 +87,6 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
         _runtime.Dispose();
         _runtime = null;
         _sceneContainer = null;
+        
     }
 }

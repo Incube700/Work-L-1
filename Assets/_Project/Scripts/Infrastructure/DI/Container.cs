@@ -10,11 +10,14 @@ public sealed class Container : IContainer
         new Dictionary<Type, Func<IReadOnlyContainer, object>>();
 
     private readonly Container _parent;
-    
+
     private readonly Stack<Type> _resolutionPath = new Stack<Type>();
     private int _resolutionDepth;
+    private bool _isDisposed;
 
-    public Container() { }
+    public Container()
+    {
+    }
 
     private Container(Container parent)
     {
@@ -23,6 +26,8 @@ public sealed class Container : IContainer
 
     public void BindInstance<T>(T instance)
     {
+        ThrowIfDisposed();
+
         if (instance == null)
         {
             throw new ArgumentNullException(nameof(instance));
@@ -36,6 +41,8 @@ public sealed class Container : IContainer
 
     public void BindLazy<T>(Func<IReadOnlyContainer, T> factory)
     {
+        ThrowIfDisposed();
+
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
@@ -49,6 +56,8 @@ public sealed class Container : IContainer
 
     public void BindTransient<T>(Func<IReadOnlyContainer, T> factory)
     {
+        ThrowIfDisposed();
+
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
@@ -62,17 +71,22 @@ public sealed class Container : IContainer
 
     public bool IsRegistered<T>()
     {
+        ThrowIfDisposed();
         return IsRegistered(typeof(T));
     }
 
     public IContainer CreateChild()
     {
+        ThrowIfDisposed();
         return new Container(this);
     }
 
     public T Resolve<T>()
     {
+        ThrowIfDisposed();
+
         BeginResolve();
+
         try
         {
             object obj = Resolve(typeof(T), _resolutionPath);
@@ -86,7 +100,10 @@ public sealed class Container : IContainer
 
     public bool TryResolve<T>(out T instance)
     {
+        ThrowIfDisposed();
+
         BeginResolve();
+
         try
         {
             if (TryResolve(typeof(T), _resolutionPath, out object obj))
@@ -102,6 +119,22 @@ public sealed class Container : IContainer
         {
             EndResolve();
         }
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        _instances.Clear();
+        _lazyFactories.Clear();
+        _transientFactories.Clear();
+        _resolutionPath.Clear();
+        _resolutionDepth = 0;
+
+        _isDisposed = true;
     }
 
     private void EndResolve()
@@ -153,7 +186,7 @@ public sealed class Container : IContainer
             obj = CreateWithCycleCheck(type, path, transientFactory);
             return true;
         }
-        
+
         if (_parent != null)
         {
             return _parent.TryResolve(type, path, out obj);
@@ -202,7 +235,7 @@ public sealed class Container : IContainer
 
     private string BuildCycleMessage(Stack<Type> path, Type requested)
     {
-        Type[] types = path.ToArray(); // top->bottom
+        Type[] types = path.ToArray();
         string message = requested.Name;
 
         for (int i = 0; i < types.Length; i++)
@@ -211,5 +244,13 @@ public sealed class Container : IContainer
         }
 
         return message + " -> " + requested.Name;
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_isDisposed)
+        {
+            throw new ObjectDisposedException(nameof(Container));
+        }
     }
 }

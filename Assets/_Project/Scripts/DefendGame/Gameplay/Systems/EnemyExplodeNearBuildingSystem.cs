@@ -8,16 +8,22 @@ public sealed class EnemyExplodeNearBuildingSystem : IInitializableSystem, IUpda
     private readonly Entity _building;
     private readonly float _explodeDistance;
     private readonly float _explodeDamage;
+    private readonly ExplosionService _explosionService;
 
     private Entity _self;
     private Transform _selfTransform;
     private ReactiveVariable<bool> _isDead;
 
-    public EnemyExplodeNearBuildingSystem(Entity building, float explodeDistance, float explodeDamage)
+    public EnemyExplodeNearBuildingSystem(
+        Entity building,
+        float explodeDistance,
+        float explodeDamage,
+        ExplosionService explosionService)
     {
         _building = building;
         _explodeDistance = explodeDistance;
         _explodeDamage = explodeDamage;
+        _explosionService = explosionService;
     }
 
     public void OnInit(Entity entity)
@@ -44,6 +50,8 @@ public sealed class EnemyExplodeNearBuildingSystem : IInitializableSystem, IUpda
         {
             return;
         }
+
+        _explosionService.NotifyExploded(_selfTransform.position, _explodeDistance);
 
         if (_building.HasComponent<TakeDamageRequest>())
         {

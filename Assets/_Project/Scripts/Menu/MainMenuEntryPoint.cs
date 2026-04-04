@@ -1,51 +1,55 @@
 using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 public sealed class MainMenuEntryPoint : SceneEntryPointBase
 {
+    [SerializeField] private MainMenuScreenView _screenView;
+
+    private IContainer _sceneContainer;
     private MainMenuPresenter _presenter;
     private PopupService _popupService;
 
     protected override void Register(IContainer container)
     {
-        MainMenuRegistrations.Register(container);
+        _sceneContainer = container;
+        MainMenuRegistrations.Register(_sceneContainer);
     }
 
     protected override void StartScene(IReadOnlyContainer container, SceneArgsService argsService)
     {
-        MainMenuView view = Object.FindObjectOfType<MainMenuView>(true);
-        if (view == null)
+        if (_screenView == null)
         {
-            throw new InvalidOperationException("MainMenuView not found. Add MainMenuView to MainMenu scene.");
+            throw new InvalidOperationException("MainMenuScreenView is not assigned.");
         }
 
-        PopupLayer popupLayer = Object.FindObjectOfType<PopupLayer>(true);
-        if (popupLayer == null)
+        if (_screenView.MainMenuView == null)
         {
-            throw new InvalidOperationException("PopupLayer not found. Add PopupLayer to MainMenu scene (under Canvas).");
-        }
-        
-        CurrencyListView currencyListView = Object.FindObjectOfType<CurrencyListView>(true);
-        if (currencyListView == null)
-        {
-            throw new InvalidOperationException("CurrencyListView not found. Add CurrencyListView to MainMenu scene.");
-        }
-        
-        StatsView statsView = Object.FindObjectOfType<StatsView>(true);
-        if (statsView == null)
-        {
-            throw new InvalidOperationException("StatsView not found. Add StatsView to MainMenu scene.");
+            throw new InvalidOperationException("MainMenuView is not assigned in MainMenuScreenView.");
         }
 
-        ((IContainer)container).BindInstance(currencyListView);
-        ((IContainer)container).BindInstance(view);
-        ((IContainer)container).BindInstance(popupLayer);
-        ((IContainer)container).BindInstance(statsView);
+        if (_screenView.PopupLayer == null)
+        {
+            throw new InvalidOperationException("PopupLayer is not assigned in MainMenuScreenView.");
+        }
 
-        _popupService = container.Resolve<PopupService>();
+        if (_screenView.CurrencyListView == null)
+        {
+            throw new InvalidOperationException("CurrencyListView is not assigned in MainMenuScreenView.");
+        }
 
-        _presenter = container.Resolve<MainMenuPresenter>();
+        if (_screenView.StatsView == null)
+        {
+            throw new InvalidOperationException("StatsView is not assigned in MainMenuScreenView.");
+        }
+
+        _sceneContainer.BindInstance(_screenView.MainMenuView);
+        _sceneContainer.BindInstance(_screenView.PopupLayer);
+        _sceneContainer.BindInstance(_screenView.CurrencyListView);
+        _sceneContainer.BindInstance(_screenView.StatsView);
+
+        _popupService = _sceneContainer.Resolve<PopupService>();
+
+        _presenter = _sceneContainer.Resolve<MainMenuPresenter>();
         _presenter.Initialize();
     }
 
@@ -62,5 +66,7 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
             _popupService.Dispose();
             _popupService = null;
         }
+
+        _sceneContainer = null;
     }
 }

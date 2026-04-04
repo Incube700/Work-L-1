@@ -10,6 +10,8 @@ public sealed class MainMenuPresenter : IPresenter
     private readonly CurrencyListPresenter _currencyList;
     private readonly StatsPresenter _statsPresenter;
 
+    private bool _isInitialized;
+
     public MainMenuPresenter(
         MainMenuView view,
         GameFlowService flow,
@@ -30,6 +32,11 @@ public sealed class MainMenuPresenter : IPresenter
 
     public void Initialize()
     {
+        if (_isInitialized)
+        {
+            return;
+        }
+
         EconomyConfig economy = _configs.Load<EconomyConfig>();
         _view.SetResetCost(economy.ResetCost);
 
@@ -40,15 +47,24 @@ public sealed class MainMenuPresenter : IPresenter
         _statsPresenter.Initialize();
 
         _view.SetStatus(string.Empty);
+
+        _isInitialized = true;
     }
 
     public void Dispose()
     {
+        if (_isInitialized == false)
+        {
+            return;
+        }
+
         _statsPresenter.Dispose();
         _currencyList.Dispose();
 
         _view.PlayClicked -= OnPlayClicked;
         _view.ResetClicked -= OnResetClicked;
+
+        _isInitialized = false;
     }
 
     private void OnPlayClicked()

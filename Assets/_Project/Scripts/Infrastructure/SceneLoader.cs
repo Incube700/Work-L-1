@@ -2,10 +2,11 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public sealed class SceneLoader
+public sealed class SceneLoader : IDisposable
 {
     private readonly SceneArgsService _argsService;
     private bool _isLoading;
+    private bool _isDisposed;
 
     public event Action SceneLoaded;
 
@@ -17,6 +18,11 @@ public sealed class SceneLoader
 
     public void Load(string sceneName, IInputArgs args = null)
     {
+        if (_isDisposed)
+        {
+            throw new ObjectDisposedException(nameof(SceneLoader));
+        }
+
         if (_isLoading)
         {
             Debug.LogWarning($"Scene load ignored. Previous load is still in progress. Target: {sceneName}");
@@ -47,6 +53,17 @@ public sealed class SceneLoader
             _isLoading = false;
             overlay.Dispose();
         };
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        _isDisposed = true;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

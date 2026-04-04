@@ -10,6 +10,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: stopAction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: autoRandomSeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
       propertyPath: UVModule.tilesX
       value: 10
       objectReference: {fileID: 0}
@@ -21,12 +36,32 @@ PrefabInstance:
     - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 7
+      value: 4.79
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 2.41
       objectReference: {fileID: 0}
     - target: {fileID: 7522982781472501600, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
       propertyPath: SubModule.subEmitters.Array.data[0].emitter
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501601, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501601, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501601, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.19
       objectReference: {fileID: 0}
     - target: {fileID: 7522982781472501601, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
@@ -78,16 +113,51 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7522982781472501601, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7522982781472501662, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
       propertyPath: m_Name
-      value: Explosion 3
+      value: PlayerClickEffect
       objectReference: {fileID: 0}
     - target: {fileID: 7522982781472501663, guid: 017c9fcd02ca72049806a4014da0bea6,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5fd7eb1efb65a9b4aa5224eaa309f1f4, type: 2}
+    - target: {fileID: 7522982782318301003, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301003, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301005, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301005, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301005, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 7522982782318301005, guid: 017c9fcd02ca72049806a4014da0bea6,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

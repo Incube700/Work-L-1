@@ -6,11 +6,8 @@ using UnityEngine;
 
 public sealed class DefendGameplayRuntime : IDisposable
 {
-    private readonly DefendLevelConfig _level;
-    private readonly DefendGameplaySceneData _sceneData;
     private readonly EntitiesLifeContext _life;
     private readonly MonoEntitiesFactory _monoFactory;
-    private readonly DefendEntitiesFactory _entitiesFactory;
     private readonly IInputService _input;
     private readonly BuildingStateService _buildingStateService;
     private readonly DefendResultService _resultService;
@@ -19,18 +16,15 @@ public sealed class DefendGameplayRuntime : IDisposable
     private readonly DefendStateMachine _stateMachine;
     private readonly WaveProgressService _waveProgressService;
     private readonly DefendPhaseService _phaseService;
-    private readonly DefendHudPresenter _hudPresenter;
-    private readonly DefendResultPresenter _resultPresenter;
-    private readonly PopupService _popupService;
+    private readonly DefendUiRuntime _uiRuntime;
+    private readonly DefendBuildingInitializer _buildingInitializer;
+    private readonly ExplosionEffectService _explosionEffectService;
 
     private bool _isStarted;
 
     public DefendGameplayRuntime(
-        DefendLevelConfig level,
-        DefendGameplaySceneData sceneData,
         EntitiesLifeContext life,
         MonoEntitiesFactory monoFactory,
-        DefendEntitiesFactory entitiesFactory,
         IInputService input,
         BuildingStateService buildingStateService,
         DefendResultService resultService,
@@ -39,15 +33,12 @@ public sealed class DefendGameplayRuntime : IDisposable
         DefendStateMachine stateMachine,
         WaveProgressService waveProgressService,
         DefendPhaseService phaseService,
-        DefendHudPresenter hudPresenter,
-        DefendResultPresenter resultPresenter,
-        PopupService popupService)
+        DefendUiRuntime uiRuntime,
+        DefendBuildingInitializer buildingInitializer,
+        ExplosionEffectService explosionEffectService)
     {
-        _level = level;
-        _sceneData = sceneData;
         _life = life;
         _monoFactory = monoFactory;
-        _entitiesFactory = entitiesFactory;
         _input = input;
         _buildingStateService = buildingStateService;
         _resultService = resultService;
@@ -56,9 +47,9 @@ public sealed class DefendGameplayRuntime : IDisposable
         _stateMachine = stateMachine;
         _waveProgressService = waveProgressService;
         _phaseService = phaseService;
-        _hudPresenter = hudPresenter;
-        _resultPresenter = resultPresenter;
-        _popupService = popupService;
+        _uiRuntime = uiRuntime;
+        _buildingInitializer = buildingInitializer;
+        _explosionEffectService = explosionEffectService;
     }
 
     public void Start()
@@ -68,18 +59,12 @@ public sealed class DefendGameplayRuntime : IDisposable
             return;
         }
 
-        Entity building = _entitiesFactory.CreateBuilding(_sceneData.BuildingSpawnPoint, _level);
-        _buildingStateService.SetBuilding(building);
-
-        if (_buildingStateService.HasBuilding == false)
-        {
-            throw new InvalidOperationException("Building is not initialized.");
-        }
+        _buildingInitializer.Initialize();
 
         _life.Released += OnEntityReleased;
 
-        _hudPresenter.Initialize();
-        _resultPresenter.Initialize();
+        _explosionEffectService.Initialize();
+        _uiRuntime.Initialize();
 
         Log($"[Defend] Session started. Building HP: {_buildingStateService.MaxHealth}");
 
@@ -127,9 +112,9 @@ public sealed class DefendGameplayRuntime : IDisposable
 
         _life.Released -= OnEntityReleased;
 
-        _resultPresenter.Dispose();
-        _hudPresenter.Dispose();
-        _popupService.Dispose();
+        _uiRuntime.Dispose();
+        _buildingStateService.Dispose();
+        _explosionEffectService.Dispose();
         _stateMachine.Dispose();
         _enemyService.Dispose();
         _life.Dispose();

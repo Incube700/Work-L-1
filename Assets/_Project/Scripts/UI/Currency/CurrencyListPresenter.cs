@@ -9,6 +9,8 @@ public sealed class CurrencyListPresenter : IPresenter
 
     private readonly List<CurrencyRowPresenter> _rows = new List<CurrencyRowPresenter>();
 
+    private bool _isInitialized;
+
     public CurrencyListPresenter(CurrencyListView view, ViewsFactory views, WalletService wallet)
     {
         _view = view;
@@ -18,6 +20,11 @@ public sealed class CurrencyListPresenter : IPresenter
 
     public void Initialize()
     {
+        if (_isInitialized)
+        {
+            return;
+        }
+
         CurrencyType[] types = _wallet.GetAvailableCurrencies();
 
         for (int i = 0; i < types.Length; i++)
@@ -30,10 +37,17 @@ public sealed class CurrencyListPresenter : IPresenter
             rowPresenter.Initialize();
             _rows.Add(rowPresenter);
         }
+
+        _isInitialized = true;
     }
 
     public void Dispose()
     {
+        if (_isInitialized == false)
+        {
+            return;
+        }
+
         for (int i = 0; i < _rows.Count; i++)
         {
             CurrencyRowPresenter presenter = _rows[i];
@@ -42,5 +56,7 @@ public sealed class CurrencyListPresenter : IPresenter
         }
 
         _rows.Clear();
+
+        _isInitialized = false;
     }
 }

@@ -8,6 +8,7 @@ public sealed class DefendResultPresenter : IPresenter
     private readonly GameFlowService _gameFlowService;
     private readonly DefendLevelConfig _levelConfig;
 
+    private bool _isInitialized;
     private bool _isPopupShown;
 
     public DefendResultPresenter(
@@ -24,12 +25,26 @@ public sealed class DefendResultPresenter : IPresenter
 
     public void Initialize()
     {
+        if (_isInitialized)
+        {
+            return;
+        }
+
+        _isPopupShown = false;
         _resultService.ResultChanged += OnResultChanged;
+
+        _isInitialized = true;
     }
 
     public void Dispose()
     {
+        if (_isInitialized == false)
+        {
+            return;
+        }
+
         _resultService.ResultChanged -= OnResultChanged;
+        _isInitialized = false;
     }
 
     private void OnResultChanged(DefendGameResult result)

@@ -7,49 +7,51 @@ public sealed class DefendHudPresenter : IPresenter
     private readonly DefendPhaseService _phaseService;
     private readonly WaveProgressService _waveProgressService;
     private readonly BuildingStateService _buildingStateService;
-    private readonly WalletService _walletService;
 
-    private IReadOnlyReactiveVariable<int> _gold;
+    private bool _isInitialized;
 
     public DefendHudPresenter(
         DefendHudView view,
         DefendPhaseService phaseService,
         WaveProgressService waveProgressService,
-        BuildingStateService buildingStateService,
-        WalletService walletService)
+        BuildingStateService buildingStateService)
     {
         _view = view ?? throw new ArgumentNullException(nameof(view));
         _phaseService = phaseService ?? throw new ArgumentNullException(nameof(phaseService));
         _waveProgressService = waveProgressService ?? throw new ArgumentNullException(nameof(waveProgressService));
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
-        _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
     }
 
     public void Initialize()
     {
+        if (_isInitialized)
+        {
+            return;
+        }
+
         _phaseService.PhaseChanged += OnPhaseChanged;
         _waveProgressService.CurrentWaveChanged += OnCurrentWaveChanged;
         _buildingStateService.BuildingChanged += OnBuildingChanged;
         _buildingStateService.HealthChanged += OnHealthChanged;
 
-        _gold = _walletService.GetReactive(CurrencyType.Gold);
-        _gold.Changed += OnGoldChanged;
-
         RefreshAll();
+
+        _isInitialized = true;
     }
 
     public void Dispose()
     {
+        if (_isInitialized == false)
+        {
+            return;
+        }
+
         _phaseService.PhaseChanged -= OnPhaseChanged;
         _waveProgressService.CurrentWaveChanged -= OnCurrentWaveChanged;
         _buildingStateService.BuildingChanged -= OnBuildingChanged;
         _buildingStateService.HealthChanged -= OnHealthChanged;
 
-        if (_gold != null)
-        {
-            _gold.Changed -= OnGoldChanged;
-            _gold = null;
-        }
+        _isInitialized = false;
     }
 
     private void OnPhaseChanged()
@@ -72,29 +74,18 @@ public sealed class DefendHudPresenter : IPresenter
         RefreshBuildingHealth();
     }
 
-    private void OnGoldChanged()
-    {
-        RefreshGold();
-    }
-
     private void RefreshAll()
     {
-        RefreshGold();
         RefreshWave();
         RefreshPhase();
         RefreshBuildingHealth();
-    }
-
-    private void RefreshGold()
-    {
-        _view.SetGold(_walletService.Get(CurrencyType.Gold));
     }
 
     private void RefreshWave()
     {
         int currentWave = _waveProgressService.CurrentWaveNumber;
 
-        if (currentWave <= 0 && _waveProgressService.HasAnyWaves)
+        if (currentWave <= 0 && _waveProgressService.HasAnyWaves == true)
         {
             currentWave = 1;
         }

@@ -11,6 +11,8 @@ public sealed class PopupService : IDisposable
     private readonly Dictionary<PopupPresenterBase, PopupInfo> _presenterToInfo =
         new Dictionary<PopupPresenterBase, PopupInfo>();
 
+    private bool _isDisposed;
+
     public PopupService(
         ViewsFactory viewsFactory,
         ProjectPresentersFactory presentersFactory,
@@ -23,6 +25,8 @@ public sealed class PopupService : IDisposable
 
     public MessagePopupPresenter OpenMessagePopup(string title, string message, Action closedCallback = null)
     {
+        ThrowIfDisposed();
+
         MessagePopupView view = _viewsFactory.Create<MessagePopupView>(ViewIDs.MessagePopup, _popupLayer);
 
         MessagePopupPresenter presenter = _presentersFactory.CreateMessagePopupPresenter(view);
@@ -35,7 +39,17 @@ public sealed class PopupService : IDisposable
 
     public void ClosePopup(PopupPresenterBase popup)
     {
-        if (popup == null || _presenterToInfo.ContainsKey(popup) == false)
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        if (popup == null)
+        {
+            return;
+        }
+
+        if (_presenterToInfo.TryGetValue(popup, out PopupInfo info) == false)
         {
             return;
         }
@@ -44,22 +58,39 @@ public sealed class PopupService : IDisposable
 
         popup.Hide(() =>
         {
-            _presenterToInfo[popup].ClosedCallback?.Invoke();
+            info.ClosedCallback?.Invoke();
 
-            DisposeFor(popup);
+            popup.Dispose();
+            _viewsFactory.Release(info.View);
             _presenterToInfo.Remove(popup);
         });
     }
 
     public void Dispose()
     {
-        foreach (PopupPresenterBase popup in _presenterToInfo.Keys)
+        if (_isDisposed)
         {
+            return;
+        }
+
+        List<PopupPresenterBase> popups = new List<PopupPresenterBase>(_presenterToInfo.Keys);
+
+        for (int i = 0; i < popups.Count; i++)
+        {
+            PopupPresenterBase popup = popups[i];
+
+            if (_presenterToInfo.TryGetValue(popup, out PopupInfo info) == false)
+            {
+                continue;
+            }
+
             popup.CloseRequest -= ClosePopup;
-            DisposeFor(popup);
+            popup.Dispose();
+            _viewsFactory.Release(info.View);
         }
 
         _presenterToInfo.Clear();
+        _isDisposed = true;
     }
 
     private void OnPopupCreated(
@@ -77,10 +108,12 @@ public sealed class PopupService : IDisposable
         popup.CloseRequest += ClosePopup;
     }
 
-    private void DisposeFor(PopupPresenterBase popup)
+    private void ThrowIfDisposed()
     {
-        popup.Dispose();
-        _viewsFactory.Release(_presenterToInfo[popup].View);
+        if (_isDisposed)
+        {
+            throw new ObjectDisposedException(nameof(PopupService));
+        }
     }
 
     private class PopupInfo
