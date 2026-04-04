@@ -1,5 +1,5 @@
 using UnityEngine;
-using Assets._Project.Scripts.Infrastructure.AssetsManagment;
+using Assets._Project.Scripts.Infrastructure.AssetsManagement;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.AIFeature;

@@ -2,7 +2,7 @@ using System;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.TeleportFeature;
-using Assets._Project.Scripts.Infrastructure.AssetsManagment;
+using Assets._Project.Scripts.Infrastructure.AssetsManagement;
 using UnityEngine;
 
 namespace Assets._Project.Scripts.Homework.L5Teleport

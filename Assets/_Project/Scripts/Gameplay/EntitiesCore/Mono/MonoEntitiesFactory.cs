@@ -1,4 +1,4 @@
-using Assets._Project.Scripts.Infrastructure.AssetsManagment;
+using Assets._Project.Scripts.Infrastructure.AssetsManagement;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

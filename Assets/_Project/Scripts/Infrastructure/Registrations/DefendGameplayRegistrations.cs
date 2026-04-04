@@ -1,7 +1,7 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Scripts.Gameplay.Features.InputFeature;
-using Assets._Project.Scripts.Infrastructure.AssetsManagment;
+using Assets._Project.Scripts.Infrastructure.AssetsManagement;
 using UnityEngine;
 
 public static class DefendGameplayRegistrations
@@ -52,6 +52,8 @@ public static class DefendGameplayRegistrations
 
         container.BindLazy<BuildingStateService>(_ => new BuildingStateService());
         container.BindLazy<EnemyService>(_ => new EnemyService());
+        container.BindLazy<BuildingCombatService>(c => new BuildingCombatService(
+            c.Resolve<BuildingStateService>()));
 
         container.BindLazy<DefendResultService>(c => new DefendResultService(
             c.Resolve<DefendLevelConfig>(),
@@ -88,7 +90,8 @@ public static class DefendGameplayRegistrations
         container.BindLazy<DefendInputHandler>(c => new DefendInputHandler(
             c.Resolve<IInputService>(),
             c.Resolve<IPointerService>(),
-            c.Resolve<MinePlacementService>()));
+            c.Resolve<MinePlacementService>(),
+            c.Resolve<BuildingCombatService>()));
 
         container.BindLazy<EnemySpawner>(c => new EnemySpawner(
             c.Resolve<DefendLevelConfig>(),
@@ -129,7 +132,7 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendGameplaySceneData>(),
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<BuildingStateService>(),
-            c.Resolve<DefendInputHandler>(),
+            c.Resolve<BuildingCombatService>(),
             c.Resolve<ExplosionService>()));
 
         container.BindLazy<DefendGameplayRuntime>(c => new DefendGameplayRuntime(

@@ -27,6 +27,7 @@ public sealed class DefendEntitiesFactory
 
         entity.AddTransform(view.transform);
         entity.AddComponent(new TeamComponent(Team.Player));
+        entity.AddRotationDirection(Vector3.forward);
 
         entity.AddMaxHealth(level.BuildingConfig.Health);
         entity.AddCurrentHealth(level.BuildingConfig.Health);

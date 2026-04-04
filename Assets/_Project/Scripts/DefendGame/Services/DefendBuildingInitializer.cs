@@ -7,7 +7,7 @@ public sealed class DefendBuildingInitializer
     private readonly DefendGameplaySceneData _sceneData;
     private readonly DefendEntitiesFactory _entitiesFactory;
     private readonly BuildingStateService _buildingStateService;
-    private readonly DefendInputHandler _inputHandler;
+    private readonly BuildingCombatService _buildingCombatService;
     private readonly ExplosionService _explosionService;
 
     public DefendBuildingInitializer(
@@ -15,14 +15,14 @@ public sealed class DefendBuildingInitializer
         DefendGameplaySceneData sceneData,
         DefendEntitiesFactory entitiesFactory,
         BuildingStateService buildingStateService,
-        DefendInputHandler inputHandler,
+        BuildingCombatService buildingCombatService,
         ExplosionService explosionService)
     {
         _level = level ?? throw new ArgumentNullException(nameof(level));
         _sceneData = sceneData ?? throw new ArgumentNullException(nameof(sceneData));
         _entitiesFactory = entitiesFactory ?? throw new ArgumentNullException(nameof(entitiesFactory));
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
-        _inputHandler = inputHandler ?? throw new ArgumentNullException(nameof(inputHandler));
+        _buildingCombatService = buildingCombatService ?? throw new ArgumentNullException(nameof(buildingCombatService));
         _explosionService = explosionService ?? throw new ArgumentNullException(nameof(explosionService));
     }
 
@@ -41,20 +41,12 @@ public sealed class DefendBuildingInitializer
 
     private void ConstructViews(Entity building)
     {
-        MageLookAtPointerView mageLookAtPointerView =
-            building.Transform.GetComponentInChildren<MageLookAtPointerView>();
-
-        if (mageLookAtPointerView != null)
-        {
-            mageLookAtPointerView.Construct(_inputHandler);
-        }
-
         MageAttackAnimationView mageAttackAnimationView =
             building.Transform.GetComponentInChildren<MageAttackAnimationView>();
 
         if (mageAttackAnimationView != null)
         {
-            mageAttackAnimationView.Construct(_inputHandler, _level, _explosionService);
+            mageAttackAnimationView.Construct(_buildingCombatService, _level, _explosionService);
         }
     }
 }

@@ -6,19 +6,19 @@ public sealed class MageAttackAnimationView : MonoBehaviour
     [SerializeField] private Transform _projectileSpawnPoint;
     [SerializeField] private MageProjectileView _projectilePrefab;
 
-    private DefendInputHandler _inputHandler;
+    private BuildingCombatService _buildingCombatService;
     private DefendLevelConfig _level;
     private ExplosionService _explosionService;
     private bool _isSubscribed;
 
     public void Construct(
-        DefendInputHandler inputHandler,
+        BuildingCombatService buildingCombatService,
         DefendLevelConfig level,
         ExplosionService explosionService)
     {
         Unsubscribe();
 
-        _inputHandler = inputHandler;
+        _buildingCombatService = buildingCombatService;
         _level = level;
         _explosionService = explosionService;
 
@@ -55,12 +55,12 @@ public sealed class MageAttackAnimationView : MonoBehaviour
             return;
         }
 
-        if (_inputHandler == null)
+        if (_buildingCombatService == null)
         {
             return;
         }
 
-        _inputHandler.PlayerAttacked += OnPlayerAttacked;
+        _buildingCombatService.AttackPerformed += OnAttackPerformed;
         _isSubscribed = true;
     }
 
@@ -71,15 +71,15 @@ public sealed class MageAttackAnimationView : MonoBehaviour
             return;
         }
 
-        if (_inputHandler != null)
+        if (_buildingCombatService != null)
         {
-            _inputHandler.PlayerAttacked -= OnPlayerAttacked;
+            _buildingCombatService.AttackPerformed -= OnAttackPerformed;
         }
 
         _isSubscribed = false;
     }
 
-    private void OnPlayerAttacked(Vector3 targetPoint)
+    private void OnAttackPerformed(Vector3 targetPoint)
     {
         if (_mageAnimatorView != null)
         {
