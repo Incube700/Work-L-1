@@ -16,6 +16,13 @@ public static class MainMenuRegistrations
             c.Resolve<StatsView>(),
             c.Resolve<GameStatsService>()));
 
+        container.BindTransient<PermanentUpgradesMenuPresenter>(c => new PermanentUpgradesMenuPresenter(
+            c.Resolve<MainMenuView>(),
+            c.Resolve<PermanentUpgradesService>(),
+            c.Resolve<WalletService>(),
+            c.Resolve<ConfigService>(),
+            c.Resolve<SaveService>()));
+
         container.BindTransient<MainMenuPresenter>(c => new MainMenuPresenter(
             c.Resolve<MainMenuView>(),
             c.Resolve<GameFlowService>(),
@@ -23,6 +30,7 @@ public static class MainMenuRegistrations
             c.Resolve<ProgressResetService>(),
             c.Resolve<PopupService>(),
             c.Resolve<CurrencyListPresenter>(),
-            c.Resolve<StatsPresenter>()));
+            c.Resolve<StatsPresenter>(),
+            c.Resolve<PermanentUpgradesMenuPresenter>()));
     }
 }

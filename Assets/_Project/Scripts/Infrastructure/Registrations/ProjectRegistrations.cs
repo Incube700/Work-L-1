@@ -25,6 +25,9 @@ public static class ProjectRegistrations
 
         container.BindLazy<GameStatsService>(_ => new GameStatsService());
         container.BindLazy<WalletService>(_ => new WalletService());
+        container.BindLazy<PermanentUpgradesService>(c => new PermanentUpgradesService(
+            c.Resolve<WalletService>(),
+            c.Resolve<ConfigService>()));
 
         container.BindLazy<StatsSaveProvider>(c => new StatsSaveProvider(
             c.Resolve<SaveRepository>(),
@@ -35,10 +38,15 @@ public static class ProjectRegistrations
             c.Resolve<WalletService>(),
             c.Resolve<ConfigService>()));
 
+        container.BindLazy<PermanentUpgradesSaveProvider>(c => new PermanentUpgradesSaveProvider(
+            c.Resolve<SaveRepository>(),
+            c.Resolve<PermanentUpgradesService>()));
+
         container.BindLazy<SaveService>(c => new SaveService(new ISaveProvider[]
         {
             c.Resolve<StatsSaveProvider>(),
-            c.Resolve<WalletSaveProvider>()
+            c.Resolve<WalletSaveProvider>(),
+            c.Resolve<PermanentUpgradesSaveProvider>()
         }));
 
         container.BindLazy<PlayerProgressService>(c => new PlayerProgressService(
@@ -50,6 +58,7 @@ public static class ProjectRegistrations
         container.BindLazy<ProgressResetService>(c => new ProgressResetService(
             c.Resolve<GameStatsService>(),
             c.Resolve<WalletService>(),
+            c.Resolve<PermanentUpgradesService>(),
             c.Resolve<ConfigService>(),
             c.Resolve<SaveService>()));
         

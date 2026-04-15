@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d767f1e639e42f6ba8e79aab941622a, type: 3}
   m_Name: EconomyConfig
   m_EditorClassIdentifier: 
-  <StartGold>k__BackingField: 100
-  <WinGold>k__BackingField: 10
-  <LoseGold>k__BackingField: 5
-  <ResetCost>k__BackingField: 50
+  _startGold: 100
+  _startDiamonds: 30
+  _winGold: 10
+  _loseGold: 5
+  _resetCost: 50
+  _waveHealCostDiamonds: 5
+  _waveHealPercent: 12
+  _openingStrikeCostDiamonds: 8
+  _openingStrikeDamagePercent: 35
+  _openingStrikeTargetsCount: 3
+  _playerExplosionDamageCostDiamonds: 10
+  _playerExplosionDamagePercent: 25

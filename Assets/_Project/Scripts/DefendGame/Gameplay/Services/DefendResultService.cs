@@ -30,7 +30,7 @@ public sealed class DefendResultService
         }
 
         _phaseService.SetPhase(DefendPhase.Ended);
-        _progress.RegisterWin(_level.WinRewardGold);
+        _progress.RegisterWin(_level.WinRewardGold, _level.WinRewardDiamonds);
 
         Result = DefendGameResult.Win;
         ResultChanged?.Invoke(Result);

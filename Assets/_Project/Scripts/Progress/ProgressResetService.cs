@@ -2,13 +2,20 @@ public sealed class ProgressResetService
 {
     private readonly GameStatsService _stats;
     private readonly WalletService _wallet;
+    private readonly PermanentUpgradesService _permanentUpgrades;
     private readonly ConfigService _configs;
     private readonly SaveService _save;
 
-    public ProgressResetService(GameStatsService stats, WalletService wallet, ConfigService configs, SaveService save)
+    public ProgressResetService(
+        GameStatsService stats,
+        WalletService wallet,
+        PermanentUpgradesService permanentUpgrades,
+        ConfigService configs,
+        SaveService save)
     {
         _stats = stats;
         _wallet = wallet;
+        _permanentUpgrades = permanentUpgrades;
         _configs = configs;
         _save = save;
     }
@@ -26,6 +33,7 @@ public sealed class ProgressResetService
         }
 
         _stats.Reset();
+        _permanentUpgrades.Reset();
         _save.SaveAll();
 
         failReason = null;

@@ -9,6 +9,7 @@ public sealed class MainMenuPresenter : IPresenter
     private readonly PopupService _popups;
     private readonly CurrencyListPresenter _currencyList;
     private readonly StatsPresenter _statsPresenter;
+    private readonly PermanentUpgradesMenuPresenter _permanentUpgradesPresenter;
 
     private bool _isInitialized;
 
@@ -19,7 +20,8 @@ public sealed class MainMenuPresenter : IPresenter
         ProgressResetService reset,
         PopupService popups,
         CurrencyListPresenter currencyList,
-        StatsPresenter statsPresenter)
+        StatsPresenter statsPresenter,
+        PermanentUpgradesMenuPresenter permanentUpgradesPresenter)
     {
         _view = view;
         _flow = flow;
@@ -28,6 +30,7 @@ public sealed class MainMenuPresenter : IPresenter
         _popups = popups;
         _currencyList = currencyList;
         _statsPresenter = statsPresenter;
+        _permanentUpgradesPresenter = permanentUpgradesPresenter;
     }
 
     public void Initialize()
@@ -45,6 +48,7 @@ public sealed class MainMenuPresenter : IPresenter
 
         _currencyList.Initialize();
         _statsPresenter.Initialize();
+        _permanentUpgradesPresenter.Initialize();
 
         _view.SetStatus(string.Empty);
 
@@ -58,6 +62,7 @@ public sealed class MainMenuPresenter : IPresenter
             return;
         }
 
+        _permanentUpgradesPresenter.Dispose();
         _statsPresenter.Dispose();
         _currencyList.Dispose();
 

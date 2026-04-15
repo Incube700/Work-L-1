@@ -5,23 +5,31 @@ public sealed class DefendInputHandler
 {
     private readonly IInputService _input;
     private readonly IPointerService _pointer;
-    private readonly MinePlacementService _minePlacementService;
+    private readonly IUiPointerBlockService _uiPointerBlockService;
+    private readonly PlacementService _placementService;
     private readonly BuildingCombatService _buildingCombatService;
 
     public DefendInputHandler(
         IInputService input,
         IPointerService pointer,
-        MinePlacementService minePlacementService,
+        IUiPointerBlockService uiPointerBlockService,
+        PlacementService placementService,
         BuildingCombatService buildingCombatService)
     {
         _input = input;
         _pointer = pointer;
-        _minePlacementService = minePlacementService;
+        _uiPointerBlockService = uiPointerBlockService;
+        _placementService = placementService;
         _buildingCombatService = buildingCombatService;
     }
 
     public void Update(DefendPhase phase, float buildingY)
     {
+        if (_uiPointerBlockService.IsPointerOverUi())
+        {
+            return;
+        }
+
         if (_pointer.TryGetGroundPoint(out Vector3 point))
         {
             point.y = buildingY;
@@ -48,7 +56,7 @@ public sealed class DefendInputHandler
 
         if (phase == DefendPhase.Rest)
         {
-            _minePlacementService.TryPlace(point);
+            _placementService.TryPlace(point);
         }
     }
 }

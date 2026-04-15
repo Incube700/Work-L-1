@@ -7,6 +7,7 @@ public sealed class WaveProgressService
     private int _currentWaveIndex = -1;
 
     public event Action CurrentWaveChanged;
+    public event Action<int, WaveConfig> WaveStarted;
 
     public WaveProgressService(DefendLevelConfig level)
     {
@@ -19,7 +20,7 @@ public sealed class WaveProgressService
     public bool HasAnyWaves => _level.Waves.Count > 0;
     public bool HasNextWave => _currentWaveIndex + 1 < _level.Waves.Count;
 
-    public int MoveToNextWave()
+    public WaveConfig MoveToNextWave()
     {
         if (HasNextWave == false)
         {
@@ -28,8 +29,10 @@ public sealed class WaveProgressService
 
         _currentWaveIndex++;
         CurrentWaveChanged?.Invoke();
+        WaveConfig wave = _level.Waves[_currentWaveIndex];
+        WaveStarted?.Invoke(_currentWaveIndex, wave);
 
-        return _currentWaveIndex;
+        return wave;
     }
 
     public WaveConfig GetWaveConfig(int waveIndex)

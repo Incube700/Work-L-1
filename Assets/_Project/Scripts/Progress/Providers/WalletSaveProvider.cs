@@ -35,6 +35,7 @@ public sealed class WalletSaveProvider : ISaveProvider
 
         EconomyConfig economy = _configs.Load<EconomyConfig>();
         _wallet.Set(CurrencyType.Gold, economy.StartGold);
+        _wallet.Set(CurrencyType.Diamond, economy.StartDiamonds);
         Save();
     }
 

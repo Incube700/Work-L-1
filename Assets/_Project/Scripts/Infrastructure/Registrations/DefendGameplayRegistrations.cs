@@ -28,7 +28,6 @@ public static class DefendGameplayRegistrations
             c.Resolve<EntitiesLifeContext>(),
             c.Resolve<MonoEntitiesFactory>(),
             c.Resolve<ExplosionService>()));
-            ;
 
         container.BindLazy<IInputService>(_ => new DesktopInputService());
 
@@ -54,6 +53,13 @@ public static class DefendGameplayRegistrations
         container.BindLazy<EnemyService>(_ => new EnemyService());
         container.BindLazy<BuildingCombatService>(c => new BuildingCombatService(
             c.Resolve<BuildingStateService>()));
+
+        container.BindLazy<DefendPermanentUpgradesRuntime>(c => new DefendPermanentUpgradesRuntime(
+            c.Resolve<PermanentUpgradesService>(),
+            c.Resolve<ConfigService>(),
+            c.Resolve<BuildingStateService>(),
+            c.Resolve<WaveProgressService>(),
+            c.Resolve<EnemyService>()));
 
         container.BindLazy<DefendResultService>(c => new DefendResultService(
             c.Resolve<DefendLevelConfig>(),
@@ -83,6 +89,38 @@ public static class DefendGameplayRegistrations
             c.Resolve<WalletService>(),
             c.Resolve<MineFactory>()));
         
+        container.BindLazy<TurretFactory>(c => new TurretFactory(
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<DefendEntitiesFactory>(),
+            c.Resolve<EntitiesLifeContext>(),
+            c.Resolve<CollidersRegistryService>(),
+            c.Resolve<ExplosionService>()));
+
+        container.BindLazy<PuddleFactory>(c => new PuddleFactory(
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<DefendEntitiesFactory>(),
+            c.Resolve<EntitiesLifeContext>(),
+            c.Resolve<CollidersRegistryService>(),
+            c.Resolve<DefendPhaseService>()));
+
+        container.BindLazy<TurretPlacementService>(c => new TurretPlacementService(
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<WalletService>(),
+            c.Resolve<TurretFactory>()));
+
+        container.BindLazy<PuddlePlacementService>(c => new PuddlePlacementService(
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<WalletService>(),
+            c.Resolve<PuddleFactory>()));
+        
+        container.BindLazy<PlacementSelectionService>(_ => new PlacementSelectionService());
+        
+        container.BindLazy<PlacementService>(c => new PlacementService(
+            c.Resolve<PlacementSelectionService>(),
+            c.Resolve<MinePlacementService>(),
+            c.Resolve<TurretPlacementService>(),
+            c.Resolve<PuddlePlacementService>()));
+        
         container.BindLazy<ExplosionEffectService>(c => new ExplosionEffectService(
             c.Resolve<ExplosionService>(),
             c.Resolve<ResourcesAssetsLoader>().Load<GameObject>("VFX/PlayerClickEffect")));
@@ -90,7 +128,8 @@ public static class DefendGameplayRegistrations
         container.BindLazy<DefendInputHandler>(c => new DefendInputHandler(
             c.Resolve<IInputService>(),
             c.Resolve<IPointerService>(),
-            c.Resolve<MinePlacementService>(),
+            c.Resolve<IUiPointerBlockService>(),
+            c.Resolve<PlacementService>(),
             c.Resolve<BuildingCombatService>()));
 
         container.BindLazy<EnemySpawner>(c => new EnemySpawner(
@@ -115,6 +154,18 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendPhaseService>(),
             c.Resolve<WaveProgressService>(),
             c.Resolve<BuildingStateService>()));
+        
+        container.BindTransient<PlacementPanelPresenter>(c => new PlacementPanelPresenter(
+            c.Resolve<PlacementPanelView>(),
+            c.Resolve<PlacementSelectionService>(),
+            c.Resolve<DefendPhaseService>()));
+        
+        container.BindTransient<DefendGameplayScreenPresenter>(c => new DefendGameplayScreenPresenter(
+            c.Resolve<DefendGameplayScreenView>(),
+            c.Resolve<DefendHudPresenter>(),
+            c.Resolve<CurrencyListPresenter>(),
+            c.Resolve<PlacementPanelPresenter>(),
+            c.Resolve<DefendResultPresenter>()));
 
         container.BindTransient<CurrencyListPresenter>(c => new CurrencyListPresenter(
             c.Resolve<CurrencyListView>(),
@@ -122,10 +173,10 @@ public static class DefendGameplayRegistrations
             c.Resolve<WalletService>()));
         
         container.BindLazy<DefendUiRuntime>(c => new DefendUiRuntime(
-            c.Resolve<DefendHudPresenter>(),
-            c.Resolve<CurrencyListPresenter>(),
-            c.Resolve<DefendResultPresenter>(),
+            c.Resolve<DefendGameplayScreenPresenter>(),
             c.Resolve<PopupService>()));
+        
+        container.BindLazy<IUiPointerBlockService>(_ => new UnityUiPointerBlockService());
 
         container.BindLazy<DefendBuildingInitializer>(c => new DefendBuildingInitializer(
             c.Resolve<DefendLevelConfig>(),
@@ -133,7 +184,8 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<BuildingStateService>(),
             c.Resolve<BuildingCombatService>(),
-            c.Resolve<ExplosionService>()));
+            c.Resolve<ExplosionService>(),
+            c.Resolve<DefendPermanentUpgradesRuntime>()));
 
         container.BindLazy<DefendGameplayRuntime>(c => new DefendGameplayRuntime(
             c.Resolve<EntitiesLifeContext>(),
@@ -148,6 +200,7 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendPhaseService>(),
             c.Resolve<DefendUiRuntime>(),
             c.Resolve<DefendBuildingInitializer>(),
-            c.Resolve<ExplosionEffectService>()));
+            c.Resolve<ExplosionEffectService>(),
+            c.Resolve<DefendPermanentUpgradesRuntime>()));
     }
 }

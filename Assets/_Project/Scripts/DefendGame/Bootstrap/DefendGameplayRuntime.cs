@@ -19,6 +19,7 @@ public sealed class DefendGameplayRuntime : IDisposable
     private readonly DefendUiRuntime _uiRuntime;
     private readonly DefendBuildingInitializer _buildingInitializer;
     private readonly ExplosionEffectService _explosionEffectService;
+    private readonly DefendPermanentUpgradesRuntime _permanentUpgradesRuntime;
 
     private bool _isStarted;
 
@@ -35,7 +36,8 @@ public sealed class DefendGameplayRuntime : IDisposable
         DefendPhaseService phaseService,
         DefendUiRuntime uiRuntime,
         DefendBuildingInitializer buildingInitializer,
-        ExplosionEffectService explosionEffectService)
+        ExplosionEffectService explosionEffectService,
+        DefendPermanentUpgradesRuntime permanentUpgradesRuntime)
     {
         _life = life;
         _monoFactory = monoFactory;
@@ -50,6 +52,7 @@ public sealed class DefendGameplayRuntime : IDisposable
         _uiRuntime = uiRuntime;
         _buildingInitializer = buildingInitializer;
         _explosionEffectService = explosionEffectService;
+        _permanentUpgradesRuntime = permanentUpgradesRuntime;
     }
 
     public void Start()
@@ -59,6 +62,7 @@ public sealed class DefendGameplayRuntime : IDisposable
             return;
         }
 
+        _permanentUpgradesRuntime.Initialize();
         _buildingInitializer.Initialize();
 
         _life.Released += OnEntityReleased;
@@ -115,6 +119,7 @@ public sealed class DefendGameplayRuntime : IDisposable
         _uiRuntime.Dispose();
         _buildingStateService.Dispose();
         _explosionEffectService.Dispose();
+        _permanentUpgradesRuntime.Dispose();
         _stateMachine.Dispose();
         _enemyService.Dispose();
         _life.Dispose();

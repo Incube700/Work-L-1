@@ -7,12 +7,16 @@ public sealed class MainMenuView : MonoBehaviour
 {
     public event Action PlayClicked;
     public event Action ResetClicked;
+    public event Action UpgradesClicked;
 
     [SerializeField] private TMP_Text _statusText;
     [SerializeField] private TMP_Text _resetButtonText;
-
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _resetButton;
+    [SerializeField] private Button _upgradesButton;
+    [SerializeField] private PermanentUpgradesMenuView _upgradesMenuView;
+
+    public PermanentUpgradesMenuView UpgradesMenuView => _upgradesMenuView;
 
     private void OnEnable()
     {
@@ -24,6 +28,11 @@ public sealed class MainMenuView : MonoBehaviour
         if (_resetButton != null)
         {
             _resetButton.onClick.AddListener(OnResetClicked);
+        }
+
+        if (_upgradesButton != null)
+        {
+            _upgradesButton.onClick.AddListener(OnUpgradesButtonClicked);
         }
     }
 
@@ -37,6 +46,11 @@ public sealed class MainMenuView : MonoBehaviour
         if (_resetButton != null)
         {
             _resetButton.onClick.RemoveListener(OnResetClicked);
+        }
+
+        if (_upgradesButton != null)
+        {
+            _upgradesButton.onClick.RemoveListener(OnUpgradesButtonClicked);
         }
     }
 
@@ -64,5 +78,10 @@ public sealed class MainMenuView : MonoBehaviour
     private void OnResetClicked()
     {
         ResetClicked?.Invoke();
+    }
+
+    private void OnUpgradesButtonClicked()
+    {
+        UpgradesClicked?.Invoke();
     }
 }

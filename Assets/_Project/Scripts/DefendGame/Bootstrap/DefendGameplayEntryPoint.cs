@@ -46,6 +46,11 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
         {
             throw new InvalidOperationException("CurrencyListView is not assigned in DefendGameplayScreenView.");      
         }
+
+        if (_screenView.PlacementPanelView == null)
+        {
+            throw new InvalidOperationException("PlacementPanelView is not assigned in DefendGameplayScreenView.");     
+        }
         
 
         Vector3 spawnPoint = _buildingSpawnPoint != null
@@ -53,7 +58,9 @@ public sealed class DefendGameplayEntryPoint : SceneEntryPointBase
             : Vector3.zero;
 
         _sceneContainer.BindInstance(args.LevelConfig);
+        _sceneContainer.BindInstance(_screenView);
         _sceneContainer.BindInstance(_screenView.HudView);
+        _sceneContainer.BindInstance(_screenView.PlacementPanelView);
         _sceneContainer.BindInstance(_screenView.CurrencyListView);
         _sceneContainer.BindInstance(_screenView.PopupLayer);       
         _sceneContainer.BindInstance(new DefendGameplaySceneData(

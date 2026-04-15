@@ -9,6 +9,7 @@ public sealed class DefendBuildingInitializer
     private readonly BuildingStateService _buildingStateService;
     private readonly BuildingCombatService _buildingCombatService;
     private readonly ExplosionService _explosionService;
+    private readonly DefendPermanentUpgradesRuntime _permanentUpgradesRuntime;
 
     public DefendBuildingInitializer(
         DefendLevelConfig level,
@@ -16,7 +17,8 @@ public sealed class DefendBuildingInitializer
         DefendEntitiesFactory entitiesFactory,
         BuildingStateService buildingStateService,
         BuildingCombatService buildingCombatService,
-        ExplosionService explosionService)
+        ExplosionService explosionService,
+        DefendPermanentUpgradesRuntime permanentUpgradesRuntime)
     {
         _level = level ?? throw new ArgumentNullException(nameof(level));
         _sceneData = sceneData ?? throw new ArgumentNullException(nameof(sceneData));
@@ -24,6 +26,7 @@ public sealed class DefendBuildingInitializer
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
         _buildingCombatService = buildingCombatService ?? throw new ArgumentNullException(nameof(buildingCombatService));
         _explosionService = explosionService ?? throw new ArgumentNullException(nameof(explosionService));
+        _permanentUpgradesRuntime = permanentUpgradesRuntime ?? throw new ArgumentNullException(nameof(permanentUpgradesRuntime));
     }
 
     public void Initialize()
@@ -46,7 +49,11 @@ public sealed class DefendBuildingInitializer
 
         if (mageAttackAnimationView != null)
         {
-            mageAttackAnimationView.Construct(_buildingCombatService, _level, _explosionService);
+            mageAttackAnimationView.Construct(
+                _buildingCombatService,
+                _level,
+                _explosionService,
+                _permanentUpgradesRuntime.PlayerExplosionDamageMultiplier);
         }
     }
 }

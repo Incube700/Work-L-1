@@ -6,6 +6,8 @@ public sealed class EnemyService : IDisposable
 {
     private readonly List<Entity> _enemies = new List<Entity>();
 
+    public event Action<Entity> EnemyAdded;
+
     public int AliveCount
     {
         get
@@ -39,6 +41,7 @@ public sealed class EnemyService : IDisposable
         }
 
         _enemies.Add(enemy);
+        EnemyAdded?.Invoke(enemy);
     }
 
     public void Remove(Entity enemy)
@@ -49,5 +52,6 @@ public sealed class EnemyService : IDisposable
     public void Dispose()
     {
         _enemies.Clear();
+        EnemyAdded = null;
     }
 }

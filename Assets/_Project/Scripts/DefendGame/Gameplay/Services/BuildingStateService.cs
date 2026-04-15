@@ -42,6 +42,28 @@ public sealed class BuildingStateService : IDisposable
         HealthChanged = null;
     }
 
+    public bool RestorePercent(float percent)
+    {
+        if (_building == null || percent <= 0f)
+        {
+            return false;
+        }
+
+        float healAmount = _building.MaxHealth.Value * percent / 100f;
+
+        if (healAmount <= 0f)
+        {
+            return false;
+        }
+
+        float nextHealth = _building.CurrentHealth.Value + healAmount;
+        _building.CurrentHealth.Value = nextHealth > _building.MaxHealth.Value
+            ? _building.MaxHealth.Value
+            : nextHealth;
+
+        return true;
+    }
+
     private void OnHealthChanged()
     {
         HealthChanged?.Invoke();

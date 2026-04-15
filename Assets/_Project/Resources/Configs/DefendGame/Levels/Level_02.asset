@@ -13,12 +13,17 @@ MonoBehaviour:
   m_Name: Level_02
   m_EditorClassIdentifier: 
   _winRewardGold: 40
-  _restDurationSeconds: 7
+  _winRewardDiamonds: 5
+  _restDurationSeconds: 10
   _buildingConfig: {fileID: 11400000, guid: b85710ff39afb427db0eb0b0ebfd5ea7, type: 2}
   _enemyConfig: {fileID: 11400000, guid: c2e1e2bd7eb1d408d90cbcdf520789a6, type: 2}
+  _shooterEnemyConfig: {fileID: 11400000, guid: 8626d997cfa1e46d3b762ec450774b41,
+    type: 2}
   _playerExplosionConfig: {fileID: 11400000, guid: 9f53576f9208145e0a54786033d7f6c8,
     type: 2}
   _mineConfig: {fileID: 11400000, guid: 09cf4cfd103834d5997f2135b8f06f08, type: 2}
+  _turretConfig: {fileID: 11400000, guid: 632a8d7198a1b4e44ad64bb449af555d, type: 2}
+  _puddleConfig: {fileID: 11400000, guid: 6a19f4f73fcfb4ad884c6b028d306674, type: 2}
   _waves:
   - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
   - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}

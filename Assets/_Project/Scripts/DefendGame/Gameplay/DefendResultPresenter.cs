@@ -71,7 +71,8 @@ public sealed class DefendResultPresenter : IPresenter
     private void OpenWinPopup()
     {
         string title = "Victory";
-        string message = $"Base defended.\nReward: {_levelConfig.WinRewardGold} gold.";
+        string message =
+            $"Base defended.\nReward: {_levelConfig.WinRewardGold} gold, {_levelConfig.WinRewardDiamonds} diamonds.";
 
         _popupService.OpenMessagePopup(title, message, OnPopupClosed);
     }

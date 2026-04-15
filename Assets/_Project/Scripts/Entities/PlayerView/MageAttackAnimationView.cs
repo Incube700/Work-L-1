@@ -9,18 +9,21 @@ public sealed class MageAttackAnimationView : MonoBehaviour
     private BuildingCombatService _buildingCombatService;
     private DefendLevelConfig _level;
     private ExplosionService _explosionService;
+    private float _damageMultiplier = 1f;
     private bool _isSubscribed;
 
     public void Construct(
         BuildingCombatService buildingCombatService,
         DefendLevelConfig level,
-        ExplosionService explosionService)
+        ExplosionService explosionService,
+        float damageMultiplier)
     {
         Unsubscribe();
 
         _buildingCombatService = buildingCombatService;
         _level = level;
         _explosionService = explosionService;
+        _damageMultiplier = damageMultiplier > 0f ? damageMultiplier : 1f;
 
         Subscribe();
     }
@@ -120,7 +123,7 @@ public sealed class MageAttackAnimationView : MonoBehaviour
             targetPoint,
             _explosionService,
             _level.PlayerExplosionConfig.Radius,
-            _level.PlayerExplosionConfig.Damage,
+            _level.PlayerExplosionConfig.Damage * _damageMultiplier,
             _level.PlayerExplosionConfig.Mask);
     }
 }

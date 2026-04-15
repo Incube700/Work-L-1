@@ -31,8 +31,8 @@ public sealed class DefendWaveState : State, IUpdatableState
 
         _phaseService.SetPhase(DefendPhase.Wave);
 
-        int waveIndex = _waveProgressService.MoveToNextWave();
-        WaveConfig wave = _waveProgressService.GetWaveConfig(waveIndex);
+        WaveConfig wave = _waveProgressService.MoveToNextWave();
+        int waveIndex = _waveProgressService.CurrentWaveIndex;
 
         _enemySpawner.StartWave(wave);
 
