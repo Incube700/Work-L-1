@@ -34,8 +34,7 @@ public sealed class PermanentUpgradeEntryView : MonoBehaviour
         string description,
         string priceText,
         string buttonText,
-        bool isInteractable,
-        Color priceColor)
+        bool isInteractable)
     {
         if (_titleText != null)
         {
@@ -50,7 +49,6 @@ public sealed class PermanentUpgradeEntryView : MonoBehaviour
         if (_priceText != null)
         {
             _priceText.text = priceText ?? string.Empty;
-            _priceText.color = priceColor;
         }
 
         if (_buttonText != null)

@@ -48,6 +48,9 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
             throw new InvalidOperationException("PermanentUpgradesMenuView is not available.");
         }
 
+        _shopView.Initialize();
+        _shopView.Hide();
+
         _diamonds = _walletService.GetReactive(CurrencyType.Diamond);
         _diamonds.Changed += OnDiamondsChanged;
 
@@ -55,9 +58,6 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
         _shopView.CloseClicked += OnCloseClicked;
         _shopView.PurchaseRequested += OnPurchaseRequested;
         _permanentUpgradesService.Changed += OnPermanentUpgradesChanged;
-
-        _shopView.Hide();
-        RefreshEntries();
 
         _isInitialized = true;
     }
@@ -97,9 +97,9 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
             return;
         }
 
+        _shopView.Show();
         _shopView.SetStatus(string.Empty);
         RefreshEntries();
-        _shopView.Show();
     }
 
     private void OnCloseClicked()

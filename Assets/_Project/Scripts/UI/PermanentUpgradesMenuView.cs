@@ -6,13 +6,6 @@ using UnityEngine.UI;
 
 public sealed class PermanentUpgradesMenuView : MonoBehaviour
 {
-    [Serializable]
-    private sealed class EntryBinding
-    {
-        public PermanentUpgradeType Type;
-        public PermanentUpgradeEntryView View;
-    }
-
     private readonly Dictionary<PermanentUpgradeType, PermanentUpgradeEntryView> _entries =
         new Dictionary<PermanentUpgradeType, PermanentUpgradeEntryView>();
 
@@ -28,7 +21,7 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
 
     public bool IsVisible => _root != null && _root.activeSelf;
 
-    private void Awake()
+    public void Initialize()
     {
         if (_root == null)
         {
@@ -36,9 +29,10 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
         }
 
         _entries.Clear();
-        _entries[PermanentUpgradeType.WaveHeal] = _waveHealEntry;
-        _entries[PermanentUpgradeType.OpeningStrike] = _openingStrikeEntry;
-        _entries[PermanentUpgradeType.PlayerExplosionDamage] = _playerExplosionDamageEntry;
+
+        AddEntry(PermanentUpgradeType.WaveHeal, _waveHealEntry);
+        AddEntry(PermanentUpgradeType.OpeningStrike, _openingStrikeEntry);
+        AddEntry(PermanentUpgradeType.PlayerExplosionDamage, _playerExplosionDamageEntry);
     }
 
     private void OnEnable()
@@ -124,20 +118,25 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
             : $"Cost: {costDiamonds} diamonds";
 
         string buttonText = purchased ? "Purchased" : "Buy";
-
-        Color priceColor = purchased
-            ? new Color(0.65f, 0.95f, 0.72f, 1f)
-            : canAfford
-                ? new Color(0.96f, 0.95f, 0.9f, 1f)
-                : new Color(1f, 0.77f, 0.77f, 1f);
+        bool isInteractable = purchased == false;
 
         entryView.SetData(
             title,
             description,
             priceText,
             buttonText,
-            purchased == false,
-            priceColor);
+            isInteractable);
+    }
+
+    private void AddEntry(PermanentUpgradeType type, PermanentUpgradeEntryView entryView)
+    {
+        if (entryView == null)
+        {
+            Debug.LogError($"Permanent upgrade entry is not assigned: {type}");
+            return;
+        }
+
+        _entries[type] = entryView;
     }
 
     private void OnCloseButtonClicked()
