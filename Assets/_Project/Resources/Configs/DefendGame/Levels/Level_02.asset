@@ -25,6 +25,6 @@ MonoBehaviour:
   _turretConfig: {fileID: 11400000, guid: 632a8d7198a1b4e44ad64bb449af555d, type: 2}
   _puddleConfig: {fileID: 11400000, guid: 6a19f4f73fcfb4ad884c6b028d306674, type: 2}
   _waves:
+  - {fileID: 11400000, guid: 81be826b52aa8432c99d8eff78be856a, type: 2}
   - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
-  - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
-  - {fileID: 11400000, guid: 9faa87da581034dd882a2f1063d868b1, type: 2}
+  - {fileID: 11400000, guid: 538b72899b3744db1b754ff9d0fdbb47, type: 2}
