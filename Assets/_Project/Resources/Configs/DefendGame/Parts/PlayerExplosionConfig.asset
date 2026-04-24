@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerExplosionConfig
   m_EditorClassIdentifier: 
   _radius: 2.5
-  _damage: 40
+  _damage: 25
   _mask:
     serializedVersion: 2
     m_Bits: 4294967295

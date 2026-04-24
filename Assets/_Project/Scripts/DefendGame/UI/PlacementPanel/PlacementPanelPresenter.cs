@@ -6,17 +6,20 @@ public sealed class PlacementPanelPresenter : IPresenter
     private readonly PlacementPanelView _view;
     private readonly PlacementSelectionService _selectionService;
     private readonly DefendPhaseService _phaseService;
+    private readonly DefendLevelConfig _levelConfig;
 
     private bool _isInitialized;
 
     public PlacementPanelPresenter(
         PlacementPanelView view,
         PlacementSelectionService selectionService,
-        DefendPhaseService phaseService)
+        DefendPhaseService phaseService,
+        DefendLevelConfig levelConfig)
     {
         _view = view ?? throw new ArgumentNullException(nameof(view));
         _selectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
         _phaseService = phaseService ?? throw new ArgumentNullException(nameof(phaseService));
+        _levelConfig = levelConfig ?? throw new ArgumentNullException(nameof(levelConfig));
     }
 
     public void Initialize()
@@ -84,6 +87,7 @@ public sealed class PlacementPanelPresenter : IPresenter
     {
         RefreshVisible();
         RefreshSelection();
+        RefreshCosts();
     }
 
     private void RefreshVisible()
@@ -94,5 +98,13 @@ public sealed class PlacementPanelPresenter : IPresenter
     private void RefreshSelection()
     {
         _view.SetSelected(_selectionService.SelectedType);
+    }
+
+    private void RefreshCosts()
+    {
+        _view.SetCosts(
+            _levelConfig.MineConfig.CostGold,
+            _levelConfig.TurretConfig.CostGold,
+            _levelConfig.PuddleConfig.CostGold);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,9 +10,14 @@ public sealed class PlacementPanelView : MonoBehaviour
     public event Action PuddleSelected;
 
     [SerializeField] private GameObject _root;
+
     [SerializeField] private Button _mineButton;
     [SerializeField] private Button _turretButton;
     [SerializeField] private Button _puddleButton;
+
+    [SerializeField] private TMP_Text _mineCostText;
+    [SerializeField] private TMP_Text _turretCostText;
+    [SerializeField] private TMP_Text _puddleCostText;
 
     private void Awake()
     {
@@ -70,6 +76,23 @@ public sealed class PlacementPanelView : MonoBehaviour
         SetButtonSelected(_mineButton, selectedType == PlaceableType.Mine);
         SetButtonSelected(_turretButton, selectedType == PlaceableType.Turret);
         SetButtonSelected(_puddleButton, selectedType == PlaceableType.Puddle);
+    }
+
+    public void SetCosts(int mineCostGold, int turretCostGold, int puddleCostGold)
+    {
+        SetCostText(_mineCostText, mineCostGold);
+        SetCostText(_turretCostText, turretCostGold);
+        SetCostText(_puddleCostText, puddleCostGold);
+    }
+
+    private void SetCostText(TMP_Text text, int costGold)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        text.text = $"{costGold} G";
     }
 
     private void SetButtonSelected(Button button, bool isSelected)

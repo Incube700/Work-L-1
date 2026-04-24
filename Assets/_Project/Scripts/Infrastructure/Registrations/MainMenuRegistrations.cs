@@ -20,7 +20,6 @@ public static class MainMenuRegistrations
             c.Resolve<MainMenuView>(),
             c.Resolve<PermanentUpgradesService>(),
             c.Resolve<WalletService>(),
-            c.Resolve<ConfigService>(),
             c.Resolve<SaveService>()));
 
         container.BindTransient<MainMenuPresenter>(c => new MainMenuPresenter(

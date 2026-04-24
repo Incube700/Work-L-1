@@ -118,7 +118,7 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
             : $"Cost: {costDiamonds} diamonds";
 
         string buttonText = purchased ? "Purchased" : "Buy";
-        bool isInteractable = purchased == false;
+        bool isInteractable = purchased == false && canAfford;
 
         entryView.SetData(
             title,

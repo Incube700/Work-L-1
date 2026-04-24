@@ -1,36 +1,28 @@
 using System.Collections.Generic;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
-using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using UnityEngine;
 
 public sealed class PuddleDamageSystem : IInitializableSystem, IUpdatableSystem
 {
     private const int BufferSize = 32;
 
-    private readonly CollidersRegistryService _collidersRegistry;
-    private readonly float _radius;
+    private readonly PuddleTargetCollectorService _targetCollector;
+    private readonly PuddleDamageService _damageService;
     private readonly float _tickInterval;
-    private readonly float _damagePerTick;
-    private readonly int _mask;
-    private readonly Collider[] _buffer = new Collider[BufferSize];
-    private readonly List<Entity> _damagedTargets = new List<Entity>(BufferSize);
+    private readonly List<Entity> _targets = new List<Entity>(BufferSize);
 
     private Transform _transform;
     private float _tickLeft;
 
     public PuddleDamageSystem(
-        CollidersRegistryService collidersRegistry,
-        float radius,
-        float tickInterval,
-        float damagePerTick,
-        int mask)
+        PuddleTargetCollectorService targetCollector,
+        PuddleDamageService damageService,
+        float tickInterval)
     {
-        _collidersRegistry = collidersRegistry;
-        _radius = radius;
+        _targetCollector = targetCollector;
+        _damageService = damageService;
         _tickInterval = tickInterval;
-        _damagePerTick = damagePerTick;
-        _mask = mask;
     }
 
     public void OnInit(Entity entity)
@@ -54,64 +46,14 @@ public sealed class PuddleDamageSystem : IInitializableSystem, IUpdatableSystem
         }
 
         _tickLeft = _tickInterval;
-        _damagedTargets.Clear();
 
-        int count = Physics.OverlapSphereNonAlloc(
-            _transform.position,
-            _radius,
-            _buffer,
-            _mask,
-            QueryTriggerInteraction.Collide);
+        _targetCollector.Collect(_transform.position, _targets);
 
-        for (int i = 0; i < count; i++)
+        int damagedCount = _damageService.Apply(_targets);
+
+        if (damagedCount > 0)
         {
-            Collider collider = _buffer[i];
-
-            if (collider == null)
-            {
-                continue;
-            }
-
-            if (_collidersRegistry.TryGetEntity(collider, out Entity target) == false)
-            {
-                continue;
-            }
-
-            if (_damagedTargets.Contains(target))
-            {
-                continue;
-            }
-
-            if (target.TryGetComponent(out TeamComponent teamComponent) == false)
-            {
-                continue;
-            }
-
-            if (teamComponent.Value != Team.Enemy)
-            {
-                continue;
-            }
-
-            if (target.HasComponent<TakeDamageRequest>() == false)
-            {
-                continue;
-            }
-
-            if (target.TryGetComponent(out IsDead isDead))
-            {
-                if (isDead.Value.Value == true)
-                {
-                    continue;
-                }
-            }
-            
-            target.TakeDamageRequest.Invoke(_damagePerTick);
-            _damagedTargets.Add(target);
-        }
-
-        if (_damagedTargets.Count > 0)
-        {
-            Log($"[Defend] Puddle tick. Damaged: {_damagedTargets.Count}");
+            Log($"[Defend] Puddle tick. Damaged: {damagedCount}");
         }
     }
 

@@ -27,7 +27,8 @@ public static class DefendGameplayRegistrations
         container.BindLazy<DefendEntitiesFactory>(c => new DefendEntitiesFactory(
             c.Resolve<EntitiesLifeContext>(),
             c.Resolve<MonoEntitiesFactory>(),
-            c.Resolve<ExplosionService>()));
+            c.Resolve<ExplosionService>(),
+            c.Resolve<ShooterProjectileService>()));
 
         container.BindLazy<IInputService>(_ => new DesktopInputService());
 
@@ -45,6 +46,8 @@ public static class DefendGameplayRegistrations
             c.Resolve<CollidersRegistryService>()));
 
         container.BindLazy<DefendPhaseService>(_ => new DefendPhaseService());
+        
+        container.BindLazy<RestTimerService>(_ => new RestTimerService());
 
         container.BindLazy<WaveProgressService>(c => new WaveProgressService(
             c.Resolve<DefendLevelConfig>()));
@@ -113,6 +116,10 @@ public static class DefendGameplayRegistrations
             c.Resolve<WalletService>(),
             c.Resolve<PuddleFactory>()));
         
+        container.BindLazy<ShooterProjectileService>(c => new ShooterProjectileService(
+            c.Resolve<ResourcesAssetsLoader>(),
+            c.Resolve<ExplosionService>()));
+        
         container.BindLazy<PlacementSelectionService>(_ => new PlacementSelectionService());
         
         container.BindLazy<PlacementService>(c => new PlacementService(
@@ -140,6 +147,7 @@ public static class DefendGameplayRegistrations
 
         container.BindLazy<DefendStateMachineFactory>(c => new DefendStateMachineFactory(
             c.Resolve<DefendPhaseService>(),
+            c.Resolve<RestTimerService>(),
             c.Resolve<WaveProgressService>(),
             c.Resolve<BuildingStateService>(),
             c.Resolve<DefendResultService>(),
@@ -152,13 +160,15 @@ public static class DefendGameplayRegistrations
         container.BindTransient<DefendHudPresenter>(c => new DefendHudPresenter(
             c.Resolve<DefendHudView>(),
             c.Resolve<DefendPhaseService>(),
+            c.Resolve<RestTimerService>(),
             c.Resolve<WaveProgressService>(),
             c.Resolve<BuildingStateService>()));
         
         container.BindTransient<PlacementPanelPresenter>(c => new PlacementPanelPresenter(
             c.Resolve<PlacementPanelView>(),
             c.Resolve<PlacementSelectionService>(),
-            c.Resolve<DefendPhaseService>()));
+            c.Resolve<DefendPhaseService>(),
+            c.Resolve<DefendLevelConfig>()));
         
         container.BindTransient<DefendGameplayScreenPresenter>(c => new DefendGameplayScreenPresenter(
             c.Resolve<DefendGameplayScreenView>(),

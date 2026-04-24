@@ -1,5 +1,6 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
+using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public sealed class EnemyMoveToBuildingDecisionSystem : IInitializableSystem, IU
     private Transform _selfTransform;
     private ReactiveVariable<Vector3> _moveDirection;
     private ReactiveVariable<Vector3> _rotationDirection;
+    private ReactiveVariable<bool> _isDead;
 
     public EnemyMoveToBuildingDecisionSystem(Transform buildingTransform)
     {
@@ -21,19 +23,34 @@ public sealed class EnemyMoveToBuildingDecisionSystem : IInitializableSystem, IU
         _selfTransform = entity.Transform;
         _moveDirection = entity.MoveDirection;
         _rotationDirection = entity.RotationDirection;
+        _isDead = entity.IsDead;
     }
 
     public void OnUpdate(float deltaTime)
     {
-        if (_buildingTransform == null)
+        if (_selfTransform == null)
         {
             return;
         }
 
-        Vector3 dir = _buildingTransform.position - _selfTransform.position;
-        dir.y = 0f;
+        if (_isDead.Value)
+        {
+            _moveDirection.Value = Vector3.zero;
+            _rotationDirection.Value = Vector3.zero;
+            return;
+        }
 
-        _moveDirection.Value = dir;
-        _rotationDirection.Value = dir;
+        if (_buildingTransform == null)
+        {
+            _moveDirection.Value = Vector3.zero;
+            _rotationDirection.Value = Vector3.zero;
+            return;
+        }
+
+        Vector3 direction = _buildingTransform.position - _selfTransform.position;
+        direction.y = 0f;
+
+        _moveDirection.Value = direction;
+        _rotationDirection.Value = direction;
     }
 }

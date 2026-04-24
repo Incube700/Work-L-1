@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3a32ea57f5e4cdaa4134edf8b84a3f, type: 3}
   m_Name: Wave 2
   m_EditorClassIdentifier: 
-  _enemyType: 0
+  _enemyConfig: {fileID: 11400000, guid: 8626d997cfa1e46d3b762ec450774b41, type: 2}
   _enemiesCount: 7
   _spawnInterval: 0.6

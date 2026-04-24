@@ -11,7 +11,8 @@ public sealed class ConfigService
     {
         _resourcesPaths.Add(typeof(GameModesConfig), "Configs/GameModesConfig");
         _resourcesPaths.Add(typeof(EconomyConfig), "Configs/EconomyConfig");
-        
+        _resourcesPaths.Add(typeof(PermanentUpgradesConfig), "Configs/PermanentUpgradesConfig");
+
         _resourcesPaths.Add(typeof(DefendLevelsConfig), "Configs/DefendGame/DefendLevelsConfig");
     }
 

@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 public sealed class PermanentUpgradesService
 {
     private readonly WalletService _wallet;
-    private readonly EconomyConfig _economy;
-
-    private PermanentUpgradesData _data = new PermanentUpgradesData();
+    private readonly PermanentUpgradesConfig _config;
+    private readonly HashSet<PermanentUpgradeType> _purchasedTypes = new HashSet<PermanentUpgradeType>();
 
     public event Action Changed;
 
@@ -18,48 +18,46 @@ public sealed class PermanentUpgradesService
             throw new ArgumentNullException(nameof(configs));
         }
 
-        _economy = configs.Load<EconomyConfig>();
+        _config = configs.Load<PermanentUpgradesConfig>();
     }
 
     public bool IsPurchased(PermanentUpgradeType type)
     {
-        switch (type)
-        {
-            case PermanentUpgradeType.WaveHeal:
-                return _data.waveHealPurchased;
+        return _purchasedTypes.Contains(type);
+    }
 
-            case PermanentUpgradeType.OpeningStrike:
-                return _data.openingStrikePurchased;
-
-            case PermanentUpgradeType.PlayerExplosionDamage:
-                return _data.playerExplosionDamagePurchased;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
+    public PermanentUpgradeDefinition GetDefinition(PermanentUpgradeType type)
+    {
+        return _config.GetDefinition(type);
     }
 
     public int GetCost(PermanentUpgradeType type)
     {
-        switch (type)
-        {
-            case PermanentUpgradeType.WaveHeal:
-                return _economy.WaveHealCostDiamonds;
-
-            case PermanentUpgradeType.OpeningStrike:
-                return _economy.OpeningStrikeCostDiamonds;
-
-            case PermanentUpgradeType.PlayerExplosionDamage:
-                return _economy.PlayerExplosionDamageCostDiamonds;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
+        return GetDefinition(type).CostDiamonds;
     }
 
     public void Load(PermanentUpgradesData data)
     {
-        _data = data ?? new PermanentUpgradesData();
+        _purchasedTypes.Clear();
+
+        if (data != null)
+        {
+            if (data.waveHealPurchased)
+            {
+                _purchasedTypes.Add(PermanentUpgradeType.WaveHeal);
+            }
+
+            if (data.openingStrikePurchased)
+            {
+                _purchasedTypes.Add(PermanentUpgradeType.OpeningStrike);
+            }
+
+            if (data.playerExplosionDamagePurchased)
+            {
+                _purchasedTypes.Add(PermanentUpgradeType.PlayerExplosionDamage);
+            }
+        }
+
         Changed?.Invoke();
     }
 
@@ -67,9 +65,9 @@ public sealed class PermanentUpgradesService
     {
         return new PermanentUpgradesData
         {
-            waveHealPurchased = _data.waveHealPurchased,
-            openingStrikePurchased = _data.openingStrikePurchased,
-            playerExplosionDamagePurchased = _data.playerExplosionDamagePurchased,
+            waveHealPurchased = IsPurchased(PermanentUpgradeType.WaveHeal),
+            openingStrikePurchased = IsPurchased(PermanentUpgradeType.OpeningStrike),
+            playerExplosionDamagePurchased = IsPurchased(PermanentUpgradeType.PlayerExplosionDamage),
         };
     }
 
@@ -81,7 +79,8 @@ public sealed class PermanentUpgradesService
             return false;
         }
 
-        int cost = GetCost(type);
+        PermanentUpgradeDefinition definition = GetDefinition(type);
+        int cost = definition.CostDiamonds;
 
         if (_wallet.TrySpend(CurrencyType.Diamond, cost) == false)
         {
@@ -90,39 +89,16 @@ public sealed class PermanentUpgradesService
             return false;
         }
 
-        SetPurchased(type, true);
+        _purchasedTypes.Add(type);
         Changed?.Invoke();
 
         failureReason = null;
         return true;
     }
 
-    private void SetPurchased(PermanentUpgradeType type, bool isPurchased)
-    {
-        switch (type)
-        {
-            case PermanentUpgradeType.WaveHeal:
-                _data.waveHealPurchased = isPurchased;
-                break;
-
-            case PermanentUpgradeType.OpeningStrike:
-                _data.openingStrikePurchased = isPurchased;
-                break;
-
-            case PermanentUpgradeType.PlayerExplosionDamage:
-                _data.playerExplosionDamagePurchased = isPurchased;
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
-    }
     public void Reset()
     {
-        _data.waveHealPurchased = false;
-        _data.openingStrikePurchased = false;
-        _data.playerExplosionDamagePurchased = false;
-
+        _purchasedTypes.Clear();
         Changed?.Invoke();
 
         Log("[Meta] Permanent upgrades reset.");

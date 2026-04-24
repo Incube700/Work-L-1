@@ -5,6 +5,7 @@ public sealed class DefendHudPresenter : IPresenter
 {
     private readonly DefendHudView _view;
     private readonly DefendPhaseService _phaseService;
+    private readonly RestTimerService _restTimerService;
     private readonly WaveProgressService _waveProgressService;
     private readonly BuildingStateService _buildingStateService;
 
@@ -13,11 +14,13 @@ public sealed class DefendHudPresenter : IPresenter
     public DefendHudPresenter(
         DefendHudView view,
         DefendPhaseService phaseService,
+        RestTimerService restTimerService,
         WaveProgressService waveProgressService,
         BuildingStateService buildingStateService)
     {
         _view = view ?? throw new ArgumentNullException(nameof(view));
         _phaseService = phaseService ?? throw new ArgumentNullException(nameof(phaseService));
+        _restTimerService = restTimerService ?? throw new ArgumentNullException(nameof(restTimerService));
         _waveProgressService = waveProgressService ?? throw new ArgumentNullException(nameof(waveProgressService));
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
     }
@@ -30,6 +33,7 @@ public sealed class DefendHudPresenter : IPresenter
         }
 
         _phaseService.PhaseChanged += OnPhaseChanged;
+        _restTimerService.Changed += OnRestTimerChanged;
         _waveProgressService.CurrentWaveChanged += OnCurrentWaveChanged;
         _buildingStateService.BuildingChanged += OnBuildingChanged;
         _buildingStateService.HealthChanged += OnHealthChanged;
@@ -46,10 +50,11 @@ public sealed class DefendHudPresenter : IPresenter
             return;
         }
 
-        _phaseService.PhaseChanged -= OnPhaseChanged;
-        _waveProgressService.CurrentWaveChanged -= OnCurrentWaveChanged;
-        _buildingStateService.BuildingChanged -= OnBuildingChanged;
         _buildingStateService.HealthChanged -= OnHealthChanged;
+        _buildingStateService.BuildingChanged -= OnBuildingChanged;
+        _waveProgressService.CurrentWaveChanged -= OnCurrentWaveChanged;
+        _restTimerService.Changed -= OnRestTimerChanged;
+        _phaseService.PhaseChanged -= OnPhaseChanged;
 
         _isInitialized = false;
     }
@@ -57,6 +62,12 @@ public sealed class DefendHudPresenter : IPresenter
     private void OnPhaseChanged()
     {
         RefreshPhase();
+        RefreshRestTimer();
+    }
+
+    private void OnRestTimerChanged()
+    {
+        RefreshRestTimer();
     }
 
     private void OnCurrentWaveChanged()
@@ -78,6 +89,7 @@ public sealed class DefendHudPresenter : IPresenter
     {
         RefreshWave();
         RefreshPhase();
+        RefreshRestTimer();
         RefreshBuildingHealth();
     }
 
@@ -96,6 +108,13 @@ public sealed class DefendHudPresenter : IPresenter
     private void RefreshPhase()
     {
         _view.SetPhase(_phaseService.CurrentPhase.ToString());
+    }
+
+    private void RefreshRestTimer()
+    {
+        bool isVisible = _phaseService.IsRest && _restTimerService.IsRunning;
+
+        _view.SetRestTimer(isVisible, _restTimerService.RemainingSeconds);
     }
 
     private void RefreshBuildingHealth()

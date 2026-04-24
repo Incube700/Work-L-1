@@ -6,6 +6,7 @@ public sealed class DefendHudView : MonoBehaviour
 {
     [SerializeField] private TMP_Text _waveText;
     [SerializeField] private TMP_Text _phaseText;
+    [SerializeField] private TMP_Text _restTimerText;
     [SerializeField] private TMP_Text _buildingHpText;
     [SerializeField] private Slider _buildingHpSlider;
 
@@ -33,6 +34,23 @@ public sealed class DefendHudView : MonoBehaviour
         {
             _phaseText.text = phase;
         }
+    }
+
+    public void SetRestTimer(bool isVisible, float remainingSeconds)
+    {
+        if (_restTimerText == null)
+        {
+            return;
+        }
+
+        _restTimerText.gameObject.SetActive(isVisible);
+
+        if (isVisible == false)
+        {
+            return;
+        }
+
+        _restTimerText.text = $"Next wave in: {Mathf.CeilToInt(remainingSeconds)}s";
     }
 
     public void SetBuildingHealth(float current, float max)

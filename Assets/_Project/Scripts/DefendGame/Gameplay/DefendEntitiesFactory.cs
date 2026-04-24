@@ -9,15 +9,18 @@ public sealed class DefendEntitiesFactory
     private readonly EntitiesLifeContext _life;
     private readonly MonoEntitiesFactory _mono;
     private readonly ExplosionService _explosionService;
+    private readonly ShooterProjectileService _shooterProjectileService;
 
     public DefendEntitiesFactory(
         EntitiesLifeContext life,
         MonoEntitiesFactory mono,
-        ExplosionService explosionService)
+        ExplosionService explosionService,
+        ShooterProjectileService shooterProjectileService)
     {
         _life = life;
         _mono = mono;
         _explosionService = explosionService;
+        _shooterProjectileService = shooterProjectileService;
     }
 
     public Entity CreateBuilding(Vector3 position, DefendLevelConfig level)
@@ -41,87 +44,96 @@ public sealed class DefendEntitiesFactory
         return entity;
     }
 
-    public Entity CreateEnemy(Vector3 position, DefendLevelConfig level, WaveConfig wave, Entity building)
-{
-    switch (wave.EnemyType)
+    public Entity CreateEnemy(Vector3 position, EnemyConfigBase enemyConfig, Entity building)
     {
-        case EnemyType.Bomber:
-            return CreateBomberEnemy(position, level, building);
+        if (enemyConfig == null)
+        {
+            throw new System.InvalidOperationException("Enemy config is null.");
+        }
 
-        case EnemyType.Shooter:
-            return CreateShooterEnemy(position, level, building);
+        switch (enemyConfig)
+        {
+            case EnemyConfig bomberConfig:
+                return CreateBomberEnemy(position, bomberConfig, building);
 
-        default:
-            throw new System.ArgumentOutOfRangeException();
+            case ShooterEnemyConfig shooterConfig:
+                return CreateShooterEnemy(position, shooterConfig, building);
+
+            default:
+                throw new System.ArgumentOutOfRangeException(
+                    nameof(enemyConfig),
+                    enemyConfig.GetType().Name,
+                    "Unsupported enemy config type.");
+        }
     }
-}
 
-private Entity CreateBomberEnemy(Vector3 position, DefendLevelConfig level, Entity building)
-{
-    Entity entity = new Entity();
-    MonoEntity view = _mono.Create(entity, position, level.EnemyConfig.PrefabPath);
+    private Entity CreateBomberEnemy(Vector3 position, EnemyConfig config, Entity building)
+    {
+        Entity entity = new Entity();
+        MonoEntity view = _mono.Create(entity, position, config.PrefabPath);
 
-    entity.AddTransform(view.transform);
-    entity.AddComponent(new TeamComponent(Team.Enemy));
+        entity.AddTransform(view.transform);
+        entity.AddComponent(new TeamComponent(Team.Enemy));
 
-    entity.AddMoveDirection(Vector3.zero);
-    entity.AddRotationDirection(Vector3.forward);
-    entity.AddMoveSpeed(level.EnemyConfig.MoveSpeed);
+        entity.AddMoveDirection(Vector3.zero);
+        entity.AddRotationDirection(Vector3.forward);
+        entity.AddMoveSpeed(config.MoveSpeed);
 
-    entity.AddMaxHealth(level.EnemyConfig.Health);
-    entity.AddCurrentHealth(level.EnemyConfig.Health);
-    entity.AddIsDead(false);
-    entity.AddTakeDamageRequest(new SimpleEvent<float>());
+        entity.AddMaxHealth(config.Health);
+        entity.AddCurrentHealth(config.Health);
+        entity.AddIsDead(false);
+        entity.AddTakeDamageRequest(new SimpleEvent<float>());
 
-    entity.AddSystem(new ApplyDamageSystem());
-    entity.AddSystem(new DeathSystem());
-    entity.AddSystem(new EnemyMoveToBuildingDecisionSystem(building.Transform));
-    entity.AddSystem(new TransformMoveByDirectionSystem());
-    entity.AddSystem(new TransformRotationSystem());
-    entity.AddSystem(new EnemyExplodeNearBuildingSystem(
-        building,
-        level.EnemyConfig.ExplodeDistance,
-        level.EnemyConfig.ExplodeDamage,
-        _explosionService));
-    entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
+        entity.AddSystem(new ApplyDamageSystem());
+        entity.AddSystem(new DeathSystem());
+        entity.AddSystem(new EnemyMoveToBuildingDecisionSystem(building.Transform));
+        entity.AddSystem(new TransformMoveByDirectionSystem());
+        entity.AddSystem(new TransformRotationSystem());
+        entity.AddSystem(new EnemyExplodeNearBuildingSystem(
+            building,
+            config.ExplodeDistance,
+            config.ExplodeDamage,
+            _explosionService));
+        entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
 
-    _life.Add(entity);
-    return entity;
-}
+        _life.Add(entity);
+        return entity;
+    }
 
-private Entity CreateShooterEnemy(Vector3 position, DefendLevelConfig level, Entity building)
-{
-    Entity entity = new Entity();
-    MonoEntity view = _mono.Create(entity, position, level.ShooterEnemyConfig.PrefabPath);
+    private Entity CreateShooterEnemy(Vector3 position, ShooterEnemyConfig config, Entity building)
+    {
+        Entity entity = new Entity();
+        MonoEntity view = _mono.Create(entity, position, config.PrefabPath);
 
-    entity.AddTransform(view.transform);
-    entity.AddComponent(new TeamComponent(Team.Enemy));
+        entity.AddTransform(view.transform);
+        entity.AddComponent(new TeamComponent(Team.Enemy));
 
-    entity.AddMoveDirection(Vector3.zero);
-    entity.AddRotationDirection(Vector3.forward);
-    entity.AddMoveSpeed(level.ShooterEnemyConfig.MoveSpeed);
+        entity.AddMoveDirection(Vector3.zero);
+        entity.AddRotationDirection(Vector3.forward);
+        entity.AddMoveSpeed(config.MoveSpeed);
 
-    entity.AddMaxHealth(level.ShooterEnemyConfig.Health);
-    entity.AddCurrentHealth(level.ShooterEnemyConfig.Health);
-    entity.AddIsDead(false);
-    entity.AddTakeDamageRequest(new SimpleEvent<float>());
+        entity.AddMaxHealth(config.Health);
+        entity.AddCurrentHealth(config.Health);
+        entity.AddIsDead(false);
+        entity.AddTakeDamageRequest(new SimpleEvent<float>());
 
-    entity.AddSystem(new ApplyDamageSystem());
-    entity.AddSystem(new DeathSystem());
-    entity.AddSystem(new ShooterEnemyBrain(
-        building,
-        level.ShooterEnemyConfig.AttackDistance,
-        level.ShooterEnemyConfig.AttackInterval,
-        level.ShooterEnemyConfig.AttackDamage,
-        level.ShooterEnemyConfig.ImpactRadius,
-        _explosionService));
-    entity.AddSystem(new TransformMoveByDirectionSystem());
-    entity.AddSystem(new TransformRotationSystem());
-    entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
+        entity.AddSystem(new ApplyDamageSystem());
+        entity.AddSystem(new DeathSystem());
+        entity.AddSystem(new ShooterEnemyBrain(
+            building,
+            config.AttackDistance,
+            config.AttackInterval,
+            config.AttackDamage,
+            config.ImpactRadius,
+            config.ProjectilePrefabPath,
+            _shooterProjectileService));
+        entity.AddSystem(new TransformMoveByDirectionSystem());
+        entity.AddSystem(new TransformRotationSystem());
+        entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));
 
-    _life.Add(entity);
-    return entity;
-}
+        _life.Add(entity);
+        return entity;
+    }
 
     public Entity CreateMine(Vector3 position, DefendLevelConfig level)
     {
@@ -133,7 +145,7 @@ private Entity CreateShooterEnemy(Vector3 position, DefendLevelConfig level, Ent
 
         return entity;
     }
-    
+
     public Entity CreateTurret(Vector3 position, DefendLevelConfig level)
     {
         Entity entity = new Entity();

@@ -11,8 +11,6 @@ public sealed class DefendLevelConfig : ScriptableObject
 
     [Header("Parts")]
     [SerializeField] private BuildingConfig _buildingConfig;
-    [SerializeField] private EnemyConfig _enemyConfig;
-    [SerializeField] private ShooterEnemyConfig _shooterEnemyConfig;
     [SerializeField] private PlayerExplosionConfig _playerExplosionConfig;
     [SerializeField] private MineConfig _mineConfig;
     [SerializeField] private TurretConfig _turretConfig;
@@ -26,8 +24,6 @@ public sealed class DefendLevelConfig : ScriptableObject
     public float RestDurationSeconds => _restDurationSeconds;
 
     public BuildingConfig BuildingConfig => _buildingConfig;
-    public EnemyConfig EnemyConfig => _enemyConfig;
-    public ShooterEnemyConfig ShooterEnemyConfig => _shooterEnemyConfig;
     public PlayerExplosionConfig PlayerExplosionConfig => _playerExplosionConfig;
     public MineConfig MineConfig => _mineConfig;
     public TurretConfig TurretConfig => _turretConfig;

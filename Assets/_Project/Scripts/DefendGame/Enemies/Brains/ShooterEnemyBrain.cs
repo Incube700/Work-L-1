@@ -11,7 +11,8 @@ public sealed class ShooterEnemyBrain : IInitializableSystem, IUpdatableSystem
     private readonly float _attackInterval;
     private readonly float _attackDamage;
     private readonly float _impactRadius;
-    private readonly ExplosionService _explosionService;
+    private readonly string _projectilePrefabPath;
+    private readonly ShooterProjectileService _projectileService;
 
     private Transform _selfTransform;
     private ReactiveVariable<Vector3> _moveDirection;
@@ -25,14 +26,16 @@ public sealed class ShooterEnemyBrain : IInitializableSystem, IUpdatableSystem
         float attackInterval,
         float attackDamage,
         float impactRadius,
-        ExplosionService explosionService)
+        string projectilePrefabPath,
+        ShooterProjectileService projectileService)
     {
         _building = building;
         _attackDistance = attackDistance;
         _attackInterval = attackInterval;
         _attackDamage = attackDamage;
         _impactRadius = impactRadius;
-        _explosionService = explosionService;
+        _projectilePrefabPath = projectilePrefabPath;
+        _projectileService = projectileService;
     }
 
     public void OnInit(Entity entity)
@@ -53,12 +56,15 @@ public sealed class ShooterEnemyBrain : IInitializableSystem, IUpdatableSystem
 
         if (_isDead.Value)
         {
+            _moveDirection.Value = Vector3.zero;
+            _rotationDirection.Value = Vector3.zero;
             return;
         }
 
         if (_building == null || _building.IsDead.Value)
         {
             _moveDirection.Value = Vector3.zero;
+            _rotationDirection.Value = Vector3.zero;
             return;
         }
 
@@ -68,6 +74,7 @@ public sealed class ShooterEnemyBrain : IInitializableSystem, IUpdatableSystem
         if (direction.sqrMagnitude <= 0.0001f)
         {
             _moveDirection.Value = Vector3.zero;
+            _rotationDirection.Value = Vector3.zero;
             return;
         }
 
@@ -92,16 +99,17 @@ public sealed class ShooterEnemyBrain : IInitializableSystem, IUpdatableSystem
         }
 
         _attackLeft = _attackInterval;
-        Shoot();
+        Shoot(direction);
     }
 
-    private void Shoot()
+    private void Shoot(Vector3 direction)
     {
-        if (_building.HasComponent<TakeDamageRequest>())
-        {
-            _building.TakeDamageRequest.Invoke(_attackDamage);
-        }
-
-        _explosionService.NotifyExploded(_building.Transform.position, _impactRadius);
+        _projectileService.Spawn(
+            _selfTransform,
+            direction,
+            _building,
+            _projectilePrefabPath,
+            _attackDamage,
+            _impactRadius);
     }
 }

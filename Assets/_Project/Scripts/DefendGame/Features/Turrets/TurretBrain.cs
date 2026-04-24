@@ -9,38 +9,30 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
 
     private readonly CollidersRegistryService _collidersRegistry;
     private readonly float _radius;
-    private readonly float _attackInterval;
-    private readonly float _damage;
-    private readonly float _impactRadius;
     private readonly int _mask;
-    private readonly ExplosionService _explosionService;
+    private readonly TurretAttackService _attackService;
+    private readonly TurretRotateSystem _rotateSystem;
     private readonly Collider[] _buffer = new Collider[BufferSize];
 
     private Transform _transform;
-    private float _attackLeft;
 
     public TurretBrain(
         CollidersRegistryService collidersRegistry,
         float radius,
-        float attackInterval,
-        float damage,
-        float impactRadius,
         int mask,
-        ExplosionService explosionService)
+        TurretAttackService attackService,
+        TurretRotateSystem rotateSystem)
     {
         _collidersRegistry = collidersRegistry;
         _radius = radius;
-        _attackInterval = attackInterval;
-        _damage = damage;
-        _impactRadius = impactRadius;
         _mask = mask;
-        _explosionService = explosionService;
+        _attackService = attackService;
+        _rotateSystem = rotateSystem;
     }
 
     public void OnInit(Entity entity)
     {
         _transform = entity.Transform;
-        _attackLeft = _attackInterval;
     }
 
     public void OnUpdate(float deltaTime)
@@ -50,24 +42,21 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
             return;
         }
 
+        _attackService.Tick(deltaTime);
+
         Entity target = FindClosestTarget();
 
         if (target == null)
         {
+            _rotateSystem.ClearLookDirection();
             return;
         }
 
-        RotateToTarget(target);
+        Vector3 direction = target.Transform.position - _transform.position;
+        direction.y = 0f;
 
-        _attackLeft -= deltaTime;
-
-        if (_attackLeft > 0f)
-        {
-            return;
-        }
-
-        _attackLeft = _attackInterval;
-        DealDamage(target);
+        _rotateSystem.SetLookDirection(direction);
+        _attackService.TryAttack(_transform, target, direction);
     }
 
     private Entity FindClosestTarget()
@@ -131,32 +120,5 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
         }
 
         return closestTarget;
-    }
-
-    private void RotateToTarget(Entity target)
-    {
-        Vector3 direction = target.Transform.position - _transform.position;
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude <= 0.001f)
-        {
-            return;
-        }
-
-        _transform.rotation = Quaternion.LookRotation(direction);
-    }
-
-    private void DealDamage(Entity target)
-    {
-        target.TakeDamageRequest.Invoke(_damage);
-        _explosionService.NotifyExploded(target.Transform.position, _impactRadius);
-
-        Log($"[Defend] Turret hit target for {_damage}");
-    }
-
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private static void Log(string message)
-    {
-        Debug.Log(message);
     }
 }

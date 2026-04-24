@@ -27,12 +27,18 @@ public sealed class PuddleFactory
     {
         Entity puddle = _entitiesFactory.CreatePuddle(position, _level);
 
-        puddle.AddSystem(new PuddleDamageSystem(
+        PuddleTargetCollectorService targetCollector = new PuddleTargetCollectorService(
             _collidersRegistry,
             _level.PuddleConfig.Radius,
-            _level.PuddleConfig.TickInterval,
-            _level.PuddleConfig.DamagePerTick,
-            _level.PuddleConfig.Mask));
+            _level.PuddleConfig.Mask);
+
+        PuddleDamageService damageService = new PuddleDamageService(
+            _level.PuddleConfig.DamagePerTick);
+
+        puddle.AddSystem(new PuddleDamageSystem(
+            targetCollector,
+            damageService,
+            _level.PuddleConfig.TickInterval));
 
         puddle.AddSystem(new PuddleExpireAfterWaveSystem(
             _life,

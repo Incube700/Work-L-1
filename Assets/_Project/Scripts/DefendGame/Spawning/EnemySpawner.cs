@@ -8,8 +8,8 @@ public sealed class EnemySpawner
     private readonly DefendEntitiesFactory _factory;
     private readonly BuildingStateService _buildingStateService;
     private readonly Action<Entity> _enemySpawned;
-    private WaveConfig _currentWave;
 
+    private WaveConfig _currentWave;
     private int _enemiesToSpawn;
     private int _enemiesSpawned;
     private IntervalTimer _spawnTimer;
@@ -34,6 +34,11 @@ public sealed class EnemySpawner
         if (wave == null)
         {
             throw new InvalidOperationException("Wave is null.");
+        }
+
+        if (wave.EnemyConfig == null)
+        {
+            throw new InvalidOperationException("Wave EnemyConfig is not assigned.");
         }
 
         if (wave.SpawnInterval <= 0f)
@@ -88,6 +93,7 @@ public sealed class EnemySpawner
         }
 
         Entity building = _buildingStateService.Building;
+        EnemyConfigBase enemyConfig = _currentWave.EnemyConfig;
 
         Vector2 offset2 = UnityEngine.Random.insideUnitCircle;
 
@@ -96,10 +102,10 @@ public sealed class EnemySpawner
             offset2 = Vector2.right;
         }
 
-        offset2 = offset2.normalized * _level.EnemyConfig.SpawnRadius;
+        offset2 = offset2.normalized * enemyConfig.SpawnRadius;
         Vector3 position = building.Transform.position + new Vector3(offset2.x, 0f, offset2.y);
 
-        Entity enemy = _factory.CreateEnemy(position, _level, _currentWave, building);
+        Entity enemy = _factory.CreateEnemy(position, enemyConfig, building);
         _enemySpawned?.Invoke(enemy);
     }
 }

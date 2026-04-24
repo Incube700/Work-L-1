@@ -7,7 +7,6 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
     private readonly PermanentUpgradesService _permanentUpgradesService;
     private readonly WalletService _walletService;
     private readonly SaveService _saveService;
-    private readonly EconomyConfig _economy;
 
     private PermanentUpgradesMenuView _shopView;
     private IReadOnlyReactiveVariable<int> _diamonds;
@@ -17,7 +16,6 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
         MainMenuView mainMenuView,
         PermanentUpgradesService permanentUpgradesService,
         WalletService walletService,
-        ConfigService configService,
         SaveService saveService)
     {
         _mainMenuView = mainMenuView ?? throw new ArgumentNullException(nameof(mainMenuView));
@@ -25,13 +23,6 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
             throw new ArgumentNullException(nameof(permanentUpgradesService));
         _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
         _saveService = saveService ?? throw new ArgumentNullException(nameof(saveService));
-
-        if (configService == null)
-        {
-            throw new ArgumentNullException(nameof(configService));
-        }
-
-        _economy = configService.Load<EconomyConfig>();
     }
 
     public void Initialize()
@@ -141,53 +132,17 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
 
     private void RefreshEntry(PermanentUpgradeType type)
     {
-        int cost = _permanentUpgradesService.GetCost(type);
+        PermanentUpgradeDefinition definition = _permanentUpgradesService.GetDefinition(type);
+
         bool purchased = _permanentUpgradesService.IsPurchased(type);
-        bool canAfford = _walletService.Get(CurrencyType.Diamond) >= cost;
+        bool canAfford = _walletService.Get(CurrencyType.Diamond) >= definition.CostDiamonds;
 
         _shopView.SetEntry(
             type,
-            GetTitle(type),
-            GetDescription(type),
-            cost,
+            definition.Title,
+            definition.Description,
+            definition.CostDiamonds,
             purchased,
             canAfford);
-    }
-
-    private string GetTitle(PermanentUpgradeType type)
-    {
-        switch (type)
-        {
-            case PermanentUpgradeType.WaveHeal:
-                return "Emergency Repairs";
-
-            case PermanentUpgradeType.OpeningStrike:
-                return "Opening Strike";
-
-            case PermanentUpgradeType.PlayerExplosionDamage:
-                return "Arcane Overload";
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
-    }
-
-    private string GetDescription(PermanentUpgradeType type)
-    {
-        switch (type)
-        {
-            case PermanentUpgradeType.WaveHeal:
-                return $"Heal the tower by {_economy.WaveHealPercent:0.#}% at the start of every wave.";
-
-            case PermanentUpgradeType.OpeningStrike:
-                return
-                    $"Deal {_economy.OpeningStrikeDamagePercent:0.#}% damage to the first {_economy.OpeningStrikeTargetsCount} enemies of each wave.";
-
-            case PermanentUpgradeType.PlayerExplosionDamage:
-                return $"Increase player click explosion damage by {_economy.PlayerExplosionDamagePercent:0.#}% for the whole run.";
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
     }
 }

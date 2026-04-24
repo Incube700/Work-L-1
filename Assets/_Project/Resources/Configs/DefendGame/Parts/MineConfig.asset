@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdfc466411b9844d1a96b6e3b8e14296, type: 3}
   m_Name: MineConfig
   m_EditorClassIdentifier: 
-  _costGold: 10
+  _costGold: 5
   _triggerRadius: 1.5
   _explosionRadius: 2.5
   _damage: 60

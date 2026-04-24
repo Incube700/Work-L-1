@@ -15,7 +15,6 @@ public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatabl
     private readonly int _mask;
     private readonly Collider[] _buffer = new Collider[BufferSize];
 
-    private Entity _entity;
     private Transform _transform;
     private ReactiveVariable<bool> _isDead;
     private bool _triggered;
@@ -38,7 +37,6 @@ public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatabl
 
     public void OnInit(Entity entity)
     {
-        _entity = entity;
         _transform = entity.Transform;
         _isDead = entity.IsDead;
         _triggered = false;
@@ -46,7 +44,17 @@ public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatabl
 
     public void OnUpdate(float deltaTime)
     {
-        if (_triggered || _transform == null || _isDead.Value)
+        if (_triggered)
+        {
+            return;
+        }
+
+        if (_transform == null)
+        {
+            return;
+        }
+
+        if (_isDead.Value)
         {
             return;
         }
@@ -82,17 +90,32 @@ public sealed class MineTriggerExplosionSystem : IInitializableSystem, IUpdatabl
                 continue;
             }
 
-            Log($"[Defend] Mine triggered at {_transform.position}");
-            _explosionService.Explode(_transform.position, _explosionRadius, _damage, _mask);
-
-            if (_entity.HasComponent<TakeDamageRequest>())
+            if (target.TryGetComponent(out IsDead isDead))
             {
-                _entity.TakeDamageRequest.Invoke(_entity.CurrentHealth.Value);
+                if (isDead.Value.Value == true)
+                {
+                    continue;
+                }
             }
 
-            _triggered = true;
+            Trigger();
             break;
         }
+    }
+
+    private void Trigger()
+    {
+        _triggered = true;
+
+        Log($"[Defend] Mine triggered at {_transform.position}");
+
+        _explosionService.Explode(
+            _transform.position,
+            _explosionRadius,
+            _damage,
+            _mask);
+
+        _isDead.Value = true;
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]

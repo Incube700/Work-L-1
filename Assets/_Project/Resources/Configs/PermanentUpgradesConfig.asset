@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c56d5a04bc1749a2a1a274e85c117010, type: 3}
+  m_Name: PermanentUpgradesConfig
+  m_EditorClassIdentifier: 
+  _definitions:
+  - _type: 0
+    _title: Emergency Repairs
+    _description: Heal the tower at the start of every wave.
+    _costDiamonds: 5
+  - _type: 1
+    _title: Opening Strike
+    _description: Damage the first enemies of every wave.
+    _costDiamonds: 8
+  - _type: 2
+    _title: Arcane Overload
+    _description: Incresase player click explosion damage for the whole run.
+    _costDiamonds: 10
+  _waveHealPercent: 10
+  _openingStrikeDamagePercent: 35
+  _openingStrikeTargetsCount: 3
+  _playerExplosionDamagePercent: 25

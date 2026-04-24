@@ -3,6 +3,7 @@ using Assets._Project.Scripts.Utilities.Conditions;
 public sealed class DefendStateMachineFactory
 {
     private readonly DefendPhaseService _phaseService;
+    private readonly RestTimerService _restTimerService;
     private readonly WaveProgressService _waveProgressService;
     private readonly BuildingStateService _buildingStateService;
     private readonly DefendResultService _resultService;
@@ -12,6 +13,7 @@ public sealed class DefendStateMachineFactory
 
     public DefendStateMachineFactory(
         DefendPhaseService phaseService,
+        RestTimerService restTimerService,
         WaveProgressService waveProgressService,
         BuildingStateService buildingStateService,
         DefendResultService resultService,
@@ -20,6 +22,7 @@ public sealed class DefendStateMachineFactory
         float restDurationSeconds)
     {
         _phaseService = phaseService;
+        _restTimerService = restTimerService;
         _waveProgressService = waveProgressService;
         _buildingStateService = buildingStateService;
         _resultService = resultService;
@@ -40,6 +43,7 @@ public sealed class DefendStateMachineFactory
 
         DefendRestState restState = new DefendRestState(
             _phaseService,
+            _restTimerService,
             _restDurationSeconds);
 
         DefendWinState winState = new DefendWinState(_resultService);
