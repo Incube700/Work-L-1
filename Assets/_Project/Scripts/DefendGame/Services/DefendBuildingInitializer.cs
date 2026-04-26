@@ -8,8 +8,8 @@ public sealed class DefendBuildingInitializer
     private readonly DefendEntitiesFactory _entitiesFactory;
     private readonly BuildingStateService _buildingStateService;
     private readonly BuildingCombatService _buildingCombatService;
-    private readonly ExplosionService _explosionService;
     private readonly DefendPermanentUpgradesRuntime _permanentUpgradesRuntime;
+    private readonly MageProjectileAttackFactory _mageProjectileAttackFactory;
 
     public DefendBuildingInitializer(
         DefendLevelConfig level,
@@ -17,16 +17,16 @@ public sealed class DefendBuildingInitializer
         DefendEntitiesFactory entitiesFactory,
         BuildingStateService buildingStateService,
         BuildingCombatService buildingCombatService,
-        ExplosionService explosionService,
-        DefendPermanentUpgradesRuntime permanentUpgradesRuntime)
+        DefendPermanentUpgradesRuntime permanentUpgradesRuntime,
+        MageProjectileAttackFactory mageProjectileAttackFactory)
     {
         _level = level ?? throw new ArgumentNullException(nameof(level));
         _sceneData = sceneData ?? throw new ArgumentNullException(nameof(sceneData));
         _entitiesFactory = entitiesFactory ?? throw new ArgumentNullException(nameof(entitiesFactory));
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
         _buildingCombatService = buildingCombatService ?? throw new ArgumentNullException(nameof(buildingCombatService));
-        _explosionService = explosionService ?? throw new ArgumentNullException(nameof(explosionService));
         _permanentUpgradesRuntime = permanentUpgradesRuntime ?? throw new ArgumentNullException(nameof(permanentUpgradesRuntime));
+        _mageProjectileAttackFactory = mageProjectileAttackFactory ?? throw new ArgumentNullException(nameof(mageProjectileAttackFactory));
     }
 
     public void Initialize()
@@ -47,13 +47,16 @@ public sealed class DefendBuildingInitializer
         MageAttackAnimationView mageAttackAnimationView =
             building.Transform.GetComponentInChildren<MageAttackAnimationView>();
 
-        if (mageAttackAnimationView != null)
+        if (mageAttackAnimationView == null)
         {
-            mageAttackAnimationView.Construct(
-                _buildingCombatService,
-                _level,
-                _explosionService,
-                _permanentUpgradesRuntime.PlayerExplosionDamageMultiplier);
+            return;
         }
+
+        mageAttackAnimationView.Construct(_buildingCombatService);
+
+        _mageProjectileAttackFactory.Create(
+            mageAttackAnimationView.ProjectileSpawnPoint,
+            _level.PlayerExplosionConfig.ProjectileConfig,
+            _permanentUpgradesRuntime.PlayerExplosionDamageMultiplier);
     }
 }

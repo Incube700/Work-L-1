@@ -30,7 +30,8 @@ public sealed class ProjectileFactory
         Vector3 direction,
         Vector3 targetPoint,
         Team team,
-        ProjectileConfig config)
+        ProjectileConfig config,
+        float damageMultiplier = 1f)
     {
         if (config == null)
         {
@@ -69,7 +70,10 @@ public sealed class ProjectileFactory
         projectile.AddComponent(new OverlapActivationMask { Value = config.Mask });
 
         projectile.AddComponent(new AreaAttackRadius { Value = config.ExplosionRadius });
-        projectile.AddComponent(new AreaAttackDamage { Value = config.Damage });
+        projectile.AddComponent(new AreaAttackDamage
+        {
+            Value = config.Damage * Mathf.Max(0f, damageMultiplier)
+        });
         projectile.AddComponent(new AreaAttackMask { Value = config.Mask });
         projectile.AddComponent(new AreaAttackRequest { Value = new SimpleEvent<Vector3>() });
         projectile.AddComponent(new AreaAttackTargets { Value = new List<Entity>() });

@@ -17,6 +17,7 @@ public sealed class ProjectileShootSystem : IInitializableSystem, IUpdatableSyst
     private ReactiveVariable<float> _cooldown;
     private ReactiveVariable<bool> _isDead;
     private float _interval;
+    private float _damageMultiplier = 1f;
     private SimpleEvent<Vector3> _shootRequest;
     private IDisposable _shootRequestSubscription;
 
@@ -33,6 +34,11 @@ public sealed class ProjectileShootSystem : IInitializableSystem, IUpdatableSyst
         _interval = entity.GetComponent<ProjectileShootInterval>().Value;
         _cooldown = entity.GetComponent<ProjectileShootCooldown>().Value;
         _shootRequest = entity.GetComponent<ProjectileShootRequest>().Value;
+
+        if (entity.TryGetComponent(out ProjectileShootDamageMultiplier damageMultiplier))
+        {
+            _damageMultiplier = damageMultiplier.Value;
+        }
 
         if (entity.TryGetComponent(out IsDead isDead))
         {
@@ -101,7 +107,8 @@ public sealed class ProjectileShootSystem : IInitializableSystem, IUpdatableSyst
             normalizedDirection,
             targetPoint,
             _team,
-            _projectileConfig);
+            _projectileConfig,
+            _damageMultiplier);
 
         _cooldown.Value = _interval;
     }

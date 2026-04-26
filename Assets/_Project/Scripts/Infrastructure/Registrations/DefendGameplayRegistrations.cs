@@ -81,6 +81,11 @@ public static class DefendGameplayRegistrations
             c.Resolve<PopupService>(),
             c.Resolve<GameFlowService>(),
             c.Resolve<DefendLevelConfig>()));
+        
+        container.BindLazy<MageProjectileAttackFactory>(c => new MageProjectileAttackFactory(
+            c.Resolve<EntitiesLifeContext>(),
+            c.Resolve<ProjectileFactory>(),
+            c.Resolve<BuildingCombatService>()));
 
         container.BindLazy<MineFactory>(c => new MineFactory(
             c.Resolve<DefendLevelConfig>(),
@@ -198,9 +203,9 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<BuildingStateService>(),
             c.Resolve<BuildingCombatService>(),
-            c.Resolve<ExplosionService>(),
-            c.Resolve<DefendPermanentUpgradesRuntime>()));
-
+            c.Resolve<DefendPermanentUpgradesRuntime>(),
+            c.Resolve<MageProjectileAttackFactory>()));
+        
         container.BindLazy<DefendGameplayRuntime>(c => new DefendGameplayRuntime(
             c.Resolve<EntitiesLifeContext>(),
             c.Resolve<MonoEntitiesFactory>(),

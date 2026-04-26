@@ -20,3 +20,8 @@ public sealed class ProjectileShootConfig : IEntityComponent
 {
     public ProjectileConfig Value;
 }
+
+public sealed class ProjectileShootDamageMultiplier : IEntityComponent
+{
+    public float Value;
+}

@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3caaba2a6e02d4377899b18b84297164, type: 3}
   m_Name: PlayerExplosionConfig
   m_EditorClassIdentifier: 
-  _radius: 2.5
-  _damage: 25
-  _mask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  _projectileConfig: {fileID: 11400000, guid: 70699e51be8e543c090cfc246be7a909, type: 2}

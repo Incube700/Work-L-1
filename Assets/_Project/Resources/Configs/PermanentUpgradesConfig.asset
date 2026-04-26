@@ -12,20 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c56d5a04bc1749a2a1a274e85c117010, type: 3}
   m_Name: PermanentUpgradesConfig
   m_EditorClassIdentifier: 
-  _definitions:
-  - _type: 0
-    _title: Emergency Repairs
-    _description: Heal the tower at the start of every wave.
-    _costDiamonds: 5
-  - _type: 1
-    _title: Opening Strike
-    _description: Damage the first enemies of every wave.
-    _costDiamonds: 8
-  - _type: 2
-    _title: Arcane Overload
-    _description: Incresase player click explosion damage for the whole run.
-    _costDiamonds: 10
-  _waveHealPercent: 10
-  _openingStrikeDamagePercent: 35
-  _openingStrikeTargetsCount: 3
-  _playerExplosionDamagePercent: 25
+  _upgrades:
+  - {fileID: 11400000, guid: bcc3b2c68615b4f2d813fc165628a21c, type: 2}
+  - {fileID: 11400000, guid: dd9e90276420e4e1f98b7660a9bc3aaa, type: 2}
+  - {fileID: 11400000, guid: 31cf9bd9c915240dca688b55dbc040ef, type: 2}
