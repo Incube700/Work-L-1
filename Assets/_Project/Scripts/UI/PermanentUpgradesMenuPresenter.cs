@@ -132,16 +132,16 @@ public sealed class PermanentUpgradesMenuPresenter : IPresenter
 
     private void RefreshEntry(PermanentUpgradeType type)
     {
-        PermanentUpgradeDefinition definition = _permanentUpgradesService.GetDefinition(type);
+        PermanentUpgradeConfigBase config = _permanentUpgradesService.GetConfig(type);
 
         bool purchased = _permanentUpgradesService.IsPurchased(type);
-        bool canAfford = _walletService.Get(CurrencyType.Diamond) >= definition.CostDiamonds;
+        bool canAfford = _walletService.Get(CurrencyType.Diamond) >= config.CostDiamonds;
 
         _shopView.SetEntry(
             type,
-            definition.Title,
-            definition.Description,
-            definition.CostDiamonds,
+            config.Title,
+            config.Description,
+            config.CostDiamonds,
             purchased,
             canAfford);
     }

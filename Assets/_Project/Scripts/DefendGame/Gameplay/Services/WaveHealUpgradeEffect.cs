@@ -2,20 +2,17 @@ using System;
 
 public sealed class WaveHealUpgradeEffect : IDefendPermanentUpgradeEffect
 {
-    private readonly PermanentUpgradesService _permanentUpgradesService;
-    private readonly PermanentUpgradesConfig _config;
+    private readonly WaveHealUpgradeConfig _config;
     private readonly BuildingStateService _buildingStateService;
     private readonly WaveProgressService _waveProgressService;
 
     private bool _isInitialized;
 
     public WaveHealUpgradeEffect(
-        PermanentUpgradesService permanentUpgradesService,
-        PermanentUpgradesConfig config,
+        WaveHealUpgradeConfig config,
         BuildingStateService buildingStateService,
         WaveProgressService waveProgressService)
     {
-        _permanentUpgradesService = permanentUpgradesService ?? throw new ArgumentNullException(nameof(permanentUpgradesService));
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _buildingStateService = buildingStateService ?? throw new ArgumentNullException(nameof(buildingStateService));
         _waveProgressService = waveProgressService ?? throw new ArgumentNullException(nameof(waveProgressService));
@@ -24,11 +21,6 @@ public sealed class WaveHealUpgradeEffect : IDefendPermanentUpgradeEffect
     public void Initialize()
     {
         if (_isInitialized)
-        {
-            return;
-        }
-
-        if (_permanentUpgradesService.IsPurchased(PermanentUpgradeType.WaveHeal) == false)
         {
             return;
         }
@@ -50,6 +42,6 @@ public sealed class WaveHealUpgradeEffect : IDefendPermanentUpgradeEffect
 
     private void OnWaveStarted(int waveIndex, WaveConfig wave)
     {
-        _buildingStateService.RestorePercent(_config.WaveHealPercent);
+        _buildingStateService.RestorePercent(_config.HealPercent);
     }
 }

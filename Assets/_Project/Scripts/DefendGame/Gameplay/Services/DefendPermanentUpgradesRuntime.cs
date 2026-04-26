@@ -3,67 +3,35 @@ using System.Collections.Generic;
 
 public sealed class DefendPermanentUpgradesRuntime : IDisposable
 {
+    private readonly PermanentUpgradesService _permanentUpgradesService;
+    private readonly PermanentUpgradeEffectFactory _effectFactory;
     private readonly List<IDefendPermanentUpgradeEffect> _effects =
         new List<IDefendPermanentUpgradeEffect>();
 
-    private readonly PlayerExplosionDamageUpgradeEffect _playerExplosionDamageUpgradeEffect;
-
+    private PlayerExplosionDamageUpgradeEffect _playerExplosionDamageUpgradeEffect;
     private bool _isInitialized;
 
     public DefendPermanentUpgradesRuntime(
         PermanentUpgradesService permanentUpgradesService,
-        ConfigService configService,
-        BuildingStateService buildingStateService,
-        WaveProgressService waveProgressService,
-        EnemyService enemyService)
+        PermanentUpgradeEffectFactory effectFactory)
     {
-        if (permanentUpgradesService == null)
-        {
+        _permanentUpgradesService = permanentUpgradesService ??
             throw new ArgumentNullException(nameof(permanentUpgradesService));
-        }
-
-        if (configService == null)
-        {
-            throw new ArgumentNullException(nameof(configService));
-        }
-
-        if (buildingStateService == null)
-        {
-            throw new ArgumentNullException(nameof(buildingStateService));
-        }
-
-        if (waveProgressService == null)
-        {
-            throw new ArgumentNullException(nameof(waveProgressService));
-        }
-
-        if (enemyService == null)
-        {
-            throw new ArgumentNullException(nameof(enemyService));
-        }
-
-        PermanentUpgradesConfig config = configService.Load<PermanentUpgradesConfig>();
-
-        _playerExplosionDamageUpgradeEffect = new PlayerExplosionDamageUpgradeEffect(
-            permanentUpgradesService,
-            config);
-
-        _effects.Add(new WaveHealUpgradeEffect(
-            permanentUpgradesService,
-            config,
-            buildingStateService,
-            waveProgressService));
-
-        _effects.Add(new OpeningStrikeUpgradeEffect(
-            permanentUpgradesService,
-            config,
-            waveProgressService,
-            enemyService));
-
-        _effects.Add(_playerExplosionDamageUpgradeEffect);
+        _effectFactory = effectFactory ?? throw new ArgumentNullException(nameof(effectFactory));
     }
 
-    public float PlayerExplosionDamageMultiplier => _playerExplosionDamageUpgradeEffect.DamageMultiplier;
+    public float PlayerExplosionDamageMultiplier
+    {
+        get
+        {
+            if (_playerExplosionDamageUpgradeEffect == null)
+            {
+                return 1f;
+            }
+
+            return _playerExplosionDamageUpgradeEffect.DamageMultiplier;
+        }
+    }
 
     public void Initialize()
     {
@@ -71,6 +39,8 @@ public sealed class DefendPermanentUpgradesRuntime : IDisposable
         {
             return;
         }
+
+        CreatePurchasedEffects();
 
         for (int i = 0; i < _effects.Count; i++)
         {
@@ -92,6 +62,36 @@ public sealed class DefendPermanentUpgradesRuntime : IDisposable
             _effects[i].Dispose();
         }
 
+        _effects.Clear();
+        _playerExplosionDamageUpgradeEffect = null;
         _isInitialized = false;
+    }
+
+    private void CreatePurchasedEffects()
+    {
+        IReadOnlyList<PermanentUpgradeConfigBase> upgrades = _permanentUpgradesService.Upgrades;
+
+        for (int i = 0; i < upgrades.Count; i++)
+        {
+            PermanentUpgradeConfigBase config = upgrades[i];
+
+            if (config == null)
+            {
+                continue;
+            }
+
+            if (_permanentUpgradesService.IsPurchased(config.Type) == false)
+            {
+                continue;
+            }
+
+            IDefendPermanentUpgradeEffect effect = _effectFactory.Create(config);
+            _effects.Add(effect);
+
+            if (effect is PlayerExplosionDamageUpgradeEffect playerExplosionDamageUpgradeEffect)
+            {
+                _playerExplosionDamageUpgradeEffect = playerExplosionDamageUpgradeEffect;
+            }
+        }
     }
 }

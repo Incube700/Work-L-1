@@ -2,14 +2,10 @@ using System;
 
 public sealed class PlayerExplosionDamageUpgradeEffect : IDefendPermanentUpgradeEffect
 {
-    private readonly PermanentUpgradesService _permanentUpgradesService;
-    private readonly PermanentUpgradesConfig _config;
+    private readonly PlayerExplosionDamageUpgradeConfig _config;
 
-    public PlayerExplosionDamageUpgradeEffect(
-        PermanentUpgradesService permanentUpgradesService,
-        PermanentUpgradesConfig config)
+    public PlayerExplosionDamageUpgradeEffect(PlayerExplosionDamageUpgradeConfig config)
     {
-        _permanentUpgradesService = permanentUpgradesService ?? throw new ArgumentNullException(nameof(permanentUpgradesService));
         _config = config ?? throw new ArgumentNullException(nameof(config));
     }
 
@@ -17,9 +13,7 @@ public sealed class PlayerExplosionDamageUpgradeEffect : IDefendPermanentUpgrade
 
     public void Initialize()
     {
-        DamageMultiplier = _permanentUpgradesService.IsPurchased(PermanentUpgradeType.PlayerExplosionDamage)
-            ? 1f + _config.PlayerExplosionDamagePercent / 100f
-            : 1f;
+        DamageMultiplier = 1f + _config.DamagePercent / 100f;
     }
 
     public void Dispose()

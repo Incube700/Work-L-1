@@ -4,8 +4,7 @@ using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 
 public sealed class OpeningStrikeUpgradeEffect : IDefendPermanentUpgradeEffect
 {
-    private readonly PermanentUpgradesService _permanentUpgradesService;
-    private readonly PermanentUpgradesConfig _config;
+    private readonly OpeningStrikeUpgradeConfig _config;
     private readonly WaveProgressService _waveProgressService;
     private readonly EnemyService _enemyService;
 
@@ -13,12 +12,10 @@ public sealed class OpeningStrikeUpgradeEffect : IDefendPermanentUpgradeEffect
     private bool _isInitialized;
 
     public OpeningStrikeUpgradeEffect(
-        PermanentUpgradesService permanentUpgradesService,
-        PermanentUpgradesConfig config,
+        OpeningStrikeUpgradeConfig config,
         WaveProgressService waveProgressService,
         EnemyService enemyService)
     {
-        _permanentUpgradesService = permanentUpgradesService ?? throw new ArgumentNullException(nameof(permanentUpgradesService));
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _waveProgressService = waveProgressService ?? throw new ArgumentNullException(nameof(waveProgressService));
         _enemyService = enemyService ?? throw new ArgumentNullException(nameof(enemyService));
@@ -27,11 +24,6 @@ public sealed class OpeningStrikeUpgradeEffect : IDefendPermanentUpgradeEffect
     public void Initialize()
     {
         if (_isInitialized)
-        {
-            return;
-        }
-
-        if (_permanentUpgradesService.IsPurchased(PermanentUpgradeType.OpeningStrike) == false)
         {
             return;
         }
@@ -58,7 +50,7 @@ public sealed class OpeningStrikeUpgradeEffect : IDefendPermanentUpgradeEffect
 
     private void OnWaveStarted(int waveIndex, WaveConfig wave)
     {
-        _targetsLeft = _config.OpeningStrikeTargetsCount;
+        _targetsLeft = _config.TargetsCount;
     }
 
     private void OnEnemyAdded(Entity enemy)
@@ -78,7 +70,7 @@ public sealed class OpeningStrikeUpgradeEffect : IDefendPermanentUpgradeEffect
             return;
         }
 
-        float damage = maxHealth.Value.Value * _config.OpeningStrikeDamagePercent / 100f;
+        float damage = maxHealth.Value.Value * _config.DamagePercent / 100f;
 
         _targetsLeft--;
 

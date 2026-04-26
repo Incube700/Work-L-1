@@ -21,19 +21,21 @@ public sealed class PermanentUpgradesService
         _config = configs.Load<PermanentUpgradesConfig>();
     }
 
+    public IReadOnlyList<PermanentUpgradeConfigBase> Upgrades => _config.Upgrades;
+
     public bool IsPurchased(PermanentUpgradeType type)
     {
         return _purchasedTypes.Contains(type);
     }
 
-    public PermanentUpgradeDefinition GetDefinition(PermanentUpgradeType type)
+    public PermanentUpgradeConfigBase GetConfig(PermanentUpgradeType type)
     {
-        return _config.GetDefinition(type);
+        return _config.GetUpgrade(type);
     }
 
     public int GetCost(PermanentUpgradeType type)
     {
-        return GetDefinition(type).CostDiamonds;
+        return GetConfig(type).CostDiamonds;
     }
 
     public void Load(PermanentUpgradesData data)
@@ -79,8 +81,8 @@ public sealed class PermanentUpgradesService
             return false;
         }
 
-        PermanentUpgradeDefinition definition = GetDefinition(type);
-        int cost = definition.CostDiamonds;
+        PermanentUpgradeConfigBase config = GetConfig(type);
+        int cost = config.CostDiamonds;
 
         if (_wallet.TrySpend(CurrencyType.Diamond, cost) == false)
         {
@@ -104,7 +106,6 @@ public sealed class PermanentUpgradesService
         Log("[Meta] Permanent upgrades reset.");
     }
 
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private static void Log(string message)
     {
         UnityEngine.Debug.Log(message);

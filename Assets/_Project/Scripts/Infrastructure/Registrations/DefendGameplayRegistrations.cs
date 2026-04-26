@@ -56,13 +56,15 @@ public static class DefendGameplayRegistrations
         container.BindLazy<EnemyService>(_ => new EnemyService());
         container.BindLazy<BuildingCombatService>(c => new BuildingCombatService(
             c.Resolve<BuildingStateService>()));
-
-        container.BindLazy<DefendPermanentUpgradesRuntime>(c => new DefendPermanentUpgradesRuntime(
-            c.Resolve<PermanentUpgradesService>(),
-            c.Resolve<ConfigService>(),
+        
+        container.BindLazy<PermanentUpgradeEffectFactory>(c => new PermanentUpgradeEffectFactory(
             c.Resolve<BuildingStateService>(),
             c.Resolve<WaveProgressService>(),
             c.Resolve<EnemyService>()));
+
+        container.BindLazy<DefendPermanentUpgradesRuntime>(c => new DefendPermanentUpgradesRuntime(
+            c.Resolve<PermanentUpgradesService>(),
+            c.Resolve<PermanentUpgradeEffectFactory>()));
 
         container.BindLazy<DefendResultService>(c => new DefendResultService(
             c.Resolve<DefendLevelConfig>(),
