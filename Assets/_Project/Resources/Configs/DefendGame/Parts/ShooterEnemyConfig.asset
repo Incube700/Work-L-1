@@ -14,10 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 50
   _moveSpeed: 2
-  _spawnRadius: 11.34
   _prefabPath: Entities/DummyEnemyShooter
-  _attackDistance: 9.48
+  _attackDistance: 5
   _attackInterval: 1.5
-  _attackDamage: 10
-  _impactRadius: 0.75
-  _projectilePrefabPath: Prefabs/ShooterFireball
+  _projectileConfig: {fileID: 11400000, guid: 70699e51be8e543c090cfc246be7a909, type: 2}

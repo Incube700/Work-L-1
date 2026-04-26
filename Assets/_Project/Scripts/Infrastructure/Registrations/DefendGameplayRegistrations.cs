@@ -28,7 +28,7 @@ public static class DefendGameplayRegistrations
             c.Resolve<EntitiesLifeContext>(),
             c.Resolve<MonoEntitiesFactory>(),
             c.Resolve<ExplosionService>(),
-            c.Resolve<ShooterProjectileService>()));
+            c.Resolve<ProjectileFactory>()));
 
         container.BindLazy<IInputService>(_ => new DesktopInputService());
 
@@ -92,12 +92,18 @@ public static class DefendGameplayRegistrations
             c.Resolve<WalletService>(),
             c.Resolve<MineFactory>()));
         
+        container.BindLazy<ProjectileFactory>(c => new ProjectileFactory(
+            c.Resolve<MonoEntitiesFactory>(),
+            c.Resolve<EntitiesLifeContext>(),
+            c.Resolve<CollidersRegistryService>(),
+            c.Resolve<ExplosionService>()));
+        
         container.BindLazy<TurretFactory>(c => new TurretFactory(
             c.Resolve<DefendLevelConfig>(),
             c.Resolve<DefendEntitiesFactory>(),
             c.Resolve<EntitiesLifeContext>(),
             c.Resolve<CollidersRegistryService>(),
-            c.Resolve<ExplosionService>()));
+            c.Resolve<ProjectileFactory>()));
 
         container.BindLazy<PuddleFactory>(c => new PuddleFactory(
             c.Resolve<DefendLevelConfig>(),
@@ -115,10 +121,6 @@ public static class DefendGameplayRegistrations
             c.Resolve<DefendLevelConfig>(),
             c.Resolve<WalletService>(),
             c.Resolve<PuddleFactory>()));
-        
-        container.BindLazy<ShooterProjectileService>(c => new ShooterProjectileService(
-            c.Resolve<ResourcesAssetsLoader>(),
-            c.Resolve<ExplosionService>()));
         
         container.BindLazy<PlacementSelectionService>(_ => new PlacementSelectionService());
         

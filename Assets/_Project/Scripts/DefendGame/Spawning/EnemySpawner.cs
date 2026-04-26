@@ -102,7 +102,7 @@ public sealed class EnemySpawner
             offset2 = Vector2.right;
         }
 
-        offset2 = offset2.normalized * enemyConfig.SpawnRadius;
+        offset2 = offset2.normalized * _currentWave.SpawnRadius;
         Vector3 position = building.Transform.position + new Vector3(offset2.x, 0f, offset2.y);
 
         Entity enemy = _factory.CreateEnemy(position, enemyConfig, building);

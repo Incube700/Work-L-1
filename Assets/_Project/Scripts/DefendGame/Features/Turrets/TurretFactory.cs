@@ -1,4 +1,5 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
+using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using UnityEngine;
 
 public sealed class TurretFactory
@@ -7,47 +8,39 @@ public sealed class TurretFactory
     private readonly DefendEntitiesFactory _entitiesFactory;
     private readonly EntitiesLifeContext _life;
     private readonly CollidersRegistryService _collidersRegistry;
-    private readonly ExplosionService _explosionService;
+    private readonly ProjectileFactory _projectileFactory;
 
     public TurretFactory(
         DefendLevelConfig level,
         DefendEntitiesFactory entitiesFactory,
         EntitiesLifeContext life,
         CollidersRegistryService collidersRegistry,
-        ExplosionService explosionService)
+        ProjectileFactory projectileFactory)
     {
         _level = level;
         _entitiesFactory = entitiesFactory;
         _life = life;
         _collidersRegistry = collidersRegistry;
-        _explosionService = explosionService;
+        _projectileFactory = projectileFactory;
     }
 
     public Entity Create(Vector3 position)
     {
         Entity turret = _entitiesFactory.CreateTurret(position, _level);
 
-        TurretRotateSystem rotateSystem = new TurretRotateSystem(
-            _level.TurretConfig.RotateSpeed);
+        turret.AddComponent(new ProjectileShootRequest { Value = new SimpleEvent<Vector3>() });
+        turret.AddComponent(new ProjectileShootInterval { Value = _level.TurretConfig.AttackInterval });
+        turret.AddComponent(new ProjectileShootCooldown { Value = new ReactiveVariable<float>(0f) });
+        turret.AddComponent(new ProjectileShootConfig { Value = _level.TurretConfig.ProjectileConfig });
 
-        TurretAttackService attackService = new TurretAttackService(
-            _explosionService,
-            _level.TurretConfig.AttackInterval,
-            _level.TurretConfig.Damage,
-            _level.TurretConfig.ImpactRadius,
-            _level.TurretConfig.ProjectilePrefabPath,
-            _level.TurretConfig.ProjectileSpeed,
-            _level.TurretConfig.ProjectileLifeTime,
-            _level.TurretConfig.ProjectileHitDistance);
-
-        turret.AddSystem(rotateSystem);
+        turret.AddSystem(new ProjectileShootSystem(_projectileFactory));
 
         turret.AddSystem(new TurretBrain(
             _collidersRegistry,
             _level.TurretConfig.Radius,
-            _level.TurretConfig.Mask,
-            attackService,
-            rotateSystem));
+            _level.TurretConfig.Mask));
+
+        turret.AddSystem(new TransformRotationSystem());
 
         _life.Add(turret);
         return turret;

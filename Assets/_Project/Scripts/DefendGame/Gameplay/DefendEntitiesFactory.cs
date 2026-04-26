@@ -9,18 +9,18 @@ public sealed class DefendEntitiesFactory
     private readonly EntitiesLifeContext _life;
     private readonly MonoEntitiesFactory _mono;
     private readonly ExplosionService _explosionService;
-    private readonly ShooterProjectileService _shooterProjectileService;
+    private readonly ProjectileFactory _projectileFactory;
 
     public DefendEntitiesFactory(
         EntitiesLifeContext life,
         MonoEntitiesFactory mono,
         ExplosionService explosionService,
-        ShooterProjectileService shooterProjectileService)
+        ProjectileFactory projectileFactory)
     {
         _life = life;
         _mono = mono;
         _explosionService = explosionService;
-        _shooterProjectileService = shooterProjectileService;
+        _projectileFactory = projectileFactory;
     }
 
     public Entity CreateBuilding(Vector3 position, DefendLevelConfig level)
@@ -119,14 +119,18 @@ public sealed class DefendEntitiesFactory
 
         entity.AddSystem(new ApplyDamageSystem());
         entity.AddSystem(new DeathSystem());
+
+        entity.AddComponent(new ProjectileShootRequest { Value = new SimpleEvent<Vector3>() });
+        entity.AddComponent(new ProjectileShootInterval { Value = config.AttackInterval });
+        entity.AddComponent(new ProjectileShootCooldown { Value = new ReactiveVariable<float>(config.AttackInterval) });
+        entity.AddComponent(new ProjectileShootConfig { Value = config.ProjectileConfig });
+
+        entity.AddSystem(new ProjectileShootSystem(_projectileFactory));
+
         entity.AddSystem(new ShooterEnemyBrain(
             building,
-            config.AttackDistance,
-            config.AttackInterval,
-            config.AttackDamage,
-            config.ImpactRadius,
-            config.ProjectilePrefabPath,
-            _shooterProjectileService));
+            config.AttackDistance));
+
         entity.AddSystem(new TransformMoveByDirectionSystem());
         entity.AddSystem(new TransformRotationSystem());
         entity.AddSystem(new ReleaseAfterDeathDelaySystem(_life, 1.2f));

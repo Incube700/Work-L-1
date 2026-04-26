@@ -9,15 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 226634ba19784f3292b1ce632b3bbdb7, type: 3}
-  m_Name: TurretConfig
+  m_Script: {fileID: 11500000, guid: 3f7d93d523354e54a6f476bf19354a38, type: 3}
+  m_Name: ProjectileConfig
   m_EditorClassIdentifier: 
-  _costGold: 12
-  _radius: 6
-  _attackInterval: 1
-  _prefabPath: Entities/DummyTurret
+  _prefabPath: Prefabs/ProjectileFireball
+  _speed: 10
+  _lifeTime: 3
+  _hitDistance: 0.2
+  _collisionRadius: 0.25
+  _damage: 10
+  _explosionRadius: 0.5
   _mask:
     serializedVersion: 2
     m_Bits: 4294967295
-  _rotateSpeed: 360
-  _projectileConfig: {fileID: 11400000, guid: 70699e51be8e543c090cfc246be7a909, type: 2}

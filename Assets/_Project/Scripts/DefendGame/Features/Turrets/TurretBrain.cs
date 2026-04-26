@@ -1,6 +1,7 @@
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
 using Assets._Project.Scripts.Gameplay.EntitiesCore.Systems;
 using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
+using Assets._Project.Scripts.Gameplay.Features.MovementFeature;
 using UnityEngine;
 
 public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
@@ -10,29 +11,27 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
     private readonly CollidersRegistryService _collidersRegistry;
     private readonly float _radius;
     private readonly int _mask;
-    private readonly TurretAttackService _attackService;
-    private readonly TurretRotateSystem _rotateSystem;
     private readonly Collider[] _buffer = new Collider[BufferSize];
 
     private Transform _transform;
+    private ReactiveVariable<Vector3> _rotationDirection;
+    private SimpleEvent<Vector3> _shootRequest;
 
     public TurretBrain(
         CollidersRegistryService collidersRegistry,
         float radius,
-        int mask,
-        TurretAttackService attackService,
-        TurretRotateSystem rotateSystem)
+        int mask)
     {
         _collidersRegistry = collidersRegistry;
         _radius = radius;
         _mask = mask;
-        _attackService = attackService;
-        _rotateSystem = rotateSystem;
     }
 
     public void OnInit(Entity entity)
     {
         _transform = entity.Transform;
+        _rotationDirection = entity.RotationDirection;
+        _shootRequest = entity.GetComponent<ProjectileShootRequest>().Value;
     }
 
     public void OnUpdate(float deltaTime)
@@ -42,21 +41,25 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
             return;
         }
 
-        _attackService.Tick(deltaTime);
-
         Entity target = FindClosestTarget();
 
         if (target == null)
         {
-            _rotateSystem.ClearLookDirection();
+            _rotationDirection.Value = Vector3.zero;
             return;
         }
 
         Vector3 direction = target.Transform.position - _transform.position;
         direction.y = 0f;
 
-        _rotateSystem.SetLookDirection(direction);
-        _attackService.TryAttack(_transform, target, direction);
+        if (direction.sqrMagnitude <= 0.001f)
+        {
+            _rotationDirection.Value = Vector3.zero;
+            return;
+        }
+
+        _rotationDirection.Value = direction;
+        _shootRequest.Invoke(target.Transform.position);
     }
 
     private Entity FindClosestTarget()
@@ -85,25 +88,7 @@ public sealed class TurretBrain : IInitializableSystem, IUpdatableSystem
                 continue;
             }
 
-            if (target.TryGetComponent(out TeamComponent teamComponent) == false)
-            {
-                continue;
-            }
-
-            if (teamComponent.Value != Team.Enemy)
-            {
-                continue;
-            }
-
-            if (target.TryGetComponent(out IsDead isDead))
-            {
-                if (isDead.Value.Value == true)
-                {
-                    continue;
-                }
-            }
-
-            if (target.HasComponent<TakeDamageRequest>() == false)
+            if (CombatTargetFilter.CanDamageFromTeam(Team.Player, target) == false)
             {
                 continue;
             }

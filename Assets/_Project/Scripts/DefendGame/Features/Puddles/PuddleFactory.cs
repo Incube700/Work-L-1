@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Assets._Project.Scripts.Gameplay.EntitiesCore;
+using Assets._Project.Scripts.Gameplay.Features.LifeFeature;
 using UnityEngine;
 
 public sealed class PuddleFactory
@@ -27,18 +29,23 @@ public sealed class PuddleFactory
     {
         Entity puddle = _entitiesFactory.CreatePuddle(position, _level);
 
-        PuddleTargetCollectorService targetCollector = new PuddleTargetCollectorService(
-            _collidersRegistry,
-            _level.PuddleConfig.Radius,
-            _level.PuddleConfig.Mask);
+        puddle.AddIsDead(false);
 
-        PuddleDamageService damageService = new PuddleDamageService(
-            _level.PuddleConfig.DamagePerTick);
+        puddle.AddComponent(new TimedAreaAttackInterval { Value = _level.PuddleConfig.TickInterval });
+        puddle.AddComponent(new TimedAreaAttackLeft { Value = new ReactiveVariable<float>(_level.PuddleConfig.TickInterval) });
 
-        puddle.AddSystem(new PuddleDamageSystem(
-            targetCollector,
-            damageService,
-            _level.PuddleConfig.TickInterval));
+        puddle.AddComponent(new AreaAttackRadius { Value = _level.PuddleConfig.Radius });
+        puddle.AddComponent(new AreaAttackDamage { Value = _level.PuddleConfig.DamagePerTick });
+        puddle.AddComponent(new AreaAttackMask { Value = _level.PuddleConfig.Mask });
+        puddle.AddComponent(new AreaAttackRequest { Value = new SimpleEvent<Vector3>() });
+        puddle.AddComponent(new AreaAttackTargets { Value = new List<Entity>() });
+        puddle.AddComponent(new AreaAttackTargetsCollected { Value = new SimpleEvent<Vector3>() });
+        puddle.AddComponent(new AreaAttackFinished { Value = new SimpleEvent() });
+        puddle.AddComponent(new AreaAttackShouldShowExplosion { Value = false });
+
+        puddle.AddSystem(new TimedAreaAttackRequestSystem());
+        puddle.AddSystem(new AreaAttackTargetsCollectSystem(_collidersRegistry));
+        puddle.AddSystem(new AreaDamageTargetsSystem());
 
         puddle.AddSystem(new PuddleExpireAfterWaveSystem(
             _life,
