@@ -30,9 +30,4 @@ public sealed class BuildingCombatProjectileRequestSystem : IInitializableSystem
     {
         _shootRequest.Invoke(targetPoint);
     }
-    
-    public sealed class ProjectileShootDamageMultiplier : IEntityComponent
-    {
-        public float Value;
-    }
 }
