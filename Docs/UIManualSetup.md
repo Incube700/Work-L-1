@@ -1,145 +1,96 @@
 # UI Manual Setup
 
-Use these steps when wiring presentation assets in the Unity Editor. Do not hand-edit scene YAML for new visual references unless absolutely necessary.
+Use this after running `Tools -> Defend -> Build Artsystack UI`.
 
-## Paid Asset Boundary
+## Main Menu Scene
 
-The Artsystack pack is local-only:
+1. Open `MainMenuScene`.
+2. Keep the existing `MainMenuScreenView`, `MainMenuView`, `PopupLayer`, `CurrencyListView`, and `StatsView` references intact.
+3. Instantiate `Assets/_LocalGenerated/DefendUI/Prefabs/Generated_MainMenuPanel.prefab`.
+4. If replacing the visible Play button, assign `Generated_MainMenuPanel/CenterPanel/PlayButton` to `MainMenuView._playButton`.
+5. Assign optional visual references such as `_optionalSkinRoot`, `_backgroundImage`, `_frameImage`, `_buttonImage`, and `_label` only for Inspector clarity and validation.
 
-`Assets/Artsystack - Fantasy RPG GUI`
+Do not add scene-loading behavior to generated buttons. `MainMenuView` already raises `PlayClicked`, and the presenter owns flow decisions.
 
-Rules:
+## Gameplay Scene
 
-- Do not copy Artsystack sprites, prefabs, PSDs, fonts, previews, or scenes into `Assets/_Project`.
-- Do not modify vendor assets directly.
-- Do not move or rename the vendor folder.
-- Do not commit paid asset files or their `.meta` files.
-- Avoid committing required references from public project-owned prefabs/scenes/configs to this ignored folder.
+1. Open `GameplayScene`.
+2. Keep `DefendGameplayScreenView`, `DefendHudView`, `PlacementPanelView`, `CurrencyListView`, and `PopupLayer` references intact.
+3. Instantiate `Generated_GameplayHudPanel.prefab` for the top-bar visual pass.
+4. Instantiate `Generated_PlacementPanelSkin.prefab` for placement-button visuals.
+5. If replacing the old placement buttons, assign:
+   - `Generated_PlacementPanelSkin/Buttons/MineButton` -> `PlacementPanelView._mineButton`
+   - `Generated_PlacementPanelSkin/Buttons/TurretButton` -> `PlacementPanelView._turretButton`
+   - `Generated_PlacementPanelSkin/Buttons/PuddleButton` -> `PlacementPanelView._puddleButton`
+6. Keep cost text fields assigned to `PlacementPanelView._mineCostText`, `_turretCostText`, and `_puddleCostText`.
+7. Assign optional generated skin fields only after required view references are still green.
 
-## Main Menu Local Polish
+Do not add placement, affordability, wave, combat, tower, enemy, save/load, or economy logic to UI views.
 
-Target scene:
+## Result Popup
 
-`Assets/_Project/Scenes/MainMenuScene.unity`
+1. Keep `Assets/_Project/Resources/UI/Popups/MessagePopupView.prefab` as the runtime popup prefab unless you intentionally replace it.
+2. Use `Generated_ResultPopupSkin.prefab` as a visual reference.
+3. If building a new popup body, keep `MessagePopupView` close behavior wired through `_okButton`.
+4. Do not wire `RestartButton` or `ReturnToMenuButton` directly to gameplay from the generated skin. The current result flow returns to menu when the message popup closes.
 
-Safe steps:
+## Currency Row
 
-1. Keep `MainMenuEntryPoint` and `MainMenuScreenView` references intact.
-2. Select the existing `MenuPanel`, `TitleText`, `PlayButton`, `ResetButton`, `AbilitiesButton`, and `PermanentUpgadesMenu` objects.
-3. Assign local-only Artsystack sprites through `Image` components where appropriate:
-   - Play button: `ResourcesData/Sprites/components/button_01.png`
-   - Secondary buttons: `button_02.png`
-   - Menu/title panel: `BlueFrame_bg.png`, `header_box.png`, or `panel_name_header.png`
-4. Keep `MainMenuView` as the event source only. Do not add scene loading, save reset, or upgrade purchase logic to the view.
-5. Run `Tools -> Defend -> UI -> Validate Selected UI` on the `MainMenuScreenView` hierarchy.
+1. Keep `Assets/_Project/Resources/UI/Currency/CurrencyRowView.prefab` as the runtime row prefab unless you intentionally replace it.
+2. Use `Generated_CurrencyRowSkin.prefab` as a visual reference for frame, icon, and text layout.
+3. Keep `CurrencyRowView._iconImage`, `_nameText`, and `_amountText` assigned.
+4. Assign Artsystack gold/diamond icons locally only if you accept missing references in public clones without the paid pack.
 
-If the local Artsystack folder is absent, keep the current project-owned/default UI visuals.
+## Local Configs
 
-## Gameplay HUD Local Polish
+The builder creates local ignored config assets under:
 
-Target scene:
+`Assets/_LocalGenerated/DefendUI/Configs/`
 
-`Assets/_Project/Scenes/GameplayScene.unity`
+Runtime loading remains on tracked config assets under:
 
-Safe steps:
+`Assets/_Project/Resources/Configs/DefendGame/`
 
-1. Keep `DefendGameplayScreenView`, `DefendHudView`, `PlacementPanelView`, `CurrencyListView`, and `PopupLayer` references intact.
-2. Add visual-only child `Image` objects only when needed; do not move gameplay logic into them.
-3. Candidate local-only assignments:
-   - Currency panel: `coins_frame.png` or `coins_frame_2.png`
-   - Gold icon: `coin_1.png` or `btn_coin.png`
-   - Diamond icon: `crystal_1.png` or `btn_crystal_1.png`
-   - Base health: `heart_fill.png`, `heart_frame.png`, or `btn_Heart.png`
-   - Health bar: `progress_bar_bg.png` and `progress_bar_top.png`
-   - Wave/phase frames: `SmallBlueFrame_bg.png`, `GreenFrame_bg.png`, `RedFrame_bg.png`
-4. Verify the HUD still updates wave, phase, rest timer, and base health through `DefendHudPresenter`.
-5. Run validation on the `DefendGameplayScreenView` hierarchy.
+Copy local icon assignments into tracked configs only when you explicitly accept the missing-reference tradeoff for machines without the paid pack.
 
-## Placement Panel Local Polish
+## Validation
 
-Target object:
+Run:
 
-`GameplayScene -> PlacementPanel`
+`Tools -> Defend -> Validate Active UI Setup`
 
-Safe steps:
+Fix `Debug.LogError` messages first. Optional generated skin warnings are informational and do not block gameplay.
 
-1. Keep the existing Mine, Turret, and Puddle `Button` references assigned on `PlacementPanelView`.
-2. Candidate local-only slots:
-   - `ingame_icon_slot.png`
-   - `ingame_icon_slot_2.png`
-   - `icon_slot_active.png`
-   - `icon_slot_locked.png`
-3. Candidate local-only icons:
-   - Mine: `ResourcesData/Sprites/flaticon/textured/btn_bomb.png`
-   - Turret: `btn_archery.png` or `btn_castle.png`
-   - Puddle: keep text for now or assign a clearly temporary local placeholder.
-4. Do not add placement, economy, or affordability decisions to `PlacementPanelView`.
-5. Verify presenter-driven affordability still disables unaffordable/selected options.
+## Local Graveyard Defense Setup
 
-## Result Popup Local Polish
+Use this only for local testing with ignored/generated assets:
 
-Target prefab:
+`Tools -> Defend -> Build Graveyard Defense Theme (Local)`
 
-`Assets/_Project/Resources/UI/Popups/MessagePopupView.prefab`
+The generated theme pass writes to:
 
-Safe steps:
+`Assets/_LocalGenerated/GraveyardDefense/`
 
-1. Keep `PopupViewBase` references assigned: main group, anticlicker, and body.
-2. Keep `MessagePopupView` references assigned: title, message, icon image, victory icon, defeat icon, and OK button.
-3. Candidate local-only assignments:
-   - Popup body: `ResourcesData/Sprites/components/pop_up.png`
-   - Title header: `panel_name_header.png`
-   - OK button: `button_01.png`
-   - Victory icon: `btn_check.png`
-   - Defeat icon: `btn_caution.png`
-4. Current supported flow is OK/close, then return to main menu. Add restart only through presenter/game-flow work, not inside the view.
-5. Run validation on the prefab after assignment.
+This folder is ignored. It may reference `Assets/Toon_Zombies_extended/`, `Assets/MasterMagicFX/`, and other local/vendor packs. Do not commit these generated prefabs/configs or tracked scenes/configs that reference them unless the asset policy changes.
 
-## DefendUIIconConfig
+The local builder creates Resources-compatible wrappers and configs:
 
-Existing asset:
+- `Resources/Entities/GraveyardDefense/ZombieEnemyView.prefab`
+- `Resources/Entities/GraveyardDefense/RangedUndeadEnemyView.prefab`
+- `Resources/Entities/GraveyardDefense/HeavyZombieEnemyView.prefab`
+- `Resources/Entities/GraveyardDefense/MagicRuneMineView.prefab`
+- `Resources/Entities/GraveyardDefense/MagicTotemTurretView.prefab`
+- `Resources/Entities/GraveyardDefense/PoisonSwampPuddleView.prefab`
+- `Resources/Entities/GraveyardDefense/RitualStoneBaseView.prefab`
+- `Resources/Prefabs/GraveyardDefense/PurpleBoltProjectileView.prefab`
+- `Resources/Configs/DefendGame/GraveyardDefense/GraveyardDefense_Level_01.asset`
 
-`Assets/_Project/Resources/Configs/DefendGame/DefendUIIconConfig.asset`
+For a quick local playtest:
 
-Suggested local entries:
+1. Run the local Graveyard builder.
+2. Inspect the generated wrappers and confirm the original `MonoEntity`, colliders, and registrators remain on the copied base prefab.
+3. Temporarily assign `GraveyardDefense_Level_01.asset` through the gameplay path you are testing, or temporarily add it to `Assets/_Project/Resources/Configs/DefendGame/DefendLevelsConfig.asset`.
+4. Test from `BootstrapScene` through `MainMenuScene` into `GameplayScene`.
+5. Revert any tracked scene/config assignment before committing if it points at `_LocalGenerated`, `Toon_Zombies_extended`, `MasterMagicFX`, or Artsystack.
 
-- `Gold`: display name `Gold`, optional local icon `coin_1.png` or project-owned fallback.
-- `Diamond`: display name `Diamonds`, optional local icon `crystal_1.png` or project-owned fallback.
-- `Mine`: optional local icon `btn_bomb.png`.
-- `Turret`: optional local icon `btn_archery.png`.
-- `Puddle`: leave icon empty until a project-owned or acceptable local placeholder is chosen.
-- `Rest`: display name `Build`.
-- `Wave`: display name `Defend`.
-- `Ended`: display name `Result`.
-
-Do not wire this into runtime code until missing icons have safe fallback behavior.
-
-## DefendPresentationFeedbackConfig
-
-Existing asset:
-
-`Assets/_Project/Resources/Configs/DefendGame/DefendPresentationFeedbackConfig.asset`
-
-Suggested cues:
-
-- UI click
-- Confirm
-- Denied
-- Wave start
-- Victory
-- Defeat
-- Placeable selected
-- Placeable confirmed
-- Base hit
-- Enemy death
-
-Use lightweight project-owned/free-pack SFX/VFX first. If assigning paid/local-only references, keep them optional and verify public clones still run without the pack.
-
-## Editor Validation Tool
-
-Menu items:
-
-- `Tools -> Defend -> UI -> Validate Selected UI`
-- `Tools -> Defend -> UI -> Generate Selected UI Validation Report`
-
-Use the first command for normal checks. Use the report command only when you intentionally want to write or update `Docs/DefendUiSetupValidationReport.md`.
+The generated local UI icon config can display `Gold` as `Souls`, `Diamond` as `Crystals`, `Mine` as `Rune`, `Turret` as `Totem`, `Puddle` as `Curse`, `Rest` as `Prepare`, and `Wave` as `Defend`. Keep enum names and gameplay code unchanged.

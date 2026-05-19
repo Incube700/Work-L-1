@@ -7,6 +7,15 @@ using UnityEngine;
 public static class DefendUiSetupValidator
 {
     private const string _reportPath = "Docs/DefendUiSetupValidationReport.md";
+    private static readonly HashSet<string> _optionalGeneratedSkinFields = new HashSet<string>
+    {
+        "_optionalSkinRoot",
+        "_backgroundImage",
+        "_frameImage",
+        "_iconImage",
+        "_buttonImage",
+        "_label"
+    };
 
     [MenuItem("Tools/Defend/UI/Validate Selected UI")]
     public static void ValidateSelectedUi()
@@ -121,6 +130,11 @@ public static class DefendUiSetupValidator
                 continue;
             }
 
+            if (IsOptionalGeneratedSkinField(component, property.name))
+            {
+                continue;
+            }
+
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
                 continue;
@@ -133,5 +147,16 @@ public static class DefendUiSetupValidator
 
             findings.Add($"{component.gameObject.name}: {component.GetType().Name} missing serialized reference '{property.propertyPath}'.");
         }
+    }
+
+    private static bool IsOptionalGeneratedSkinField(MonoBehaviour component, string fieldName)
+    {
+        if (fieldName == "_iconImage" &&
+            (component is CurrencyRowView || component is MessagePopupView))
+        {
+            return false;
+        }
+
+        return _optionalGeneratedSkinFields.Contains(fieldName);
     }
 }

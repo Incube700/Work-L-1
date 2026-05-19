@@ -73,3 +73,13 @@ sysinfo.txt
 # ======================
 /Assets/Artsystack - Fantasy RPG GUI/
 /Assets/Artsystack - Fantasy RPG GUI.meta
+/Assets/Toon_Zombies_extended/
+/Assets/Toon_Zombies_extended.meta
+/Assets/MasterMagicFX/
+/Assets/MasterMagicFX.meta
+
+# ======================
+# Local generated assets that may reference paid/local-only assets
+# ======================
+/Assets/_LocalGenerated/
+/Assets/_LocalGenerated.meta

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class DefendGameplayScreenView : MonoBehaviour
 {
@@ -6,6 +7,11 @@ public sealed class DefendGameplayScreenView : MonoBehaviour
     [SerializeField] private PlacementPanelView _placementPanelView;
     [SerializeField] private PopupLayer _popupLayer;
     [SerializeField] private CurrencyListView _currencyListView;
+
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
 
     public DefendHudView HudView => _hudView;
     public PlacementPanelView PlacementPanelView => _placementPanelView;

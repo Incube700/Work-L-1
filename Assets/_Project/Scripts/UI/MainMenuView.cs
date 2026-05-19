@@ -16,6 +16,13 @@ public sealed class MainMenuView : MonoBehaviour
     [SerializeField] private Button _upgradesButton;
     [SerializeField] private PermanentUpgradesMenuView _upgradesMenuView;
 
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
+    [SerializeField] private Image _buttonImage;
+    [SerializeField] private TMP_Text _label;
+
     public PermanentUpgradesMenuView UpgradesMenuView => _upgradesMenuView;
 
     private void Awake()

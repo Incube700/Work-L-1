@@ -1,8 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class CurrencyListView : MonoBehaviour
 {
     [SerializeField] private Transform _content;
+
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
 
     public Transform Content => _content;
 

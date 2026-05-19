@@ -10,6 +10,11 @@ public sealed class CurrencyRowView : MonoBehaviour
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _amountText;
 
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
+
     private void Awake()
     {
         ValidateSerializedReferences();

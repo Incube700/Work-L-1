@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class MainMenuScreenView : MonoBehaviour
 {
@@ -6,6 +7,11 @@ public sealed class MainMenuScreenView : MonoBehaviour
     [SerializeField] private PopupLayer _popupLayer;
     [SerializeField] private CurrencyListView _currencyListView;
     [SerializeField] private StatsView _statsView;
+
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
 
     public MainMenuView MainMenuView => _mainMenuView;
     public PopupLayer PopupLayer => _popupLayer;

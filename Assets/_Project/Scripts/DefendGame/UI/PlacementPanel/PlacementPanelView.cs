@@ -19,6 +19,13 @@ public sealed class PlacementPanelView : MonoBehaviour
     [SerializeField] private TMP_Text _turretCostText;
     [SerializeField] private TMP_Text _puddleCostText;
 
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
+    [SerializeField] private Image _buttonImage;
+    [SerializeField] private TMP_Text _label;
+
     private PlaceableType _selectedType = PlaceableType.Mine;
     private bool _canAffordMine = true;
     private bool _canAffordTurret = true;

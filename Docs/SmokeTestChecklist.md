@@ -48,3 +48,24 @@ Use Unity `2022.3.16f1`.
 2. Enter Play Mode and confirm the standalone menu path initializes.
 3. Open `Assets/_Project/Scenes/GameplayScene.unity`.
 4. Enter Play Mode and confirm direct gameplay fallback starts the first configured level.
+
+## Local Graveyard Defense Theme
+
+Run this only if the local packs are present:
+
+`Tools -> Defend -> Build Graveyard Defense Theme (Local)`
+
+Then run a local-only playtest:
+
+1. Confirm generated wrappers exist under `Assets/_LocalGenerated/GraveyardDefense/Resources/`.
+2. Temporarily test `GraveyardDefense_Level_01.asset` without committing tracked config or scene changes.
+3. Confirm zombies spawn using the same enemy movement, health, death, and base-damage behavior as the old enemies.
+4. Confirm ranged undead can shoot and purple projectiles still collide/damage through the existing projectile systems.
+5. Confirm Rune, Totem, and Curse placement buttons still raise the existing Mine, Turret, and Puddle view events.
+6. Confirm the themed wrappers preserve colliders and `MonoEntity` registration from the base dummy prefabs.
+7. Confirm the graveyard/ritual stone visuals do not block placement, projectile movement, or enemy movement.
+8. Confirm the HUD still updates wave/horde, phase, base health, and currency through presenters.
+9. Confirm the result popup still appears and closes/returns to menu through the existing popup flow.
+10. Remove or revert any tracked scene/config changes that reference `_LocalGenerated`, `Toon_Zombies_extended`, `MasterMagicFX`, or Artsystack before committing.
+
+If local-only assets are absent, the tracked prototype should still run with the original dummy visuals and generated wrapper creation may fall back to primitive placeholder visuals.

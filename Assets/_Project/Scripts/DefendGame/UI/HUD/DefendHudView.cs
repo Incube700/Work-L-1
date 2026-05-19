@@ -14,6 +14,13 @@ public sealed class DefendHudView : MonoBehaviour
     [SerializeField] private TMP_Text _buildingHpText;
     [SerializeField] private Slider _buildingHpSlider;
 
+    [Header("Optional Generated Skin")]
+    [SerializeField] private GameObject _optionalSkinRoot;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Image _frameImage;
+    [SerializeField] private Image _iconImage;
+    [SerializeField] private TMP_Text _label;
+
     private void Awake()
     {
         ValidateSerializedReferences();
