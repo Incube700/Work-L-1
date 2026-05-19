@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab499b94a904ca9882f32874181ebe9, type: 3}
+  m_Name: DefendUIIconConfig
+  m_EditorClassIdentifier: 
+  _currencyEntries:
+  - _type: 0
+    _displayName: Gold
+    _icon: {fileID: -1679169986, guid: dadd885fb69fc474785a9216a4215bba, type: 3}
+  - _type: 1
+    _displayName: Diamonds
+    _icon: {fileID: -1679169986, guid: dadd885fb69fc474785a9216a4215bba, type: 3}
+  _placeableEntries:
+  - _type: 0
+    _displayName: Mine
+    _icon: {fileID: 0}
+  - _type: 1
+    _displayName: Turret
+    _icon: {fileID: 0}
+  - _type: 2
+    _displayName: Puddle
+    _icon: {fileID: 0}
+  _phaseEntries:
+  - _phase: 1
+    _displayName: Build
+    _icon: {fileID: 0}
+  - _phase: 0
+    _displayName: Defend
+    _icon: {fileID: 0}
+  - _phase: 2
+    _displayName: Result
+    _icon: {fileID: 0}
+  _enemyEntries:
+  - _enemyConfig: {fileID: 11400000, guid: c2e1e2bd7eb1d408d90cbcdf520789a6, type: 2}
+    _displayName: Enemy Config
+    _icon: {fileID: 0}
+  - _enemyConfig: {fileID: 11400000, guid: 8626d997cfa1e46d3b762ec450774b41, type: 2}
+    _displayName: Shooter Enemy Config
+    _icon: {fileID: 0}

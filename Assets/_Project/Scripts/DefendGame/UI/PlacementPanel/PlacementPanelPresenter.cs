@@ -7,19 +7,23 @@ public sealed class PlacementPanelPresenter : IPresenter
     private readonly PlacementSelectionService _selectionService;
     private readonly DefendPhaseService _phaseService;
     private readonly DefendLevelConfig _levelConfig;
+    private readonly WalletService _walletService;
 
+    private IReadOnlyReactiveVariable<int> _gold;
     private bool _isInitialized;
 
     public PlacementPanelPresenter(
         PlacementPanelView view,
         PlacementSelectionService selectionService,
         DefendPhaseService phaseService,
-        DefendLevelConfig levelConfig)
+        DefendLevelConfig levelConfig,
+        WalletService walletService)
     {
         _view = view ?? throw new ArgumentNullException(nameof(view));
         _selectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
         _phaseService = phaseService ?? throw new ArgumentNullException(nameof(phaseService));
         _levelConfig = levelConfig ?? throw new ArgumentNullException(nameof(levelConfig));
+        _walletService = walletService ?? throw new ArgumentNullException(nameof(walletService));
     }
 
     public void Initialize()
@@ -36,6 +40,9 @@ public sealed class PlacementPanelPresenter : IPresenter
         _selectionService.SelectedTypeChanged += OnSelectedTypeChanged;
         _phaseService.PhaseChanged += OnPhaseChanged;
 
+        _gold = _walletService.GetReactive(CurrencyType.Gold);
+        _gold.Changed += OnGoldChanged;
+
         RefreshAll();
 
         _isInitialized = true;
@@ -50,6 +57,12 @@ public sealed class PlacementPanelPresenter : IPresenter
 
         _phaseService.PhaseChanged -= OnPhaseChanged;
         _selectionService.SelectedTypeChanged -= OnSelectedTypeChanged;
+
+        if (_gold != null)
+        {
+            _gold.Changed -= OnGoldChanged;
+            _gold = null;
+        }
 
         _view.PuddleSelected -= OnPuddleSelected;
         _view.TurretSelected -= OnTurretSelected;
@@ -78,6 +91,11 @@ public sealed class PlacementPanelPresenter : IPresenter
         RefreshSelection();
     }
 
+    private void OnGoldChanged()
+    {
+        RefreshAffordability();
+    }
+
     private void OnPhaseChanged()
     {
         RefreshVisible();
@@ -88,6 +106,7 @@ public sealed class PlacementPanelPresenter : IPresenter
         RefreshVisible();
         RefreshSelection();
         RefreshCosts();
+        RefreshAffordability();
     }
 
     private void RefreshVisible()
@@ -106,5 +125,15 @@ public sealed class PlacementPanelPresenter : IPresenter
             _levelConfig.MineConfig.CostGold,
             _levelConfig.TurretConfig.CostGold,
             _levelConfig.PuddleConfig.CostGold);
+    }
+
+    private void RefreshAffordability()
+    {
+        int gold = _walletService.Get(CurrencyType.Gold);
+
+        _view.SetAffordable(
+            gold >= _levelConfig.MineConfig.CostGold,
+            gold >= _levelConfig.TurretConfig.CostGold,
+            gold >= _levelConfig.PuddleConfig.CostGold);
     }
 }

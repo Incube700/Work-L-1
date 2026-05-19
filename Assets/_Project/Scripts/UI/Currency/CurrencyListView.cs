@@ -3,14 +3,15 @@ using UnityEngine;
 public sealed class CurrencyListView : MonoBehaviour
 {
     [SerializeField] private Transform _content;
-    
+
     public Transform Content => _content;
 
     private void Awake()
     {
         if (_content == null)
         {
-            throw new MissingReferenceException($"{nameof(CurrencyListView)} is not set");
+            Debug.LogError($"{name}: {nameof(CurrencyListView)} missing serialized reference '{nameof(_content)}'.", this);
+            throw new MissingReferenceException($"{name}: {nameof(CurrencyListView)} missing serialized reference '{nameof(_content)}'.");
         }
     }
 }

@@ -21,6 +21,16 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
 
     public bool IsVisible => _root != null && _root.activeSelf;
 
+    private void Awake()
+    {
+        ValidateSerializedReferences();
+    }
+
+    private void OnValidate()
+    {
+        ValidateSerializedReferences();
+    }
+
     public void Initialize()
     {
         if (_root == null)
@@ -157,5 +167,22 @@ public sealed class PermanentUpgradesMenuView : MonoBehaviour
     private void OnPlayerExplosionDamageBuyClicked()
     {
         PurchaseRequested?.Invoke(PermanentUpgradeType.PlayerExplosionDamage);
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_statusText, nameof(_statusText));
+        LogMissingReference(_closeButton, nameof(_closeButton));
+        LogMissingReference(_waveHealEntry, nameof(_waveHealEntry));
+        LogMissingReference(_openingStrikeEntry, nameof(_openingStrikeEntry));
+        LogMissingReference(_playerExplosionDamageEntry, nameof(_playerExplosionDamageEntry));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(PermanentUpgradesMenuView)} missing serialized reference '{fieldName}'.", this);
+        }
     }
 }

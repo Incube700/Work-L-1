@@ -18,6 +18,16 @@ public sealed class MainMenuView : MonoBehaviour
 
     public PermanentUpgradesMenuView UpgradesMenuView => _upgradesMenuView;
 
+    private void Awake()
+    {
+        ValidateSerializedReferences();
+    }
+
+    private void OnValidate()
+    {
+        ValidateSerializedReferences();
+    }
+
     private void OnEnable()
     {
         if (_playButton != null)
@@ -83,5 +93,23 @@ public sealed class MainMenuView : MonoBehaviour
     private void OnUpgradesButtonClicked()
     {
         UpgradesClicked?.Invoke();
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_statusText, nameof(_statusText));
+        LogMissingReference(_resetButtonText, nameof(_resetButtonText));
+        LogMissingReference(_playButton, nameof(_playButton));
+        LogMissingReference(_resetButton, nameof(_resetButton));
+        LogMissingReference(_upgradesButton, nameof(_upgradesButton));
+        LogMissingReference(_upgradesMenuView, nameof(_upgradesMenuView));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(MainMenuView)} missing serialized reference '{fieldName}'.", this);
+        }
     }
 }

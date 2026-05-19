@@ -12,11 +12,13 @@ public sealed class CurrencyRowView : MonoBehaviour
 
     private void Awake()
     {
+        ValidateSerializedReferences();
         ConfigureGraphics();
     }
 
     private void OnValidate()
     {
+        ValidateSerializedReferences();
         ConfigureGraphics();
     }
 
@@ -91,6 +93,21 @@ public sealed class CurrencyRowView : MonoBehaviour
         if (graphic != null)
         {
             graphic.raycastTarget = isEnabled;
+        }
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_iconImage, nameof(_iconImage));
+        LogMissingReference(_nameText, nameof(_nameText));
+        LogMissingReference(_amountText, nameof(_amountText));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(CurrencyRowView)} missing serialized reference '{fieldName}'.", this);
         }
     }
 }

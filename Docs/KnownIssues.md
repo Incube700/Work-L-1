@@ -21,3 +21,10 @@
 
 - Directly starting from `MainMenuScene` is supported for manual UI testing, but the full persistent scene-argument flow is most reliable from `BootstrapScene`.
 - Legacy typing-game and homework/prototype scenes remain in the project and are not part of the current tower-defence playable flow.
+- `DefendUiIconConfig` and `DefendPresentationFeedbackConfig` are code-level preparation only. They need Unity Editor asset creation and assignment before runtime wiring.
+- Some imported asset packs contain useful UI, VFX, SFX, and tower-defence art, but they are not fully integrated into the active scene flow.
+- The Artsystack Fantasy RPG GUI pack is local-only and ignored by Git. Public committed UI should not require that paid folder.
+- Result flow currently supports closing the result popup to return to the main menu. A dedicated restart button is not present yet.
+- Start Wave/Continue buttons are not part of the active gameplay UI yet; wave progression is driven by the gameplay state machine.
+- `UserSettings` appears in source control on some checkouts. It is Unity editor state and should be untracked with `git rm -r --cached -- UserSettings` when cleanup is approved.
+- Existing level assets may contain old serialized fields that no longer exist in `DefendLevelConfig`; Unity should be allowed to reserialize them after manual verification.

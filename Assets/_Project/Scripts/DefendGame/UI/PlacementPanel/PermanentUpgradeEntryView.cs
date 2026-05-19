@@ -13,6 +13,16 @@ public sealed class PermanentUpgradeEntryView : MonoBehaviour
     [SerializeField] private TMP_Text _buttonText;
     [SerializeField] private Button _buyButton;
 
+    private void Awake()
+    {
+        ValidateSerializedReferences();
+    }
+
+    private void OnValidate()
+    {
+        ValidateSerializedReferences();
+    }
+
     private void OnEnable()
     {
         if (_buyButton != null)
@@ -65,5 +75,22 @@ public sealed class PermanentUpgradeEntryView : MonoBehaviour
     private void OnBuyButtonClicked()
     {
         BuyClicked?.Invoke();
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_titleText, nameof(_titleText));
+        LogMissingReference(_descriptionText, nameof(_descriptionText));
+        LogMissingReference(_priceText, nameof(_priceText));
+        LogMissingReference(_buttonText, nameof(_buttonText));
+        LogMissingReference(_buyButton, nameof(_buyButton));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(PermanentUpgradeEntryView)} missing serialized reference '{fieldName}'.", this);
+        }
     }
 }

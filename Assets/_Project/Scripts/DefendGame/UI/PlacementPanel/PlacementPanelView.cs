@@ -19,12 +19,24 @@ public sealed class PlacementPanelView : MonoBehaviour
     [SerializeField] private TMP_Text _turretCostText;
     [SerializeField] private TMP_Text _puddleCostText;
 
+    private PlaceableType _selectedType = PlaceableType.Mine;
+    private bool _canAffordMine = true;
+    private bool _canAffordTurret = true;
+    private bool _canAffordPuddle = true;
+
     private void Awake()
     {
         if (_root == null)
         {
             _root = gameObject;
         }
+
+        ValidateSerializedReferences();
+    }
+
+    private void OnValidate()
+    {
+        ValidateSerializedReferences();
     }
 
     private void OnEnable()
@@ -73,9 +85,17 @@ public sealed class PlacementPanelView : MonoBehaviour
 
     public void SetSelected(PlaceableType selectedType)
     {
-        SetButtonSelected(_mineButton, selectedType == PlaceableType.Mine);
-        SetButtonSelected(_turretButton, selectedType == PlaceableType.Turret);
-        SetButtonSelected(_puddleButton, selectedType == PlaceableType.Puddle);
+        _selectedType = selectedType;
+        RefreshButtons();
+    }
+
+    public void SetAffordable(bool canAffordMine, bool canAffordTurret, bool canAffordPuddle)
+    {
+        _canAffordMine = canAffordMine;
+        _canAffordTurret = canAffordTurret;
+        _canAffordPuddle = canAffordPuddle;
+
+        RefreshButtons();
     }
 
     public void SetCosts(int mineCostGold, int turretCostGold, int puddleCostGold)
@@ -92,17 +112,24 @@ public sealed class PlacementPanelView : MonoBehaviour
             return;
         }
 
-        text.text = $"{costGold} G";
+        text.text = $"{costGold} Gold";
     }
 
-    private void SetButtonSelected(Button button, bool isSelected)
+    private void RefreshButtons()
+    {
+        SetButtonInteractable(_mineButton, _selectedType != PlaceableType.Mine && _canAffordMine);
+        SetButtonInteractable(_turretButton, _selectedType != PlaceableType.Turret && _canAffordTurret);
+        SetButtonInteractable(_puddleButton, _selectedType != PlaceableType.Puddle && _canAffordPuddle);
+    }
+
+    private void SetButtonInteractable(Button button, bool isInteractable)
     {
         if (button == null)
         {
             return;
         }
 
-        button.interactable = isSelected == false;
+        button.interactable = isInteractable;
     }
 
     private void OnMineButtonClicked()
@@ -118,5 +145,23 @@ public sealed class PlacementPanelView : MonoBehaviour
     private void OnPuddleButtonClicked()
     {
         PuddleSelected?.Invoke();
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_mineButton, nameof(_mineButton));
+        LogMissingReference(_turretButton, nameof(_turretButton));
+        LogMissingReference(_puddleButton, nameof(_puddleButton));
+        LogMissingReference(_mineCostText, nameof(_mineCostText));
+        LogMissingReference(_turretCostText, nameof(_turretCostText));
+        LogMissingReference(_puddleCostText, nameof(_puddleCostText));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(PlacementPanelView)} missing serialized reference '{fieldName}'.", this);
+        }
     }
 }

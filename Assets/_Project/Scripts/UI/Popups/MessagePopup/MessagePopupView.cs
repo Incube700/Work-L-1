@@ -11,6 +11,17 @@ public sealed class MessagePopupView : PopupViewBase
     [SerializeField] private Sprite _defeatIcon;
     [SerializeField] private Button _okButton;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        ValidateSerializedReferences();
+    }
+
+    private void OnValidate()
+    {
+        ValidateSerializedReferences();
+    }
+
     private void OnEnable()
     {
         if (_okButton != null)
@@ -73,5 +84,23 @@ public sealed class MessagePopupView : PopupViewBase
     private void OnOkClicked()
     {
         OnCloseButtonClicked();
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_titleText, nameof(_titleText));
+        LogMissingReference(_messageText, nameof(_messageText));
+        LogMissingReference(_iconImage, nameof(_iconImage));
+        LogMissingReference(_victoryIcon, nameof(_victoryIcon));
+        LogMissingReference(_defeatIcon, nameof(_defeatIcon));
+        LogMissingReference(_okButton, nameof(_okButton));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(MessagePopupView)} missing serialized reference '{fieldName}'.", this);
+        }
     }
 }

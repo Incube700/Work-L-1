@@ -177,7 +177,8 @@ public static class DefendGameplayRegistrations
             c.Resolve<PlacementPanelView>(),
             c.Resolve<PlacementSelectionService>(),
             c.Resolve<DefendPhaseService>(),
-            c.Resolve<DefendLevelConfig>()));
+            c.Resolve<DefendLevelConfig>(),
+            c.Resolve<WalletService>()));
         
         container.BindTransient<DefendGameplayScreenPresenter>(c => new DefendGameplayScreenPresenter(
             c.Resolve<DefendGameplayScreenView>(),

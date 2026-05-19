@@ -67,3 +67,9 @@ sysinfo.txt
 *.apk
 *.aab
 *.unitypackage
+
+# ======================
+# Paid/local-only asset packs
+# ======================
+/Assets/Artsystack - Fantasy RPG GUI/
+/Assets/Artsystack - Fantasy RPG GUI.meta

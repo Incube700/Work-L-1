@@ -16,12 +16,14 @@ public sealed class DefendHudView : MonoBehaviour
 
     private void Awake()
     {
+        ValidateSerializedReferences();
         ConfigureTextRaycasts();
         ConfigureBuildingHpSlider();
     }
 
     private void OnValidate()
     {
+        ValidateSerializedReferences();
         ConfigureTextRaycasts();
         ConfigureBuildingHpSlider();
     }
@@ -173,6 +175,23 @@ public sealed class DefendHudView : MonoBehaviour
         if (graphic != null)
         {
             graphic.raycastTarget = isEnabled;
+        }
+    }
+
+    private void ValidateSerializedReferences()
+    {
+        LogMissingReference(_waveText, nameof(_waveText));
+        LogMissingReference(_phaseText, nameof(_phaseText));
+        LogMissingReference(_restTimerText, nameof(_restTimerText));
+        LogMissingReference(_buildingHpText, nameof(_buildingHpText));
+        LogMissingReference(_buildingHpSlider, nameof(_buildingHpSlider));
+    }
+
+    private void LogMissingReference(UnityEngine.Object reference, string fieldName)
+    {
+        if (reference == null)
+        {
+            Debug.LogError($"{name}: {nameof(DefendHudView)} missing serialized reference '{fieldName}'.", this);
         }
     }
 }
