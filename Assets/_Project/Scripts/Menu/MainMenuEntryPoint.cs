@@ -6,6 +6,8 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
     [SerializeField] private MainMenuScreenView _screenView;
 
     private IContainer _sceneContainer;
+    private Container _standaloneProjectContainer;
+    private IContainer _standaloneSceneContainer;
     private MainMenuPresenter _presenter;
     private PopupService _popupService;
 
@@ -53,6 +55,16 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
         _presenter.Initialize();
     }
 
+    private void Start()
+    {
+        if (_presenter != null)
+        {
+            return;
+        }
+
+        InitializeStandalone();
+    }
+
     private void OnDestroy()
     {
         if (_presenter != null)
@@ -67,6 +79,29 @@ public sealed class MainMenuEntryPoint : SceneEntryPointBase
             _popupService = null;
         }
 
+        if (_standaloneSceneContainer != null)
+        {
+            _standaloneSceneContainer.Dispose();
+            _standaloneSceneContainer = null;
+        }
+
+        if (_standaloneProjectContainer != null)
+        {
+            _standaloneProjectContainer.Dispose();
+            _standaloneProjectContainer = null;
+        }
+
         _sceneContainer = null;
+    }
+
+    private void InitializeStandalone()
+    {
+        _standaloneProjectContainer = new Container();
+        ProjectRegistrations.Register(_standaloneProjectContainer);
+
+        _standaloneProjectContainer.Resolve<SaveService>().LoadAll();
+
+        _standaloneSceneContainer = _standaloneProjectContainer.CreateChild();
+        Initialize(_standaloneSceneContainer, _standaloneProjectContainer.Resolve<SceneArgsService>());
     }
 }

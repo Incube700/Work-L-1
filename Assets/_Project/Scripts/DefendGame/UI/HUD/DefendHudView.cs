@@ -4,6 +4,10 @@ using UnityEngine.UI;
 
 public sealed class DefendHudView : MonoBehaviour
 {
+    private static readonly Color CriticalHealthColor = new Color32(231, 76, 60, 255);
+    private static readonly Color WarningHealthColor = new Color32(244, 190, 79, 255);
+    private static readonly Color HealthyHealthColor = new Color32(86, 203, 127, 255);
+
     [SerializeField] private TMP_Text _waveText;
     [SerializeField] private TMP_Text _phaseText;
     [SerializeField] private TMP_Text _restTimerText;
@@ -12,11 +16,13 @@ public sealed class DefendHudView : MonoBehaviour
 
     private void Awake()
     {
+        ConfigureTextRaycasts();
         ConfigureBuildingHpSlider();
     }
 
     private void OnValidate()
     {
+        ConfigureTextRaycasts();
         ConfigureBuildingHpSlider();
     }
 
@@ -24,6 +30,12 @@ public sealed class DefendHudView : MonoBehaviour
     {
         if (_waveText != null)
         {
+            if (totalWaves <= 0)
+            {
+                _waveText.text = "Wave -/-";
+                return;
+            }
+
             _waveText.text = $"Wave {currentWave}/{totalWaves}";
         }
     }
@@ -32,7 +44,7 @@ public sealed class DefendHudView : MonoBehaviour
     {
         if (_phaseText != null)
         {
-            _phaseText.text = phase;
+            _phaseText.text = $"Status: {phase ?? string.Empty}";
         }
     }
 
@@ -50,21 +62,24 @@ public sealed class DefendHudView : MonoBehaviour
             return;
         }
 
-        _restTimerText.text = $"Next wave in: {Mathf.CeilToInt(remainingSeconds)}s";
+        _restTimerText.text = $"Build time: {Mathf.CeilToInt(remainingSeconds)}s";
     }
 
     public void SetBuildingHealth(float current, float max)
     {
         if (_buildingHpText != null)
         {
-            _buildingHpText.text = $"Base HP: {Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
+            _buildingHpText.text = $"Base {Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
         }
 
         if (_buildingHpSlider != null)
         {
-            _buildingHpSlider.maxValue = max;
-            _buildingHpSlider.value = current;
+            _buildingHpSlider.minValue = 0f;
+            _buildingHpSlider.maxValue = Mathf.Max(0f, max);
+            _buildingHpSlider.value = Mathf.Clamp(current, 0f, _buildingHpSlider.maxValue);
         }
+
+        UpdateBuildingHealthFill(current, max);
     }
 
     private void ConfigureBuildingHpSlider()
@@ -104,6 +119,60 @@ public sealed class DefendHudView : MonoBehaviour
             {
                 handleGraphic.raycastTarget = false;
             }
+        }
+    }
+
+    private void ConfigureTextRaycasts()
+    {
+        SetRaycastTarget(_waveText, false);
+        SetRaycastTarget(_phaseText, false);
+        SetRaycastTarget(_restTimerText, false);
+        SetRaycastTarget(_buildingHpText, false);
+    }
+
+    private void UpdateBuildingHealthFill(float current, float max)
+    {
+        Graphic fillGraphic = GetBuildingHpFillGraphic();
+
+        if (fillGraphic == null)
+        {
+            return;
+        }
+
+        float ratio = max <= 0f ? 0f : Mathf.Clamp01(current / max);
+        fillGraphic.color = GetHealthColor(ratio);
+    }
+
+    private Graphic GetBuildingHpFillGraphic()
+    {
+        if (_buildingHpSlider == null || _buildingHpSlider.fillRect == null)
+        {
+            return null;
+        }
+
+        return _buildingHpSlider.fillRect.GetComponent<Graphic>();
+    }
+
+    private Color GetHealthColor(float ratio)
+    {
+        if (ratio <= 0.3f)
+        {
+            return CriticalHealthColor;
+        }
+
+        if (ratio <= 0.6f)
+        {
+            return WarningHealthColor;
+        }
+
+        return HealthyHealthColor;
+    }
+
+    private void SetRaycastTarget(Graphic graphic, bool isEnabled)
+    {
+        if (graphic != null)
+        {
+            graphic.raycastTarget = isEnabled;
         }
     }
 }

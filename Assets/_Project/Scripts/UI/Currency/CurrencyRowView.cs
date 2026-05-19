@@ -1,18 +1,96 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public sealed class CurrencyRowView : MonoBehaviour
 {
+    [SerializeField] private Image _iconImage;
+    [SerializeField] private Sprite _goldIcon;
+    [SerializeField] private Sprite _diamondIcon;
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _amountText;
 
+    private void Awake()
+    {
+        ConfigureGraphics();
+    }
+
+    private void OnValidate()
+    {
+        ConfigureGraphics();
+    }
+
+    public void SetCurrency(CurrencyType type)
+    {
+        SetName(GetDisplayName(type));
+        SetIcon(GetIcon(type));
+    }
+
     public void SetName(string value)
     {
-        _nameText.text = value ?? string.Empty;
+        if (_nameText != null)
+        {
+            _nameText.text = value ?? string.Empty;
+        }
     }
 
     public void SetAmount(int value)
     {
-        _amountText.text = value.ToString();
+        if (_amountText != null)
+        {
+            _amountText.text = value.ToString("N0");
+        }
+    }
+
+    private string GetDisplayName(CurrencyType type)
+    {
+        switch (type)
+        {
+            case CurrencyType.Gold:
+                return "Gold";
+            case CurrencyType.Diamond:
+                return "Diamonds";
+            default:
+                return type.ToString();
+        }
+    }
+
+    private Sprite GetIcon(CurrencyType type)
+    {
+        switch (type)
+        {
+            case CurrencyType.Gold:
+                return _goldIcon;
+            case CurrencyType.Diamond:
+                return _diamondIcon;
+            default:
+                return null;
+        }
+    }
+
+    private void SetIcon(Sprite icon)
+    {
+        if (_iconImage == null)
+        {
+            return;
+        }
+
+        _iconImage.sprite = icon;
+        _iconImage.enabled = icon != null;
+    }
+
+    private void ConfigureGraphics()
+    {
+        SetRaycastTarget(_iconImage, false);
+        SetRaycastTarget(_nameText, false);
+        SetRaycastTarget(_amountText, false);
+    }
+
+    private void SetRaycastTarget(Graphic graphic, bool isEnabled)
+    {
+        if (graphic != null)
+        {
+            graphic.raycastTarget = isEnabled;
+        }
     }
 }

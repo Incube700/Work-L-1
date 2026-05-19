@@ -17,7 +17,7 @@ public sealed class CurrencyRowPresenter
 
     public void Initialize()
     {
-        _view.SetName(_type.ToString());
+        _view.SetCurrency(_type);
 
         _amount = _wallet.GetReactive(_type);
         _amount.Changed += OnAmountChanged;

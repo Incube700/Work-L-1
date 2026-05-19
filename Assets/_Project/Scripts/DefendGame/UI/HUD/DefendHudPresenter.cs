@@ -107,7 +107,7 @@ public sealed class DefendHudPresenter : IPresenter
 
     private void RefreshPhase()
     {
-        _view.SetPhase(_phaseService.CurrentPhase.ToString());
+        _view.SetPhase(GetPhaseLabel(_phaseService.CurrentPhase));
     }
 
     private void RefreshRestTimer()
@@ -122,5 +122,20 @@ public sealed class DefendHudPresenter : IPresenter
         _view.SetBuildingHealth(
             _buildingStateService.CurrentHealth,
             _buildingStateService.MaxHealth);
+    }
+
+    private string GetPhaseLabel(DefendPhase phase)
+    {
+        switch (phase)
+        {
+            case DefendPhase.Wave:
+                return "Defend";
+            case DefendPhase.Rest:
+                return "Build";
+            case DefendPhase.Ended:
+                return "Result";
+            default:
+                return phase.ToString();
+        }
     }
 }
